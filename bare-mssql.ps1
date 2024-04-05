@@ -1,4 +1,7 @@
-﻿using namespace System.Windows.Forms
+﻿# 
+# Backup & Restore MS SQL 
+# 
+using namespace System.Windows.Forms
 
 $Server = "SRVSQL-1C"
 $BackupFolder = 'e$'
