@@ -1,6 +1,6 @@
-﻿# 
-# Backup & Restore MS SQL 
-# 
+﻿#
+# Backup & Restore MS SQL
+#
 using namespace System.Windows.Forms
 
 $Server = "SRVSQL-1C"
@@ -15,8 +15,8 @@ Add-Type -AssemblyName System.Windows.Forms
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Name="Window" 
-    Title="MS SQL Backup / Restore" 
+    x:Name="Window"
+    Title="MS SQL Backup / Restore"
     Height="200" MinWidth="500"
     WindowStartupLocation="CenterScreen"
     SizeToContent="WidthAndHeight"
@@ -34,7 +34,7 @@ Add-Type -AssemblyName System.Windows.Forms
           <Button x:Name="btnDst" DockPanel.Dock="Right" Content="Обзор" Padding="5 0" />
           <TextBox x:Name="dst" MaxLength="50"  />
         </DockPanel>
-        <CheckBox x:Name="overwrite" Content="Overwrite without prompt" />
+        <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
       </StackPanel>
     </TabItem>
     <TabItem Header="Restore">
@@ -51,7 +51,7 @@ Add-Type -AssemblyName System.Windows.Forms
   <TextBlock />
   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
     <Button Content="Go!" x:Name="btnGo" IsDefault="True" Padding="9 0"/>
-    <Button Content="Cancel" IsCancel="True" Padding="9 0" Margin="7 0"/>
+    <Button Content="Закрыть" IsCancel="True" Padding="9 0" Margin="7 0"/>
   </StackPanel>
 </StackPanel>
 </Window>
@@ -99,9 +99,9 @@ function browseBackup {
   $d.CheckPathExists = 1
   $d.InitialDirectory = $Fo
   $d.FileName = $Fi
-    
+
   if ($d.ShowDialog() -eq "OK") {
-    $dst.Text = $d.FileName        
+    $dst.Text = $d.FileName
   }
 }
 function browseRestore() {
@@ -114,7 +114,7 @@ function browseRestore() {
   $d.InitialDirectory = $Fo
 
   if ($d.ShowDialog() -eq "OK") {
-    $src.Text = $d.FileName        
+    $src.Text = $d.FileName
   }
 }
 
@@ -135,7 +135,7 @@ function ValidateBackup {
   }
   if (!$overwrite.IsChecked -and (Test-Path $dst.Text)) {
     $res = $dst.Text
-    $res = [System.Windows.Forms.Messagebox]::Show("Overwrite <$res>?", "Backup", 
+    $res = [System.Windows.Forms.Messagebox]::Show("Overwrite <$res>?", "Backup",
       [System.Windows.Forms.MessageBoxButtons]::YesNo,
       [System.Windows.Forms.MessageBoxIcon]::Hand
     )
