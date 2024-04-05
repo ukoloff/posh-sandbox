@@ -177,4 +177,7 @@ if ($window.ShowDialog()) {
     0 { DoBackup; }
     1 { DoRestore; }
   }
+  Write-Output "Нажмите любую клавищу для завершения..."
+  [Console]::ReadKey(1) | Out-Null
 }
+
