@@ -69,18 +69,28 @@ function setDBs() {
   $db.ItemsSource = $DBs
 }
 
+function loadDBs() {
+  $conn = New-Object System.Data.SqlClient.SQLConnection("Integrated Security=True;Server=$Server")
+  $conn.Open()
+
+  $cmd = $conn.CreateCommand()
+  $cmd.CommandText = "Select name From sys.databases Order By 1"
+  $r = $cmd.ExecuteReader()
+  while ($r.Read()) { $r.GetValue(0) }
+}
+
+function fetchDBs() {
+  $db.ItemsSource = loadDBs
+}
+
 $btnDst.add_click({ browseBackup; })
 $btnSrc.add_click({ browseRestore; })
 $btnGo.add_click({ Validate; })
 
-$importdb.Add_Checked({
-    $x = 1
-  })
+$importdb.Add_Checked({ fetchDBs })
 
 setDBs
-$importdb.Add_Unchecked({
-    setDBs
-  })
+$importdb.Add_Unchecked({ setDBs })
 
 $db.Add_DropDownClosed({
     $x = 3
