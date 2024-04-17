@@ -25,25 +25,32 @@ Add-Type -AssemblyName System.Windows.Forms
   <TextBlock Text="База данных" />
   <ComboBox x:Name="db" IsEditable="true" />
   <CheckBox x:Name="importdb" Content="Взять список баз с $Server" />
-  <TextBlock />
   <TabControl x:Name="Op">
     <TabItem Header="Backup">
       <StackPanel>
         <TextBlock Text="Destination" />
-        <DockPanel LastChildFill="True">
-          <Button x:Name="btnDst" DockPanel.Dock="Right" Content="Обзор" Padding="5 0" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
           <TextBox x:Name="dst" MaxLength="50"  />
-        </DockPanel>
+          <Button x:Name="btnDst" Grid.Column="1" Content="Обзор" Padding="5 0" />
+        </Grid>
         <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
       </StackPanel>
     </TabItem>
     <TabItem Header="Restore">
       <StackPanel>
         <TextBlock Text="Existing backup" />
-        <DockPanel LastChildFill="True">
-          <Button x:Name="btnSrc" DockPanel.Dock="Right" Content="Обзор" Padding="5 0" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
           <TextBox x:Name="src" MaxLength="50"  />
-        </DockPanel>
+          <Button x:Name="btnSrc" Grid.Column="1" Content="Обзор" Padding="5 0" />
+        </Grid>
         <TextBlock />
       </StackPanel>
     </TabItem>
