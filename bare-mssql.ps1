@@ -83,22 +83,21 @@ function fetchDBs() {
   $db.ItemsSource = loadDBs
 }
 
+
+function updatePaths() {
+
+}
+
 $btnDst.add_click({ browseBackup; })
 $btnSrc.add_click({ browseRestore; })
 $btnGo.add_click({ Validate; })
 
 $importdb.Add_Checked({ fetchDBs })
-
-setDBs
 $importdb.Add_Unchecked({ setDBs })
+setDBs
 
-$db.Add_DropDownClosed({
-    $x = 3
-  })
-
-$db.Add_LostFocus({
-    $x = 4
-  })
+$db.Add_DropDownClosed({ updatePaths })
+$db.Add_LostFocus({ updatePaths })
 
 function bakFolder() {
   return "\\$Server\$BackupFolder\$($db.Text)\"
