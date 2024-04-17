@@ -23,8 +23,8 @@ Add-Type -AssemblyName System.Windows.Forms
 >
 <StackPanel Margin="5">
   <TextBlock Text="База данных" />
-  <ComboBox x:Name="db" IsEditable="true">
-  </ComboBox>
+  <ComboBox x:Name="db" IsEditable="true" />
+  <CheckBox x:Name="importdb" Content="Взять список баз с $Server" />
   <TextBlock />
   <TabControl x:Name="Op">
     <TabItem Header="Backup">
@@ -65,27 +65,30 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]") | % {
   Set-Variable -Name ($_.Name) -Value $window.FindName($_.Name) -Scope Global
 }
 
-$db.ItemsSource = $DBs
+function setDBs() {
+  $db.ItemsSource = $DBs
+}
 
 $btnDst.add_click({ browseBackup; })
 $btnSrc.add_click({ browseRestore; })
 $btnGo.add_click({ Validate; })
 
-$overwrite.Add_Checked({
-  $x = 1
-})
+$importdb.Add_Checked({
+    $x = 1
+  })
 
-$overwrite.Add_Unchecked({
-  $x = 2
-})
+setDBs
+$importdb.Add_Unchecked({
+    setDBs
+  })
 
 $db.Add_DropDownClosed({
-  $x = 3
-})
+    $x = 3
+  })
 
 $db.Add_LostFocus({
-  $x = 4
-})
+    $x = 4
+  })
 
 function bakFolder() {
   return "\\$Server\$BackupFolder\$($db.Text)\"
