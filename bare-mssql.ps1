@@ -196,6 +196,3 @@ if ($window.ShowDialog()) {
   Write-Output "Нажмите любую клавищу для завершения..."
   [Console]::ReadKey(1) | Out-Null
 }
-
-# https://www.dbtales.com/get-sqldatabase-using-powershell-with-examples/
-# invoke-sqlcmd -ServerInstance "MyServer01\TestSQL01" -Query "SELECT * FROM sysdatabases"
