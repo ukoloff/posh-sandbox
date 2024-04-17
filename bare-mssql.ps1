@@ -5,6 +5,7 @@ using namespace System.Windows.Forms
 
 $Server = "SRVSQL-1C"
 $BackupFolder = 'e$'
+$fallbackFolder = 'Backup_test'
 $DBs = "conv", "ERP_WORK", "ZUP_20", "SandBox"
 
 Import-Module SqlServer
