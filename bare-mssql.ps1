@@ -71,6 +71,22 @@ $btnDst.add_click({ browseBackup; })
 $btnSrc.add_click({ browseRestore; })
 $btnGo.add_click({ Validate; })
 
+$overwrite.Add_Checked({
+  $x = 1
+})
+
+$overwrite.Add_Unchecked({
+  $x = 2
+})
+
+$db.Add_DropDownClosed({
+  $x = 3
+})
+
+$db.Add_LostFocus({
+  $x = 4
+})
+
 function bakFolder() {
   return "\\$Server\$BackupFolder\$($db.Text)\"
 }
