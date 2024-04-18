@@ -177,7 +177,7 @@ function Validate {
 
 function ValidateBackup {
   if (!$dst.Text) {
-    browseBackup
+    updatePaths
     return
   }
   if (!$overwrite.IsChecked -and (Test-Path $dst.Text)) {
@@ -193,6 +193,7 @@ function ValidateBackup {
 
 function ValidateRestore {
   if (!$src.Text) {
+    updatePaths
     browseRestore
     return
   }
