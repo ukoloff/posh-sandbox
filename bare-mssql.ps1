@@ -91,9 +91,20 @@ function fetchDBs() {
   $db.ItemsSource = loadDBs
 }
 
+$prevDB = $null
 
 function updatePaths() {
-
+  if ($prevDB -eq $db.Text) { return }
+  $prevDB = $db.Text
+  if ($prevDB -eq "") {
+    $dst.Text = ""
+    $src.Text = ""
+    return
+  }
+  $folder = bakFolder
+  $file = bakFile
+  $dst.Text = $folder + $file
+  $src.Text = $folder
 }
 
 $btnDst.add_click({ browseBackup; })
