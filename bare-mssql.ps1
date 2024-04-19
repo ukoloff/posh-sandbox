@@ -119,7 +119,11 @@ $db.Add_DropDownClosed({ updatePaths })
 $db.Add_LostFocus({ updatePaths })
 
 function bakFolder() {
-  return "\\$Server\$BackupFolder\$($db.Text)\"
+  $f = "\\$Server\$BackupFolder\$($db.Text)\"
+  if (Test-Path $f -PathType Container) {
+    return $f
+  }
+  return "\\$Server\$BackupFolder\$fallbackFolder\"
 }
 
 function bakFile() {
