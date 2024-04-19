@@ -135,28 +135,24 @@ function normalizeDB {
 }
 
 function browseBackup {
-  normalizeDB
-  if (!$db.Text) { return }
-  $Fo = bakFolder
-  $Fi = bakFile
-  $dst.Text = $Fo + $Fi
   $d = New-Object OpenFileDialog
   $d.Title = "Select folder to backup DB to"
   $d.Filter = 'Backup files|*.bak|All files|*.*'
   $d.ValidateNames = 0
   $d.CheckFileExists = 0
   $d.CheckPathExists = 1
-  $d.InitialDirectory = $Fo
-  $d.FileName = $Fi
+  $d.InitialDirectory = Split-Path $dst.Text -Parent
+  $d.FileName = Split-Path $dst.Text -Leaf
 
   if ($d.ShowDialog() -eq "OK") {
     $dst.Text = $d.FileName
   }
 }
 function browseRestore() {
-  normalizeDB
-  if (!$db.Text) { return }
-  $Fo = bakFolder
+  $Fo = $src.Text
+  if (!Test-Path $Fo -PathType Container) {
+    $Fo = Split-Path $Fo -Parent
+  }
   $d = New-Object OpenFileDialog
   $d.Title = "Select file to restore DB from"
   $d.Filter = 'Backup files|*.bak|All files|*.*'
@@ -199,6 +195,7 @@ function ValidateRestore {
   $before = $src.Text
   updatePaths
   if ($before -ne $src.Text -or !$src.Text) {
+    $src.Focus()
     browseRestore
     return
   }
