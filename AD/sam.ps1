@@ -1,7 +1,8 @@
-$ldap = "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
+$ldap = "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(userAccountControl=512)))"
 $base = 'OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
 Get-ADUser -LDAPFilter $ldap -SearchBase $base -Properties * `
   | Select-Object -Property sAMAccountName, userAccountControl, name, distinguishedName `
+  | Sort-object userAccountControl `
   | Out-GridView
   # | Export-Excel 'aaa.xlsx'
 
@@ -27,3 +28,8 @@ Get-ADUser -LDAPFilter $ldap -SearchBase $base -Properties * `
   # PASSWORD_EXPIRED (Срок действия пароля пользователя истек)	0x800000	8388608
   # TRUSTED_TO_AUTH_FOR_DELEGATION	0x1000000	16777216
   # PARTIAL_SECRETS_ACCOUNT	0x04000000	67108864
+
+#    544 = 512 + 32
+#  66048 = 65536 + 512
+#  66080 = 65536 + 512 + 32
+#
