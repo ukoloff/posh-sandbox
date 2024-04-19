@@ -73,43 +73,15 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]") | % {
   Set-Variable -Name ($_.Name) -Value $window.FindName($_.Name) -Scope Global
 }
 
-function setDBs() {
-  $db.ItemsSource = $DBs
-}
-
-function loadDBs() {
-  $conn = New-Object System.Data.SqlClient.SQLConnection("Integrated Security=True;Server=$Server")
-  $conn.Open()
-
-  $cmd = $conn.CreateCommand()
-  $cmd.CommandText = "Select name From sys.databases Order By 1"
-  $r = $cmd.ExecuteReader()
-  while ($r.Read()) { $r.GetValue(0) }
-}
-
-function fetchDBs() {
-  $db.ItemsSource = loadDBs
-}
-
-function updatePaths() {
-  if ($script:prevDB -eq $db.Text) { return }
-  $script:prevDB = $db.Text
-  if ($script:prevDB -eq "") {
-    $dst.Text = ""
-    $src.Text = ""
-    return
-  }
-  $folder = bakFolder
-  $file = bakFile
-  $dst.Text = $folder + $file
-  $src.Text = $folder
+function setDBs($list = $DBs) {
+  $db.ItemsSource = $list
 }
 
 $btnDst.add_click({ browseBackup; })
 $btnSrc.add_click({ browseRestore; })
 $btnGo.add_click({ Validate; })
 
-$importdb.Add_Checked({ fetchDBs })
+$importdb.Add_Checked({ setDBs(loadDBs) })
 $importdb.Add_Unchecked({ setDBs })
 setDBs
 
@@ -128,6 +100,31 @@ function bakFile() {
   return "$($db.Text)_$(Get-Date -uformat '%Y%m%d_%H%M%S').bak"
 }
 
+function loadDBs() {
+  $conn = New-Object System.Data.SqlClient.SQLConnection("Integrated Security=True;Server=$Server")
+  $conn.Open()
+
+  $cmd = $conn.CreateCommand()
+  $cmd.CommandText = "Select name From sys.databases Order By 1"
+  $r = $cmd.ExecuteReader()
+  while ($r.Read()) { $r.GetValue(0) }
+}
+
+
+function updatePaths() {
+  if ($script:prevDB -eq $db.Text) { return }
+  $script:prevDB = $db.Text
+  if ($script:prevDB -eq "") {
+    $dst.Text = ""
+    $src.Text = ""
+    return
+  }
+  $folder = bakFolder
+  $file = bakFile
+  $dst.Text = $folder + $file
+  $src.Text = $folder
+}
+
 function normalizeDB {
   $v = $db.Text.Trim()
   $db.Text = $v
@@ -137,6 +134,7 @@ function normalizeDB {
 function bakFilter {
   'Резервные копии|*.bak|Все файлы|*.*'
 }
+
 function browseBackup {
   $d = New-Object OpenFileDialog
   $d.Title = "Выберите папку/файл для сохранения резервной копии БД $($db.Text)"
@@ -151,6 +149,7 @@ function browseBackup {
     $dst.Text = $d.FileName
   }
 }
+
 function browseRestore() {
   $Fo = $src.Text
   if (!Test-Path $Fo -PathType Container) {
