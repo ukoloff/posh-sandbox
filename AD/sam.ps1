@@ -1,3 +1,7 @@
+#
+# Users with non-standard userAccountControl
+#
+
 $ldap = "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(userAccountControl=512)))"
 $base = 'OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
 Get-ADUser -LDAPFilter $ldap -SearchBase $base -Properties * `

@@ -1,3 +1,7 @@
+#
+# Users inactive for 180 days
+#
+
 # https://blog.idera.com/database-tools/working-with-ldap-and-dates/
 $date = (Get-Date).AddDays(-180)
 $ticks = $date.ToFileTime()
