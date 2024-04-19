@@ -3,5 +3,6 @@ $date = (Get-Date).AddDays(-180)
 $ticks = $date.ToFileTime()
 
 $ldap = "(&(objectClass=user)(lastLogonTimestamp<=$ticks)(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))"
-Get-ADUser -LDAPFilter $ldap | Out-GridView
+$base = 'OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+Get-ADUser -LDAPFilter $ldap -SearchBase $base | Out-GridView
 # -Properties * | Select-Object -Property name, enabled, lastLogonTimestamp, dn | Out-GridView
