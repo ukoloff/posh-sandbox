@@ -110,7 +110,6 @@ function loadDBs() {
   while ($r.Read()) { $r.GetValue(0) }
 }
 
-
 function updatePaths() {
   if ($script:prevDB -eq $db.Text) { return }
   $script:prevDB = $db.Text
@@ -166,8 +165,12 @@ function browseRestore() {
 }
 
 function Validate {
-  normalizeDB
-  if (!$db.Text) { return }
+  $v = $db.Text.Trim()
+  $db.Text = $v
+  if (!$v) {
+    $db.Focus()
+    return
+  }
 
   switch ($Op.SelectedIndex) {
     0 { ValidateBackup; }
