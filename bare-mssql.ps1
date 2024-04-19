@@ -91,12 +91,10 @@ function fetchDBs() {
   $db.ItemsSource = loadDBs
 }
 
-$prevDB = $null
-
 function updatePaths() {
-  if ($prevDB -eq $db.Text) { return }
-  $prevDB = $db.Text
-  if ($prevDB -eq "") {
+  if ($script:prevDB -eq $db.Text) { return }
+  $script:prevDB = $db.Text
+  if ($script:prevDB -eq "") {
     $dst.Text = ""
     $src.Text = ""
     return
@@ -180,8 +178,10 @@ function Validate {
 }
 
 function ValidateBackup {
-  if (!$dst.Text) {
-    updatePaths
+  $before = $dst.Text
+  updatePaths
+  if ($before -ne $dst.Text -or !$dst.Text) {
+    $dst.Focus()
     return
   }
   if (!$overwrite.IsChecked -and (Test-Path $dst.Text)) {
@@ -196,8 +196,9 @@ function ValidateBackup {
 }
 
 function ValidateRestore {
-  if (!$src.Text) {
-    updatePaths
+  $before = $src.Text
+  updatePaths
+  if ($before -ne $src.Text -or !$src.Text) {
     browseRestore
     return
   }
