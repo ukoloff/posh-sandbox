@@ -5,6 +5,7 @@ using namespace System.Windows.Forms
 
 $Server = "SRVSQL-1C"
 $BackupFolder = 'e$'
+$fallbackFolder = 'Backup_test'
 $DBs = "conv", "ERP_WORK", "ZUP_20", "SandBox"
 
 Import-Module SqlServer
@@ -25,25 +26,32 @@ Add-Type -AssemblyName System.Windows.Forms
   <TextBlock Text="База данных" />
   <ComboBox x:Name="db" IsEditable="true" />
   <CheckBox x:Name="importdb" Content="Взять список баз с $Server" />
-  <TextBlock />
   <TabControl x:Name="Op">
     <TabItem Header="Backup">
       <StackPanel>
         <TextBlock Text="Destination" />
-        <DockPanel LastChildFill="True">
-          <Button x:Name="btnDst" DockPanel.Dock="Right" Content="Обзор" Padding="5 0" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
           <TextBox x:Name="dst" MaxLength="50"  />
-        </DockPanel>
+          <Button x:Name="btnDst" Grid.Column="1" Content="Обзор" Padding="5 0" />
+        </Grid>
         <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
       </StackPanel>
     </TabItem>
     <TabItem Header="Restore">
       <StackPanel>
         <TextBlock Text="Existing backup" />
-        <DockPanel LastChildFill="True">
-          <Button x:Name="btnSrc" DockPanel.Dock="Right" Content="Обзор" Padding="5 0" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
           <TextBox x:Name="src" MaxLength="50"  />
-        </DockPanel>
+          <Button x:Name="btnSrc" Grid.Column="1" Content="Обзор" Padding="5 0" />
+        </Grid>
         <TextBlock />
       </StackPanel>
     </TabItem>
@@ -65,8 +73,31 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]") | % {
   Set-Variable -Name ($_.Name) -Value $window.FindName($_.Name) -Scope Global
 }
 
-function setDBs() {
-  $db.ItemsSource = $DBs
+function setDBs($list = $DBs) {
+  $db.ItemsSource = $list
+}
+
+$btnDst.add_click({ browseBackup; })
+$btnSrc.add_click({ browseRestore; })
+$btnGo.add_click({ Validate; })
+
+$importdb.Add_Checked({ setDBs(loadDBs) })
+$importdb.Add_Unchecked({ setDBs })
+setDBs
+
+$db.Add_DropDownClosed({ updatePaths })
+$db.Add_LostFocus({ updatePaths })
+
+function bakFolder() {
+  $f = "\\$Server\$BackupFolder\$($db.Text)\"
+  if (Test-Path $f -PathType Container) {
+    return $f
+  }
+  return "\\$Server\$BackupFolder\$fallbackFolder\"
+}
+
+function bakFile() {
+  return "$($db.Text)_$(Get-Date -uformat '%Y%m%d_%H%M%S').bak"
 }
 
 function loadDBs() {
@@ -79,33 +110,19 @@ function loadDBs() {
   while ($r.Read()) { $r.GetValue(0) }
 }
 
-function fetchDBs() {
-  $db.ItemsSource = loadDBs
-}
 
-$btnDst.add_click({ browseBackup; })
-$btnSrc.add_click({ browseRestore; })
-$btnGo.add_click({ Validate; })
-
-$importdb.Add_Checked({ fetchDBs })
-
-setDBs
-$importdb.Add_Unchecked({ setDBs })
-
-$db.Add_DropDownClosed({
-    $x = 3
-  })
-
-$db.Add_LostFocus({
-    $x = 4
-  })
-
-function bakFolder() {
-  return "\\$Server\$BackupFolder\$($db.Text)\"
-}
-
-function bakFile() {
-  return "$($db.Text)_$(Get-Date -uformat '%Y%m%d_%H%M%S').bak"
+function updatePaths() {
+  if ($script:prevDB -eq $db.Text) { return }
+  $script:prevDB = $db.Text
+  if ($script:prevDB -eq "") {
+    $dst.Text = ""
+    $src.Text = ""
+    return
+  }
+  $folder = bakFolder
+  $file = bakFile
+  $dst.Text = $folder + $file
+  $src.Text = $folder
 }
 
 function normalizeDB {
@@ -114,32 +131,33 @@ function normalizeDB {
   if (!$v) { $db.Focus() }
 }
 
+function bakFilter {
+  'Резервные копии|*.bak|Все файлы|*.*'
+}
+
 function browseBackup {
-  normalizeDB
-  if (!$db.Text) { return }
-  $Fo = bakFolder
-  $Fi = bakFile
-  $dst.Text = $Fo + $Fi
   $d = New-Object OpenFileDialog
-  $d.Title = "Select folder to backup DB to"
-  $d.Filter = 'Backup files|*.bak|All files|*.*'
+  $d.Title = "Выберите папку/файл для сохранения резервной копии БД $($db.Text)"
+  $d.Filter = bakFilter
   $d.ValidateNames = 0
   $d.CheckFileExists = 0
   $d.CheckPathExists = 1
-  $d.InitialDirectory = $Fo
-  $d.FileName = $Fi
+  $d.InitialDirectory = Split-Path $dst.Text -Parent
+  $d.FileName = Split-Path $dst.Text -Leaf
 
   if ($d.ShowDialog() -eq "OK") {
     $dst.Text = $d.FileName
   }
 }
+
 function browseRestore() {
-  normalizeDB
-  if (!$db.Text) { return }
-  $Fo = bakFolder
+  $Fo = $src.Text
+  if (!Test-Path $Fo -PathType Container) {
+    $Fo = Split-Path $Fo -Parent
+  }
   $d = New-Object OpenFileDialog
-  $d.Title = "Select file to restore DB from"
-  $d.Filter = 'Backup files|*.bak|All files|*.*'
+  $d.Title = "Выберите файл для восстановления в БД $($db.Text)"
+  $d.Filter = bakFilter
   $d.InitialDirectory = $Fo
 
   if ($d.ShowDialog() -eq "OK") {
@@ -158,8 +176,10 @@ function Validate {
 }
 
 function ValidateBackup {
-  if (!$dst.Text) {
-    browseBackup
+  $before = $dst.Text
+  updatePaths
+  if ($before -ne $dst.Text -or !$dst.Text) {
+    $dst.Focus()
     return
   }
   if (!$overwrite.IsChecked -and (Test-Path $dst.Text)) {
@@ -174,7 +194,10 @@ function ValidateBackup {
 }
 
 function ValidateRestore {
-  if (!$src.Text) {
+  $before = $src.Text
+  updatePaths
+  if ($before -ne $src.Text -or !$src.Text) {
+    $src.Focus()
     browseRestore
     return
   }
