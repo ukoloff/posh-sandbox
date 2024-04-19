@@ -134,10 +134,13 @@ function normalizeDB {
   if (!$v) { $db.Focus() }
 }
 
+function bakFilter {
+  'Резервные копии|*.bak|Все файлы|*.*'
+}
 function browseBackup {
   $d = New-Object OpenFileDialog
-  $d.Title = "Select folder to backup DB to"
-  $d.Filter = 'Backup files|*.bak|All files|*.*'
+  $d.Title = "Выберите папку/файл для сохранения резервной копии БД $($db.Text)"
+  $d.Filter = bakFilter
   $d.ValidateNames = 0
   $d.CheckFileExists = 0
   $d.CheckPathExists = 1
@@ -154,8 +157,8 @@ function browseRestore() {
     $Fo = Split-Path $Fo -Parent
   }
   $d = New-Object OpenFileDialog
-  $d.Title = "Select file to restore DB from"
-  $d.Filter = 'Backup files|*.bak|All files|*.*'
+  $d.Title = "Выберите файл для восстановления в БД $($db.Text)"
+  $d.Filter = bakFilter
   $d.InitialDirectory = $Fo
 
   if ($d.ShowDialog() -eq "OK") {
