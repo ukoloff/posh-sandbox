@@ -1,10 +1,10 @@
 {
-    "sqltools.connections": [
-        {
-            "previewLimit": 50,
-            "driver": "SQLite",
-            "name": "SQLite",
-            "database": ":memory:"
-        }
-    ]
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "SQLite",
+      "database": ":memory:"
+    }
+  ]
 }
