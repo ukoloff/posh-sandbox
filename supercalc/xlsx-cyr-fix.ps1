@@ -6,6 +6,7 @@
 #   3. Открыть в Gnumeric и сохранить в .xlsx
 #   4. Натравить эту утилиту
 #   5. Осмотреть и сохранить
+#
 using namespace System.Windows.Forms
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -14,11 +15,11 @@ $d = New-Object OpenFileDialog
 $d.Title = "Выберите XLSX-файл для перекодировки русских букв"
 $d.Filter = 'XSLX-файлы|*.xlsx|Все файлы|*.*'
 
-# if ($d.ShowDialog() -eq "OK") {
-#   $src = $d.FileName
-# }
+if ($d.ShowDialog() -eq "OK") {
+  $src = $d.FileName
+}
 
-$src = 'C:\Users\s.ukolov\Documents\repo\posh-sandbox\supercalc\test\test.xlsx'
+# $src = 'C:\Users\s.ukolov\Documents\repo\posh-sandbox\supercalc\test\test.xlsx'
 
 $xls = New-Object -ComObject Excel.Application
 $xls.visible = $true
