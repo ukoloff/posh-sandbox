@@ -26,11 +26,15 @@ $xls.visible = $true
 $wb = $xls.Workbooks.Open($src)
 $s = $wb.ActiveSheet
 
+$i850 = [System.Text.Encoding]::GetEncoding('ibm850')
+$cp866 = [System.Text.Encoding]::GetEncoding('cp866')
+
+
 # https://stackoverflow.com/a/78318241/6127481
 $r = $s.range($s.Cells(1, 1), $s.Cells.SpecialCells(11))  # 11 = xlCellTypeLastCell
 
 foreach ($c in $r) {
   if ($xls.WorksheetFunction.IsText($c)) {
-    Write-Output $c.Text
+    Write-Output $cp866.GetString($i850.GetBytes($c.Text))
   }
 }
