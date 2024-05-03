@@ -28,4 +28,9 @@ $s = $wb.ActiveSheet
 
 # https://stackoverflow.com/a/78318241/6127481
 $r = $s.range($s.Cells(1, 1), $s.Cells.SpecialCells(11))  # 11 = xlCellTypeLastCell
-$r.Select()
+
+foreach ($c in $r) {
+  if ($xls.WorksheetFunction.IsText($c)) {
+    Write-Output $c.Text
+  }
+}
