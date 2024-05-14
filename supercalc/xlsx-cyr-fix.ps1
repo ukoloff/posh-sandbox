@@ -44,7 +44,10 @@ foreach ($c in $r) {
   if ($xls.WorksheetFunction.IsText($c)) {
     $i += 1
     Write-Host -NoNewline "`rПерекодируем ячейку $i`t($($c.Address(0, 0)))"
-    $c.value = $cp866.GetString($i850.GetBytes($c.Text))
+    $txt = $cp866.GetString($i850.GetBytes($c.Text))
+    if ($txt -ne $c.Text) {
+      $c.value = $txt
+    }
   }
 }
 
