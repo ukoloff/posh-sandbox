@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "nodemon": "nodemon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "iconv-lite": "^0.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
