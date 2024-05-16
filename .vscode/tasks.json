@@ -1,0 +1,30 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "http-pwsh/ad.ekb.ru/inetpub/pwsh",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "npm: install - http-pwsh/ad.ekb.ru/inetpub/pwsh",
+      "detail": "install dependencies from package"
+    },
+    {
+      "label": "Copy to IIS",
+      "type": "process",
+      "command": "xcopy",
+      "args": [
+        ".\\http-pwsh\\ad.ekb.ru",
+        "\\\\ad.ekb.ru\\c$",
+        "/i",
+        "/e",
+        "/s",
+        "/Y"
+      ],
+      "problemMatcher": [],
+    }
+  ]
+}
