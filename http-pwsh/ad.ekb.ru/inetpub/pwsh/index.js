@@ -1,7 +1,12 @@
-const cluster = require('node:cluster')
+var http = require('node:http')
+var cp = require('node:child_process')
+var iconv = require('iconv-lite')
 
-if (cluster.isPrimary)  {
-  require('./master')
-} else {
-  require('./slave')
+var www = http.createServer(handler)
+www.listen(80)
+
+function handler(req, resp) {
+  console.log(req.method, req.url)
+  resp.writeHead(200)
+  resp.end('hello world\n')
 }
