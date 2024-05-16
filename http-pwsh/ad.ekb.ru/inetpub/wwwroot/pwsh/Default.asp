@@ -1,4 +1,4 @@
-<%@ Language=JScript %>
+<% @Language=JScript %>
 <%
 if (Request.ServerVariables('AUTH_TYPE') != 'Basic') {
   Response.Redirect('basic/');
@@ -8,7 +8,7 @@ var params = {}
 var items = [Request.QueryString, Request.Form]
 for (var i = 0; i < items.length; i++) {
   var item = items[i]
-  for(var E=new Enumerator(item); !E.atEnd(); E.moveNext()) {
+  for (var E = new Enumerator(item); !E.atEnd(); E.moveNext()) {
     var k = E.item()
     params[k] = item(k)
   }
