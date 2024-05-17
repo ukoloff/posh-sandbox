@@ -16,6 +16,15 @@
 
 Для сервера приложений:
 - Установите [Node.js] (Лучше LTS)
+- Создайте службу PoSH, например, при помощи [nssm]
+    ```cmd
+    nssm install PoSH node
+    nssm set PoSH AppParameters .
+    nssm set PoSH AppDirectory C:\inetpub\pwsh
+    ```
 - Заведите учётную запись пользователя для запуска службы
+- Настройте службу PoSH для запуска от этой учётной записи
+- Запустите службу PoSH
 
-[Node.js]: https://nodejs.org/
+[Node.js]:  https://nodejs.org/
+[nssm]:     https://nssm.cc/
