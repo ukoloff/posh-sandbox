@@ -15,6 +15,10 @@ function handler(req, resp) {
       method: req.method,
       ctime: new Date
     }))
+    .catch(e => ({
+      error: e.name,
+      message: e.message
+    }))
     .then(data =>
       resp.end(JSON.stringify(data)))
 }
