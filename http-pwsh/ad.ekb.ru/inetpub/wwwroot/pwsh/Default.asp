@@ -4,7 +4,7 @@ if (Request.ServerVariables('AUTH_TYPE') != 'Basic') {
   Response.Redirect('basic/');
 }
 
-var params = {}
+var params = {user: Request.ServerVariables('AUTH_USER')}
 var items = [Request.QueryString, Request.Form]
 for (var i = 0; i < items.length; i++) {
   var item = items[i]
@@ -31,7 +31,7 @@ Response.BinaryWrite(z.responseBody)
 
 function jsQuote(s) {
   return '"' + String(s)
-    .replace(/\\/g, '\\')
+    .replace(/\\/g, "\\\\")
     .replace(/\n/g, "\\n")
     .replace(/\r/g, "\\r")
     .replace(/"/g, '\\\"')
