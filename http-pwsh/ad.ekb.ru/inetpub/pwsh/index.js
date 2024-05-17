@@ -6,7 +6,7 @@ var www = http.createServer(handler)
 www.listen(81, '127.0.0.1')
 
 function handler(req, resp) {
-  console.log(req.method, req.url)
+  // console.log(req.method, req.url)
   resp.setHeader('Content-Type', 'application/json')
   read(req)
     .then(JSON.parse)
@@ -20,7 +20,10 @@ function handler(req, resp) {
       message: e.message
     }))
     .then(data =>
-      resp.end(JSON.stringify(data)))
+      resp.end(JSON.stringify({
+        etime: new Date,
+        ...data
+      })))
 }
 
 function read(stream) {
