@@ -3,7 +3,7 @@ var cp = require('node:child_process')
 var iconv = require('iconv-lite')
 
 var www = http.createServer(handler)
-www.listen(80)
+www.listen(81, '127.0.0.1')
 
 function handler(req, resp) {
   console.log(req.method, req.url)

@@ -23,7 +23,7 @@ for (var k in params) {
 json = "{" + json + "}"
 
 var z = Ajax()
-z.open('POST', 'http://uxm00035', false)
+z.open('POST', 'http://localhost:81', false)
 z.send(json)
 Response.Status = z.status + ' ' + z.statusText
 Response.ContentType = z.getResponseHeader('Content-Type')
