@@ -7,6 +7,9 @@ www.listen(80)
 
 function handler(req, resp) {
   console.log(req.method, req.url)
-  resp.writeHead(200)
-  resp.end('hello world\n')
+  resp.setHeader('Content-Type', 'application/json')
+  resp.end(JSON.stringify({
+    msg: "Hello, world!",
+    ctime: new Date,
+  }))
 }
