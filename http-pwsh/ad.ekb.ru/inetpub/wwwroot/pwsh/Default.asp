@@ -22,16 +22,13 @@ for (var k in params) {
 
 json = "{" + json + "}"
 
-try{
 var z = Ajax()
 z.open('POST', 'http://uxm00035', false)
 z.send(json)
 Response.Status = z.status + ' ' + z.statusText
 Response.ContentType = z.getResponseHeader('Content-Type')
-Response.Write(z.responseText)
-}catch(e){
-Response.Write('Error[' +e.name+'] '+e.message)
-}
+Response.BinaryWrite(z.responseBody)
+
 function jsQuote(s) {
   return '"' + String(s)
     .replace(/\\/g, '\\')
