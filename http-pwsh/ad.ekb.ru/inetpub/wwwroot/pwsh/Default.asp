@@ -22,6 +22,13 @@ for (var k in params) {
 
 json = "{" + json + "}"
 
+var z = Ajax()
+z.open('POST', 'https://nc.ekb.ru', false)
+z.send(json)
+Response.Status = z.status + ' ' + z.statusText
+Response.ContentType = z.getResponseHeader('Content-Type')
+Response.Write(z.ResponseBody)
+
 function jsQuote(s) {
   return '"' + String(s)
     .replace(/\\/g, '\\')
@@ -30,5 +37,12 @@ function jsQuote(s) {
     .replace(/"/g, '\\\"')
     + '"'
 }
+
+function Ajax() {
+  var e
+  try { return new XMLHttpRequest() } catch (e) { }
+  try { return Server.CreateObject("MSXML2.ServerXMLHTTP") } catch (e) { }
+  try { return Server.CreateObject("Msxml2.XMLHTTP") } catch (e) { }
+  try { return Server.CreateObject("Microsoft.XMLHTTP") } catch (e) { }
+}
 %>
-<%= json %>
