@@ -16,7 +16,7 @@
 
 Для сервера приложений:
 - Установите [Node.js] (Лучше LTS)
-- Создайте службу PoSH, например, при помощи [nssm]
+- Создайте службу PoSH ([reg](./ad.ekb.ru/inetpub/pwsh/service.reg)), например, при помощи [nssm]
     ```cmd
     nssm install PoSH node
     nssm set PoSH AppParameters .
