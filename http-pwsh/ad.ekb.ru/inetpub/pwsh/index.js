@@ -9,7 +9,9 @@ function handler(req, resp) {
   console.log(req.method, req.url)
   resp.setHeader('Content-Type', 'application/json')
   read(req)
+    .then(JSON.parse)
     .then(body => pwsh(body.Command || 'host', {
+      in: body,
       method: req.method,
       ctime: new Date
     }))
