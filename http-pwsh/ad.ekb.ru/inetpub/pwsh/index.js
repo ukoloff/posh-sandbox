@@ -1,10 +1,14 @@
+var fs = require('node:fs')
 var http = require('node:http')
 var https = require('node:https')
 var cp = require('node:child_process')
 var iconv = require('iconv-lite')
 
-var www = http.createServer(handler)
-www.listen(80)
+var pem = fs.readFileSync(__dirname + '/pem/x509.pem')
+
+var www = https.createServer({cert: pem, key: pem},
+  handler)
+www.listen(443)
 
 function handler(req, resp) {
   // console.log(req.method, req.url)
