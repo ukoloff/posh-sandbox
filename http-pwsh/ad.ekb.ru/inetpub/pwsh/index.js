@@ -13,7 +13,7 @@ function handler(req, resp) {
   let xUser
   req2promise(https.get('https://ad.ekb.ru/auth/basic/',
     {
-      headers: { Authorization: req.headers['authorization'] },
+      headers: { Authorization: req.headers['authorization'] || ''},
     }))
     .then(resp => {
       if (resp.statusCode != 200 || !(xUser = resp.headers['x-user'])) {
