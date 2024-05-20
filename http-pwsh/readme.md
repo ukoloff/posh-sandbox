@@ -7,7 +7,7 @@
 На IIS:
 - Установите ASP (не ASP.NET)
 - Установите сертификат и настройте доступ по SSL
-- Для папки [inetpub/pwsh](ad.ekb.ru/inetpub/pwsh) настройте доступ:
+- Для папки ~~inetpub/pwsh~~ [inetpub/auth/basic](ad.ekb.ru/inetpub/auth/basic) настройте доступ:
   + Сделайте её приложением
   + Включите Basic Authorization (Обычная проверка подлинности)
   + Отключите Anonymous Authorization (Анонимная проверка подлинности)
