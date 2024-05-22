@@ -3,6 +3,8 @@ Sub sc4fmt()
     ' Fit to page width
     Application.PrintCommunication = False
     With ActiveSheet.PageSetup
+        .PrintTitleRows = ""
+        .PrintTitleColumns = ""
         .FitToPagesWide = 1
         .FitToPagesTall = 0
     End With
