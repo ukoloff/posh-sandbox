@@ -1,10 +1,20 @@
 Attribute VB_Name = "sc4Format"
 Sub sc4fmt()
-    ' Fit to page width
     Application.PrintCommunication = False
     With ActiveSheet.PageSetup
+        ' Fit to page width
         .FitToPagesWide = 1
         .FitToPagesTall = 0
+     
+        .LeftMargin = Application.InchesToPoints(0.236220472440945)
+        .RightMargin = Application.InchesToPoints(0.236220472440945)
+        .TopMargin = Application.InchesToPoints(0.31496062992126)
+        .BottomMargin = Application.InchesToPoints(0.31496062992126)
+        .HeaderMargin = Application.InchesToPoints(0.31496062992126)
+        .FooterMargin = Application.InchesToPoints(0.31496062992126)
+        
+        .OddAndEvenPagesHeaderFooter = False
+        .DifferentFirstPageHeaderFooter = False
         
         .LeftHeader = ""
         .CenterHeader = ""
@@ -12,13 +22,6 @@ Sub sc4fmt()
         .LeftFooter = ""
         .CenterFooter = ""
         .RightFooter = ""
-        
-        .LeftMargin = Application.InchesToPoints(0.236220472440945)
-        .RightMargin = Application.InchesToPoints(0.236220472440945)
-        .TopMargin = Application.InchesToPoints(0.31496062992126)
-        .BottomMargin = Application.InchesToPoints(0.31496062992126)
-        .HeaderMargin = Application.InchesToPoints(0.31496062992126)
-        .FooterMargin = Application.InchesToPoints(0.31496062992126)
     End With
     Application.PrintCommunication = True
     
