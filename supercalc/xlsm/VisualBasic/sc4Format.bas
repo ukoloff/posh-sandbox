@@ -3,10 +3,22 @@ Sub sc4fmt()
     ' Fit to page width
     Application.PrintCommunication = False
     With ActiveSheet.PageSetup
-        .PrintTitleRows = ""
-        .PrintTitleColumns = ""
         .FitToPagesWide = 1
         .FitToPagesTall = 0
+        
+        .LeftHeader = ""
+        .CenterHeader = ""
+        .RightHeader = ""
+        .LeftFooter = ""
+        .CenterFooter = ""
+        .RightFooter = ""
+        
+        .LeftMargin = Application.InchesToPoints(0.236220472440945)
+        .RightMargin = Application.InchesToPoints(0.236220472440945)
+        .TopMargin = Application.InchesToPoints(0.31496062992126)
+        .BottomMargin = Application.InchesToPoints(0.31496062992126)
+        .HeaderMargin = Application.InchesToPoints(0.31496062992126)
+        .FooterMargin = Application.InchesToPoints(0.31496062992126)
     End With
     Application.PrintCommunication = True
     
