@@ -16,7 +16,7 @@
 
 Для сервера приложений:
 - Установите [Node.js] (Лучше LTS)
-- Создайте службу PoSH ([reg](./ad.ekb.ru/inetpub/pwsh/service.reg)), например, при помощи [nssm]
+- Создайте службу PoSH ([reg](./ad.ekb.ru/inetpub/pwsh/service.reg)-файл), например, при помощи [nssm]
     ```cmd
     nssm install PoSH node
     nssm set PoSH AppParameters .
@@ -26,5 +26,25 @@
 - Настройте службу PoSH для запуска от этой учётной записи
 - Запустите службу PoSH
 
+Включение [CredSSP] (для Skype for Windows)
+
+- Enable CredSSP delegation (@`ad.ekb.ru`)
+    ```powershell
+    Enable-WSManCredSSP -Role "Client" -DelegateComputer "srvsfb-ekbh1.omzglobal.com"
+    ```
+
+- Enable CredSSP
+    + @`srvsfb-ekbh1` требуется перезагрузка
+      ```powershell
+      Enable-WSManCredSSP -Role "Server"
+      ```
+    + @`ad.ekb.ru` сразу же
+      ```powershell
+      Connect-WSMan -ComputerName "srvsfb-ekbh1.omzglobal.com"
+      Set-Item -Path "WSMan:\srvsfb-ekbh1.omzglobal.com\service\auth\credSSP" -Value $True
+      ```
+
+
 [Node.js]:  https://nodejs.org/
 [nssm]:     https://nssm.cc/
+[CredSSP]: https://learn.microsoft.com/en-us/powershell/module/microsoft.wsman.management/enable-wsmancredssp?view=powershell-7.4
