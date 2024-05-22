@@ -16,12 +16,12 @@ Sub sc4fmt()
         .OddAndEvenPagesHeaderFooter = False
         .DifferentFirstPageHeaderFooter = False
         
-        .LeftHeader = ""
+        '.LeftHeader = ""
         .CenterHeader = ""
-        .RightHeader = ""
-        .LeftFooter = ""
+        '.RightHeader = ""
+        '.LeftFooter = ""
         .CenterFooter = ""
-        .RightFooter = ""
+        '.RightFooter = ""
     End With
     Application.PrintCommunication = True
     
