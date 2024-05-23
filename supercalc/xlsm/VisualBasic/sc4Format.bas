@@ -54,12 +54,12 @@ Sub Paginate()
     
     Dim chunk, extra, N, pages, i, j As Integer
     Dim wnd As Range
-    chunk = 50
+    chunk = 52
     extra = 3
     Set wnd = Cells(chunk - extra + 1, 1).Resize(extra, 15)
     
     N = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
-    pages = WorksheetFunction.Ceiling(N / chunk, 1)
+    pages = WorksheetFunction.Ceiling(N / (chunk - extra), 1)
     For i = 1 To pages
             wnd.EntireRow.Insert Shift:=xlDown
         Dim pg As Range
