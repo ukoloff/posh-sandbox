@@ -61,6 +61,7 @@ Sub Paginate()
     
     N = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
     pages = WorksheetFunction.Ceiling(N / (chunk - extra), 1)
+    
     For i = 1 To pages
             wnd.EntireRow.Insert Shift:=xlDown
         Dim pg As Range
@@ -89,14 +90,22 @@ Sub Paginate()
         End With
         With wnd.Range("H1:M1")
             .Merge
-            .Value = "200000000-80-00 PP"
+            If i = 1 Then
+                .Value = "200000000-80-00 PP"
+            Else
+                .Formula = "=" & .Offset(-chunk, 0).Address(0, 0)
+            End If
             .HorizontalAlignment = xlCenter
             .Font.Size = 16
             .Borders(xlEdgeLeft).ColorIndex = 0
         End With
         With wnd.Range("H2:M2")
             .Merge
-            .Value = "ÈÍÂ. ¹ 0000000"
+            If i = 1 Then
+                .Value = "ÈÍÂ. ¹ 0000000"
+            Else
+                .Formula = "=" & .Offset(-chunk, 0).Address(0, 0)
+            End If
             .HorizontalAlignment = xlCenter
             .Font.Size = 14
             .Borders(xlEdgeLeft).ColorIndex = 0
