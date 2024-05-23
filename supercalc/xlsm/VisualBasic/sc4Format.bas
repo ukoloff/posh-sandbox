@@ -87,6 +87,20 @@ Sub Paginate()
             .Font.Size = 13
             .BorderAround ColorIndex = 0
         End With
+        With wnd.Range("H1:M1")
+            .Merge
+            .Value = "200000000-80-00 PP"
+            .HorizontalAlignment = xlCenter
+            .Font.Size = 16
+            .Borders(xlEdgeLeft).ColorIndex = 0
+        End With
+        With wnd.Range("H2:M2")
+            .Merge
+            .Value = "ÈÍÂ. ¹ 0000000"
+            .HorizontalAlignment = xlCenter
+            .Font.Size = 14
+            .Borders(xlEdgeLeft).ColorIndex = 0
+        End With
         
         
         
