@@ -51,11 +51,12 @@ End Sub
 
 Sub Paginate()
     RestoreRawSheet
+    sc4fmt
     
     Dim chunk, extra, N, pages, i, j As Integer
     Dim wnd As Range
-    chunk = 52
-    extra = 3
+    chunk = 53
+    extra = 2
     Set wnd = Cells(chunk - extra + 1, 1).Resize(extra, 15)
     
     N = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
@@ -71,6 +72,24 @@ Sub Paginate()
         wnd.BorderAround ColorIndex = 0 ' , Weight:=xlThick
         ' wnd.Interior.Color = 65535
         ActiveWorkbook.Names.Add Name:="footer" & Format(i, "00"), RefersTo:=wnd
+        
+        With wnd.Range("N1").Resize(1, 2)
+            .Merge
+            .Value = "Лист"
+            .HorizontalAlignment = xlCenter
+            .Font.Size = 11
+            .BorderAround ColorIndex = 0
+        End With
+        With wnd.Range("N2").Resize(1, 2)
+            .Merge
+            .Value = i + 1
+            .HorizontalAlignment = xlCenter
+            .Font.Size = 13
+            .BorderAround ColorIndex = 0
+        End With
+        
+        
+        
         Set wnd = wnd.Offset(chunk, 0)
     Next i
     
