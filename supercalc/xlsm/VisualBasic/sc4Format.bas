@@ -44,3 +44,22 @@ Sub sc4fmt()
     '
     ExportVisualBasicCode
 End Sub
+
+
+Sub Paginate()
+    Dim chunk, extra, N, pages, i, j As Integer
+    Dim wnd As Range
+    chunk = 50
+    extra = 3
+    Set wnd = Cells(chunk - extra + 1, 1).Resize(extra, 15)
+    
+    N = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
+    pages = WorksheetFunction.Ceiling(N / chunk, 1)
+    For i = 1 To pages
+        wnd.EntireRow.Insert Shift:=xlDown
+        Set wnd = wnd.Offset(-extra, 0)
+        wnd.Interior.Color = 65535
+        Set wnd = wnd.Offset(chunk, 0)
+    Next i
+    
+End Sub
