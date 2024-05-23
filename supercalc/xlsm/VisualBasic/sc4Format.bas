@@ -58,12 +58,14 @@ Sub Paginate()
     N = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
     pages = WorksheetFunction.Ceiling(N / chunk, 1)
     For i = 1 To pages
-        wnd.EntireRow.Insert Shift:=xlDown
+            wnd.EntireRow.Insert Shift:=xlDown
         Dim pg As Range
         Set pg = wnd.Offset(-chunk, 0).Resize(chunk, wnd.Columns.count)
         pg.BorderAround ColorIndex = 0 ' , Weight:=xlThick
+        ActiveWorkbook.Names.Add Name:="page" & Format(i, "00"), RefersTo:=pg
         Set wnd = wnd.Offset(-wnd.Rows.count, 0)
-        wnd.Interior.Color = 65535
+        ' wnd.Interior.Color = 65535
+        ActiveWorkbook.Names.Add Name:="footer" & Format(i, "00"), RefersTo:=wnd
         Set wnd = wnd.Offset(chunk, 0)
     Next i
     
