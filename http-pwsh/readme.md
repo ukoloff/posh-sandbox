@@ -26,7 +26,29 @@
 - Настройте службу PoSH для запуска от этой учётной записи
 - Запустите службу PoSH
 
-Включение [CredSSP] (для Skype for Windows)
+[Node.js]:  https://nodejs.org/
+[nssm]:     https://nssm.cc/
+[CredSSP]: https://learn.microsoft.com/en-us/powershell/module/microsoft.wsman.management/enable-wsmancredssp?view=powershell-7.4
+
+## Удалённый доступ к серверам
+
+Exchange:
+```powershell
+$cred = New-Object System.Management.Automation.PSCredential('OMZGLOBAL\user', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+$sess = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://srvmail-ekbh5.omzglobal.com/PowerShell/ -Authentication Kerberos -Credential $cred
+Invoke-Command -Session $sess -ScriptBlock {${PoSH}}
+Remove-PSSession $sess
+```
+
+Skype for Business:
+```powershell
+$cred = New-Object System.Management.Automation.PSCredential('OMZGLOBAL\user', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+$sess = New-PSSession -ComputerName srvsfb-ekbh1.omzglobal.com -Credential $cred -Authentication CredSSP
+Invoke-Command -Session $sess -ScriptBlock {${PoSH}}
+Remove-PSSession $sess
+```
+
+### Включение [CredSSP] (для Skype for Windows)
 
 - Enable CredSSP delegation (@`ad.ekb.ru`)
     ```powershell
@@ -43,8 +65,3 @@
       Connect-WSMan -ComputerName "srvsfb-ekbh1.omzglobal.com"
       Set-Item -Path "WSMan:\srvsfb-ekbh1.omzglobal.com\service\auth\credSSP" -Value $True
       ```
-
-
-[Node.js]:  https://nodejs.org/
-[nssm]:     https://nssm.cc/
-[CredSSP]: https://learn.microsoft.com/en-us/powershell/module/microsoft.wsman.management/enable-wsmancredssp?view=powershell-7.4
