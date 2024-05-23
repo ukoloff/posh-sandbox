@@ -6,6 +6,9 @@ Sub sc4fmt()
         .FitToPagesWide = 1
         .FitToPagesTall = 0
      
+        .CenterHorizontally = True
+        .CenterVertically = True
+     
         .LeftMargin = Application.InchesToPoints(0.236220472440945)
         .RightMargin = Application.InchesToPoints(0.236220472440945)
         .TopMargin = Application.InchesToPoints(0.31496062992126)
@@ -63,7 +66,9 @@ Sub Paginate()
         Set pg = wnd.Offset(-chunk, 0).Resize(chunk, wnd.Columns.count)
         pg.BorderAround ColorIndex = 0 ' , Weight:=xlThick
         ActiveWorkbook.Names.Add Name:="page" & Format(i, "00"), RefersTo:=pg
+        ActiveWindow.SelectedSheets.HPageBreaks.Add Before:=wnd
         Set wnd = wnd.Offset(-wnd.Rows.count, 0)
+        wnd.BorderAround ColorIndex = 0 ' , Weight:=xlThick
         ' wnd.Interior.Color = 65535
         ActiveWorkbook.Names.Add Name:="footer" & Format(i, "00"), RefersTo:=wnd
         Set wnd = wnd.Offset(chunk, 0)
