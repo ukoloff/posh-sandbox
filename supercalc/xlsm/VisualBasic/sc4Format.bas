@@ -55,7 +55,7 @@ Sub Paginate()
     
     Dim chunk, extra, N, pages, i, j As Integer
     Dim wnd As Range
-    chunk = 53
+    chunk = 55
     extra = 2
     Set wnd = Cells(chunk - extra + 1, 1).Resize(extra, 15)
     
