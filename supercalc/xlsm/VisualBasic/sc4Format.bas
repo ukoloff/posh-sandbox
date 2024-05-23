@@ -9,7 +9,7 @@ Sub sc4fmt()
         .CenterHorizontally = True
         .CenterVertically = True
      
-        .LeftMargin = Application.InchesToPoints(0.236220472440945)
+        .LeftMargin = Application.InchesToPoints(0.78740157480315)
         .RightMargin = Application.InchesToPoints(0.236220472440945)
         .TopMargin = Application.InchesToPoints(0.31496062992126)
         .BottomMargin = Application.InchesToPoints(0.31496062992126)
