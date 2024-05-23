@@ -47,6 +47,8 @@ End Sub
 
 
 Sub Paginate()
+    RestoreRawSheet
+    
     Dim chunk, extra, N, pages, i, j As Integer
     Dim wnd As Range
     chunk = 50
@@ -57,7 +59,10 @@ Sub Paginate()
     pages = WorksheetFunction.Ceiling(N / chunk, 1)
     For i = 1 To pages
         wnd.EntireRow.Insert Shift:=xlDown
-        Set wnd = wnd.Offset(-extra, 0)
+        Dim pg As Range
+        Set pg = wnd.Offset(-chunk, 0).Resize(chunk, wnd.Columns.count)
+        pg.BorderAround ColorIndex = 0 ' , Weight:=xlThick
+        Set wnd = wnd.Offset(-wnd.Rows.count, 0)
         wnd.Interior.Color = 65535
         Set wnd = wnd.Offset(chunk, 0)
     Next i
