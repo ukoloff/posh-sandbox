@@ -8,7 +8,7 @@ Attribute RestoreRawSheet.VB_ProcData.VB_Invoke_Func = " \n14"
     Set src = Sheets("Raw")
     src.Copy Before:=src
     Dim dst
-    Set dst = Sheets(1)
+    Set dst = Sheets(src.Index - 1)
     dst.Name = "SandBox"
     dst.Unprotect
 End Sub
