@@ -108,25 +108,10 @@ Sub AddPages(Title, Nomer)
         Set wnd = wnd.Offset(chunk, 0)
     Next i
     
-    Range("A1").Show
-    
-End Sub
-
-Sub dePaginate()
-    Dim N
-    ActiveSheet.ResetAllPageBreaks
-    For Each N In ActiveSheet.Names
-        If InStr(N.Name, "footer_") Then
-            N.RefersToRange.EntireRow.Delete
-        End If
-        If InStr(N.Name, "page_") Then
-            N.RefersToRange.Borders.LineStyle = xlNone
-        End If
-    Next N
-    For Each N In ActiveSheet.Names
-        N.Delete
-    Next N
-    ActiveSheet.UsedRange
+    With Range("A1")
+        .Show
+        .Select
+    End With
 End Sub
 
 Sub Paginate()
@@ -157,7 +142,15 @@ Sub toPrint()
         Exit Sub
     End If
     
+    Dim Title, Nomer As String
+    
+    Title = "200000000-80-00 PP"
+    Nomer = "ÈÍÂ. ¹ 0000000"
+    
     sc4fmt
+    
+    If Not IsError(Evaluate("PRN!uxmTitle")) Then Title = Evaluate("PRN!uxmTitle")
+    If Not IsError(Evaluate("PRN!uxmNomer")) Then Nomer = Evaluate("PRN!uxmNomer")
     
     If Not IsError(Evaluate("PRN!A1")) Then
         Application.DisplayAlerts = False
@@ -168,6 +161,6 @@ Sub toPrint()
     Set src = ActiveSheet
     src.Copy After:=src
     Worksheets(src.Index + 1).Name = "PRN"
-    AddPages "200000000-80-00 PP", "ÈÍÂ. ¹ 0000000"
+    AddPages Title, Nomer
 '    src.Select
 End Sub
