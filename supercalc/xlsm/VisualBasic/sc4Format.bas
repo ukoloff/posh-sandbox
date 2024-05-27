@@ -119,5 +119,12 @@ Sub Paginate()
 End Sub
 
 Sub dePaginate()
-
+    For Each N In ActiveSheet.Names
+        If InStr(N.Name, "footer_") Then
+            N.RefersToRange.EntireRow.Delete
+        End If
+        If InStr(N.Name, "page_") Then
+            N.RefersToRange.Borders.LineStyle = xlNone
+        End If
+    Next N
 End Sub
