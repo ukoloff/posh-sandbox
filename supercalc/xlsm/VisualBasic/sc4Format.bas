@@ -49,10 +49,7 @@ Sub sc4fmt()
 End Sub
 
 
-Sub Paginate()
-    RestoreRawSheet
-    sc4fmt
-    
+Sub AddPages(Title, Nomer)
     Dim chunk, extra, N, pages, i, j As Integer
     Dim wnd As Range
     chunk = 55
@@ -91,7 +88,7 @@ Sub Paginate()
         With wnd.Range("H1:M1")
             .Merge
             If i = 1 Then
-                .Value = "200000000-80-00 PP"
+                .Value = Title
             Else
                 .Formula = "=" & .Offset(-chunk, 0).Address(0, 0)
             End If
@@ -102,7 +99,7 @@ Sub Paginate()
         With wnd.Range("H2:M2")
             .Merge
             If i = 1 Then
-                .Value = "ÈÍÂ. ¹ 0000000"
+                .Value = Nomer
             Else
                 .Formula = "=" & .Offset(-chunk, 0).Address(0, 0)
             End If
@@ -127,4 +124,26 @@ Sub dePaginate()
             N.Delete
         End If
     Next N
+End Sub
+
+Sub Paginate()
+    sc4fmt
+    
+    Dim Title, Nomer As String
+    
+    Title = "200000000-80-00 PP"
+    Nomer = "ÈÍÂ. ¹ 0000000"
+    
+    If Not IsError(Evaluate("footer_01")) Then
+        Dim footer, cell
+        Set footer = ActiveSheet.Names("footer_01").RefersToRange
+        Set cell = footer.Range("H1")
+        If Not IsEmpty(cell.Value) Then Title = cell.Value
+        Set cell = footer.Range("H2")
+        If Not IsEmpty(cell.Value) Then Nomer = cell.Value
+    End If
+    
+    dePaginate
+    
+    AddPages Title, Nomer
 End Sub
