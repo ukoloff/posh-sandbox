@@ -63,16 +63,16 @@ Sub Paginate()
     pages = WorksheetFunction.Ceiling(N / (chunk - extra), 1)
     
     For i = 1 To pages
-            wnd.EntireRow.Insert Shift:=xlDown
+        wnd.EntireRow.Insert Shift:=xlDown
         Dim pg As Range
         Set pg = wnd.Offset(-chunk, 0).Resize(chunk, wnd.Columns.count)
         pg.BorderAround ColorIndex = 0 ' , Weight:=xlThick
-        ActiveWorkbook.Names.Add Name:="page" & Format(i, "00"), RefersTo:=pg
+        ActiveSheet.Names.Add Name:="page_" & Format(i, "00"), RefersTo:=pg
         ActiveWindow.SelectedSheets.HPageBreaks.Add Before:=wnd
         Set wnd = wnd.Offset(-wnd.Rows.count, 0)
         wnd.BorderAround ColorIndex = 0 ' , Weight:=xlThick
         ' wnd.Interior.Color = 65535
-        ActiveWorkbook.Names.Add Name:="footer" & Format(i, "00"), RefersTo:=wnd
+        ActiveSheet.Names.Add Name:="footer_" & Format(i, "00"), RefersTo:=wnd
         
         With wnd.Range("N1").Resize(1, 2)
             .Merge
@@ -116,4 +116,8 @@ Sub Paginate()
         Set wnd = wnd.Offset(chunk, 0)
     Next i
     
+End Sub
+
+Sub dePaginate()
+
 End Sub
