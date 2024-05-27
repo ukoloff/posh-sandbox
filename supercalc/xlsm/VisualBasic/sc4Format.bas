@@ -71,6 +71,8 @@ Sub AddPages(Title, Nomer)
         ' wnd.Interior.Color = 65535
         ActiveSheet.Names.Add Name:="footer_" & Format(i, "00"), RefersTo:=wnd
         
+        wnd.Show
+        DoEvents    ' Update screen
         With wnd.Range("N1").Resize(1, 2)
             .Merge
             .Value = "Ëèñò"
@@ -109,6 +111,8 @@ Sub AddPages(Title, Nomer)
         End With
         Set wnd = wnd.Offset(chunk, 0)
     Next i
+    
+    Range("A1").Show
     
 End Sub
 
@@ -152,7 +156,13 @@ Sub Paginate()
 End Sub
 
 Sub toPrint()
+    If ActiveSheet.Name = "PRN" Then
+        Worksheets(1).Select
+        Exit Sub
+    End If
+    
     sc4fmt
+    
     If Not IsError(Evaluate("PRN!A1")) Then
         Application.DisplayAlerts = False
         Sheets("PRN").Delete
@@ -162,5 +172,6 @@ Sub toPrint()
     Set src = ActiveSheet
     src.Copy After:=src
     Worksheets(src.Index + 1).Name = "PRN"
-    src.Select
+    AddPages "200000000-80-00 PP", "ÈÍÂ. ¹ 0000000"
+'    src.Select
 End Sub
