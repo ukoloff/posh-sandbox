@@ -73,7 +73,7 @@ Sub AddPages(Title, Nomer)
         
         With wnd.Range("N1").Resize(1, 2)
             .Merge
-            .Value = "Ëèñò"
+            .Value = "ï¿½ï¿½ï¿½ï¿½"
             .HorizontalAlignment = xlCenter
             .Font.Size = 11
             .BorderAround ColorIndex = 0
@@ -124,6 +124,10 @@ Sub dePaginate()
             N.Delete
         End If
     Next N
+    For Each N In ActiveSheet.Names
+        N.Delete
+    Next N
+    ActiveSheet.UsedRange
 End Sub
 
 Sub Paginate()
@@ -132,7 +136,7 @@ Sub Paginate()
     Dim Title, Nomer As String
     
     Title = "200000000-80-00 PP"
-    Nomer = "ÈÍÂ. ¹ 0000000"
+    Nomer = "ï¿½ï¿½ï¿½. ï¿½ 0000000"
     
     If Not IsError(Evaluate("footer_01")) Then
         Dim footer, cell
