@@ -73,7 +73,7 @@ Sub AddPages(Title, Nomer)
         
         With wnd.Range("N1").Resize(1, 2)
             .Merge
-            .Value = "ï¿½ï¿½ï¿½ï¿½"
+            .Value = "Ëèñò"
             .HorizontalAlignment = xlCenter
             .Font.Size = 11
             .BorderAround ColorIndex = 0
@@ -121,7 +121,6 @@ Sub dePaginate()
         End If
         If InStr(N.Name, "page_") Then
             N.RefersToRange.Borders.LineStyle = xlNone
-            N.Delete
         End If
     Next N
     For Each N In ActiveSheet.Names
@@ -136,7 +135,7 @@ Sub Paginate()
     Dim Title, Nomer As String
     
     Title = "200000000-80-00 PP"
-    Nomer = "ï¿½ï¿½ï¿½. ï¿½ 0000000"
+    Nomer = "ÈÍÂ. ¹ 0000000"
     
     If Not IsError(Evaluate("footer_01")) Then
         Dim footer, cell
@@ -150,4 +149,18 @@ Sub Paginate()
     dePaginate
     
     AddPages Title, Nomer
+End Sub
+
+Sub toPrint()
+    sc4fmt
+    If Not IsError(Evaluate("PRN!A1")) Then
+        Application.DisplayAlerts = False
+        Sheets("PRN").Delete
+        Application.DisplayAlerts = True
+    End If
+    Dim src
+    Set src = ActiveSheet
+    src.Copy After:=src
+    Worksheets(src.Index + 1).Name = "PRN"
+    src.Select
 End Sub
