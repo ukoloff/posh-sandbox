@@ -40,12 +40,6 @@ Sub sc4fmt()
       ActiveSheet.Columns(2 * i).ColumnWidth = 7.86
       ActiveSheet.Columns(2 * i + 1).ColumnWidth = 3.57
     Next i
-    
-    
-    '
-    ' Save code to git
-    '
-    ExportVisualBasicCode
 End Sub
 
 
@@ -64,12 +58,12 @@ Sub AddPages(Title, Nomer)
         Dim pg As Range
         Set pg = wnd.Offset(-chunk, 0).Resize(chunk, wnd.Columns.count)
         pg.BorderAround ColorIndex = 0 ' , Weight:=xlThick
-        ActiveSheet.Names.Add Name:="page_" & Format(i, "00"), RefersTo:=pg
+        ' ActiveSheet.Names.Add Name:="page_" & Format(i, "00"), RefersTo:=pg
         ActiveWindow.SelectedSheets.HPageBreaks.Add Before:=wnd
         Set wnd = wnd.Offset(-wnd.Rows.count, 0)
         wnd.BorderAround ColorIndex = 0 ' , Weight:=xlThick
         ' wnd.Interior.Color = 65535
-        ActiveSheet.Names.Add Name:="footer_" & Format(i, "00"), RefersTo:=wnd
+        ' ActiveSheet.Names.Add Name:="footer_" & Format(i, "00"), RefersTo:=wnd
         
         wnd.Show
         DoEvents    ' Update screen
@@ -91,8 +85,9 @@ Sub AddPages(Title, Nomer)
             .Merge
             If i = 1 Then
                 .Value = Title
+                ActiveSheet.Names.Add Name:="uxmTitle", RefersTo:=.Cells(1, 1)
             Else
-                .Formula = "=" & .Offset(-chunk, 0).Address(0, 0)
+                .Formula = "=uxmTitle"
             End If
             .HorizontalAlignment = xlCenter
             .Font.Size = 16
@@ -102,8 +97,9 @@ Sub AddPages(Title, Nomer)
             .Merge
             If i = 1 Then
                 .Value = Nomer
+                ActiveSheet.Names.Add Name:="uxmNomer", RefersTo:=.Cells(1, 1)
             Else
-                .Formula = "=" & .Offset(-chunk, 0).Address(0, 0)
+                .Formula = "=uxmNomer"
             End If
             .HorizontalAlignment = xlCenter
             .Font.Size = 14
