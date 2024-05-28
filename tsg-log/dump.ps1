@@ -6,7 +6,11 @@
 
 $log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
 
-Get-WinEvent -FilterHashTable @{LogName = $log; ID = 302, 303 } -MaxEvents 50 | % {
+Get-WinEvent -FilterHashTable @{
+  LogName   = $log;
+  ID        = 302, 303;
+  StartTime = '2024-05-28 10:00:00'
+} -MaxEvents 50 | % {
   $x = [xml]$_.ToXml()
   $i = $x.Event.UserData.EventInfo
   [PSCustomObject]@{
