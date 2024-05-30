@@ -38,7 +38,18 @@ Add-Type -AssemblyName System.Windows.Forms
           <TextBox x:Name="dst" MaxLength="50"  />
           <Button x:Name="btnDst" Grid.Column="1" Content="Обзор" Padding="5 0" />
         </Grid>
-        <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
+          <ComboBox x:Name="mode" Grid.Column="1" SelectedIndex="1">
+            <ComboBoxItem>Full backup</ComboBoxItem>
+            <ComboBoxItem>Incremental backup</ComboBoxItem>
+            <ComboBoxItem>Copy only backup</ComboBoxItem>
+          </ComboBox>
+        </Grid>
       </StackPanel>
     </TabItem>
     <TabItem Header="Restore">
