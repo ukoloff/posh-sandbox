@@ -21,6 +21,7 @@ Get-WinEvent -FilterHashTable @{
     ip    = $i.IpAddress;
     user  = $i.Username;
     host  = $i.Resource;
+    proto = $i.ConnectionProtocol;
     inb   = $i.BytesReceived;
     outb  = $i.BytesTransfered;
     time  = $i.SessionDuration;
