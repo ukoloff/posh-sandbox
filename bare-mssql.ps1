@@ -151,7 +151,7 @@ function browseBackup {
 
 function browseRestore() {
   $Fo = $src.Text
-  if (!Test-Path $Fo -PathType Container) {
+  if (!(Test-Path $Fo -PathType Container)) {
     $Fo = Split-Path $Fo -Parent
   }
   $d = New-Object OpenFileDialog
