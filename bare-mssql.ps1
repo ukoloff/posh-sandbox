@@ -40,11 +40,11 @@ Add-Type -AssemblyName System.Windows.Forms
         </Grid>
         <Grid>
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
           <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
-          <ComboBox x:Name="mode" Grid.Column="1" SelectedIndex="1">
+          <ComboBox x:Name="mode" Grid.Column="1" SelectedIndex="1" Padding="5 0" Margin="12 2 0 0">
             <ComboBoxItem>Full backup</ComboBoxItem>
             <ComboBoxItem>Incremental backup</ComboBoxItem>
             <ComboBoxItem>Copy only backup</ComboBoxItem>
