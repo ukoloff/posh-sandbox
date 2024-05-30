@@ -44,10 +44,10 @@ Add-Type -AssemblyName System.Windows.Forms
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
           <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
-          <ComboBox x:Name="mode" Grid.Column="1" SelectedIndex="1" Padding="5 0" Margin="12 2 0 0">
-            <ComboBoxItem>Full backup</ComboBoxItem>
+          <ComboBox x:Name="mode" Grid.Column="1" SelectedIndex="0" Padding="5 0" Margin="12 2 0 0">
             <ComboBoxItem>Incremental backup</ComboBoxItem>
             <ComboBoxItem>Copy only backup</ComboBoxItem>
+            <ComboBoxItem>Full backup</ComboBoxItem>
           </ComboBox>
         </Grid>
       </StackPanel>
