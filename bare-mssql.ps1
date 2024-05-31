@@ -146,6 +146,10 @@ function bakFilter {
 }
 
 function browseBackup {
+  if (!$db.Text) {
+    $db.Focus()
+    return
+  }
   $d = New-Object OpenFileDialog
   $d.Title = "Выберите папку/файл для сохранения резервной копии БД $($db.Text)"
   $d.Filter = bakFilter
@@ -161,6 +165,10 @@ function browseBackup {
 }
 
 function browseRestore() {
+  if (!$db.Text) {
+    $db.Focus()
+    return
+  }
   $Fo = $src.Text
   if (!(Test-Path $Fo -PathType Container)) {
     $Fo = Split-Path $Fo -Parent
