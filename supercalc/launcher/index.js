@@ -18,13 +18,33 @@ switch (process.argv[2]) {
 }
 
 function install() {
-  cp.spawn('reg', ['add',  'HKCU\\SOFTWARE\\Classes\\.cal', '/ve', '/d', 'SuperCalc4', '/f'], {stdio: 'inherit'})
+  cp.spawnSync('reg add HKCU\\SOFTWARE\\Classes\\.cal /ve /d SuperCalc4 /f',
+    {
+      stdio: 'inherit',
+      shell: true,
+    })
+  cp.spawnSync(`reg add HKCU\\SOFTWARE\\Classes\\SuperCalc4\\shell\\open\\command /ve /d "${process.argv[0]} ${process.argv[1]} ""%1""" /f`,
+    {
+      stdio: 'inherit',
+      shell: true,
+    })
 }
 
 function uninstall() {
-  cp.spawn('reg', ['delete',  'HKCU\\SOFTWARE\\Classes\\.cal', '/f'],  {stdio: 'inherit'})
+  cp.spawnSync('reg delete HKCU\\SOFTWARE\\Classes\\.cal /f',
+    {
+      stdio: 'inherit',
+      shell: true,
+    })
+  cp.spawnSync(`reg delete HKCU\\SOFTWARE\\Classes\\SuperCalc4 /f`,
+    {
+      stdio: 'inherit',
+      shell: true,
+    })
 }
 
 function launch(cal) {
-
+  const path = require('path')
+  console.log('Launching:', path.resolve(cal))
+  setTimeout(x => x, 3000)
 }
