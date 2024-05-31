@@ -227,12 +227,27 @@ function ValidateRestore {
 }
 
 function DoBackup {
+  if ($mode.SelectedIndex -eq 0) {
+    $dst.Text = $dst.Text -replace "[.][^.]*$", ".diff.bak"
+  }
   Write-Output "Action:`t`tBackup"
   Write-Output "Server:`t`t$Server"
   Write-Output "Database:`t$($db.Text)"
   Write-Output "Destination:`t$($dst.Text)"
+  Write-Output "Mode:`t`t$($mode.Text)"
   Write-Output "Starting:`t$(Get-Date)"
-  Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text
+  switch ($mode.SelectedIndex) {
+    0 {
+      Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text -Incremental
+    }
+    1 {
+      Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text -CopyOnly
+    }
+    2 {
+      Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text
+    }
+  }
+
   Write-Output "Finished:`t$(Get-Date)"
 }
 
