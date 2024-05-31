@@ -39,6 +39,19 @@ function uninstall() {
 
 function launch(cal) {
   const path = require('path')
-  console.log('Launching:', path.resolve(cal))
-  setTimeout(x => x, 3000)
+  cal = path.resolve(cal)
+
+  var ps = cp.spawn('powershell', ['-command', '-'], { stdio: ['pipe', 'inherit', 'inherit'] })
+  ps.stdin.write(`
+    $DosBox = '${dosBox}'
+    $CAL = '${cal}'
+    # https://blog.idera.com/database-tools/converting-file-paths-to-8-3-part-1/
+    # $CAL = (New-Object -ComObject Scripting.FileSystemObject).GetFile($CAL).ShortPath
+    $Folder = Split-Path $CAL -Parent
+    $CAL = Split-Path $CAL -Leaf
+    $commands = "mount d: $Folder", "d:", "sc4 $CAL", "exit"
+    $commands = ($commands|% {'-c "' + $_ + '"'}) -join ' '
+    &$DosBox $commands
+  `)
+  ps.stdin.end()
 }
