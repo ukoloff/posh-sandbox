@@ -18,29 +18,23 @@ switch (process.argv[2]) {
 }
 
 function install() {
-  cp.spawnSync('reg add HKCU\\SOFTWARE\\Classes\\.cal /ve /d SuperCalc4 /f',
-    {
-      stdio: 'inherit',
-      shell: true,
-    })
-  cp.spawnSync(`reg add HKCU\\SOFTWARE\\Classes\\SuperCalc4\\shell\\open\\command /ve /d "${process.argv[0]} ${process.argv[1]} ""%1""" /f`,
-    {
-      stdio: 'inherit',
-      shell: true,
-    })
+  var ps = cp.spawn('powershell', ['-command', '-'], { stdio: ['pipe', 'inherit', 'inherit'] })
+  ps.stdin.write(`
+    Set-Location HKCU:\\SOFTWARE\\Classes
+    New-Item -path .cal -force -value "SuperCalc4"
+    New-Item -path SuperCalc4\\shell\\open\\command -force -value '"${process.argv[0]}" "${process.argv[1]}" "%1"'
+  `)
+  ps.stdin.end()
 }
 
 function uninstall() {
-  cp.spawnSync('reg delete HKCU\\SOFTWARE\\Classes\\.cal /f',
-    {
-      stdio: 'inherit',
-      shell: true,
-    })
-  cp.spawnSync(`reg delete HKCU\\SOFTWARE\\Classes\\SuperCalc4 /f`,
-    {
-      stdio: 'inherit',
-      shell: true,
-    })
+  var ps = cp.spawn('powershell', ['-command', '-'], { stdio: ['pipe', 'inherit', 'inherit'] })
+  ps.stdin.write(`
+    Set-Location HKCU:\\SOFTWARE\\Classes
+    Remove-Item -path .cal
+    Remove-Item -path SuperCalc4 -Recurse
+  `)
+  ps.stdin.end()
 }
 
 function launch(cal) {
