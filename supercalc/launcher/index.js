@@ -51,7 +51,8 @@ function launch(cal) {
     $CAL = Split-Path $CAL -Leaf
     $commands = "echo Hi", "mount d: $Folder", "d:", "sc4 $CAL", "exit"
     $commands = ($commands|% {'-c "' + $_ + '"'}) -join ' '
-    &$DosBox $commands
+    cd ([System.IO.Path]::GetTempPath())
+    &$DosBox -noconsole $commands
   `)
   ps.stdin.end()
 }
