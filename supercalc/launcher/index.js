@@ -49,7 +49,7 @@ function launch(cal) {
     # $CAL = (New-Object -ComObject Scripting.FileSystemObject).GetFile($CAL).ShortPath
     $Folder = Split-Path $CAL -Parent
     $CAL = Split-Path $CAL -Leaf
-    $commands = "mount d: $Folder", "d:", "sc4 $CAL", "exit"
+    $commands = "echo Hi", "mount d: $Folder", "d:", "sc4 $CAL", "exit"
     $commands = ($commands|% {'-c "' + $_ + '"'}) -join ' '
     &$DosBox $commands
   `)
