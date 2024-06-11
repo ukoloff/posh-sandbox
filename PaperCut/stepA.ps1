@@ -1,3 +1,7 @@
+param(
+  [int]$days = 2,
+  [switch]$all
+)
 $root = "\\omzglobal.com\uxm\Exchange\PrintStat\Logs"
 $src = Join-Path $root Daily
 $dst = Join-Path $root Aggregate
