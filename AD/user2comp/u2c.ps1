@@ -12,4 +12,8 @@ Get-ADComputer -SearchBase $cDN -SearchScope OneLevel -LDAPFilter '(managedBy=*)
   $map[$_.ManagedBy] = $_.Name
 }
 
-echo $map
+foreach ($dn in $uDNs) {
+  Get-ADUser -SearchBase $dn -LDAPFilter '(!userAccountControl:1.2.840.113556.1.4.803:=2)' -Properties displayName| % {
+    echo "$($_.sAMAccountName) $($_.Name) $($_.displayName) $($map[$_.DistinguishedName])"
+  }
+}
