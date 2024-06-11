@@ -19,4 +19,10 @@ Where
   P.PARENT_ID = 6231
 "@
 
-echo $data
+$src = Split-Path ($MyInvocation.MyCommand.Source) -Parent
+$dst = Join-Path $src 'jpeg'
+
+foreach ($z in $data) {
+  $fname = Join-Path $dst ($z.TABID + '.' + $z.NAME  + '.jpg')
+  [System.Io.File]::WriteAllBytes($fname, $z.HIRES_RASTER)
+}
