@@ -3,6 +3,10 @@
 # Install-Module -Name SimplySql
 #
 
+# Store Creadentials:
+# ------------------
+# $cred = Get-Credential
+# New-StoredCredential -Target mysql:SKUD -Credentials $cred -Persist LocalMachine
 $cred = Get-StoredCredential -Target 'mysql:SKUD'
 
 $sql = Open-MySqlConnection -ConnectionName default -Server srvskud-ekbh1 -Port 3305 -Database  tc-db-main -Credential $cred
