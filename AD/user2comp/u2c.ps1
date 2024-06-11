@@ -12,8 +12,10 @@ Get-ADComputer -SearchBase $cDN -SearchScope OneLevel -LDAPFilter '(managedBy=*)
   $map[$_.ManagedBy] = $_.Name
 }
 
+$users = @()
+
 foreach ($dn in $uDNs) {
-  Get-ADUser -SearchBase $dn -LDAPFilter '(!userAccountControl:1.2.840.113556.1.4.803:=2)' -Properties displayName,canonicalName | % {
+  $users += Get-ADUser -SearchBase $dn -LDAPFilter '(!userAccountControl:1.2.840.113556.1.4.803:=2)' -Properties displayName,canonicalName | % {
     [PSCustomObject]@{
       id = $_.sAMAccountName;
       fio = $_.Name;
@@ -21,5 +23,7 @@ foreach ($dn in $uDNs) {
       dept = ($_.CanonicalName -split '/')[-2];
       host = $map[$_.DistinguishedName];
     }
-  } | Sort-Object id | Export-Excel
+  } | Sort-Object id
 }
+
+$users | Export-Excel
