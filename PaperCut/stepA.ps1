@@ -6,6 +6,11 @@ $root = "\\omzglobal.com\uxm\Exchange\PrintStat\Logs"
 $src = Join-Path $root Daily
 $dst = Join-Path $root Aggregate
 
+$Template = 'Template.csv'
+# $Template = 'Template_eng.csv'
+$Template = Join-Path $root ("..\PSTools\" + $Template)
+$header = @( [System.IO.File]::ReadAllLines($Template)[0])
+
 if (!(Test-Path $dst -PathType Container)) {
   mkdir $dst -Force | Out-Null
 }
