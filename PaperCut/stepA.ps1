@@ -62,12 +62,12 @@ foreach ($m in $months) {
   $grep = "^" + $d.ToString("yyyy-MM") + '-\d{2}\s'
   $prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
   $prev = ($prev + $m.Group) | Sort-Object -Unique
-  [System.IO.File]::WriteAllLines($fname, $prev)
+  [System.IO.File]::WriteAllLines($fname, $header + $prev)
 }
 
 $fname = $dst + "\all.csv"
 $grep = '^\d{4}-\d{2}-\d{2}\s'
 $prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
 $prev = ($prev + $data) | Sort-Object -Unique
-[System.IO.File]::WriteAllLines($fname, $prev)
+[System.IO.File]::WriteAllLines($fname, $header + $prev)
 
