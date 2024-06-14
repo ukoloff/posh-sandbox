@@ -16,7 +16,7 @@ function readDay([datetime]$date = [datetime]::Now) {
   if (!(Test-Path $fname -PathType Leaf)) {
     return @()
   }
-  [System.IO.File]::ReadAllLines($fname) | Select-String -Pattern $grep
+  [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
 }
 
 function readDays($days) {
@@ -47,3 +47,16 @@ if ($all) {
 else {
   $data = readDays($days)
 }
+$data = $data | Sort-Object
+
+$months = $data | Group-Object -Property { $_.substring(0, 7) }
+foreach ($m in $months) {
+  $y, $mo = $m.Name -split '\D+'
+  $d = Get-Date -Year $y -Month $mo -Day 1
+  $fname = $dst + "\" + $d.ToString("yyyy-MM") + ".csv"
+  [System.IO.File]::WriteAllLines($fname, $m.Group)
+}
+
+$fname = $dst + "\all.csv"
+[System.IO.File]::WriteAllLines($fname, $data)
+
