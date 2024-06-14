@@ -54,7 +54,10 @@ foreach ($m in $months) {
   $y, $mo = $m.Name -split '\D+'
   $d = Get-Date -Year $y -Month $mo -Day 1
   $fname = $dst + "\" + $d.ToString("yyyy-MM") + ".csv"
-  [System.IO.File]::WriteAllLines($fname, $m.Group)
+  $grep = "^" + $d.ToString("yyyy-MM") + '-\d{2}\s'
+  $prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
+  $prev = ($prev + $m.Group) | Sort-Object -Unique
+  [System.IO.File]::WriteAllLines($fname, $prev)
 }
 
 $fname = $dst + "\all.csv"
