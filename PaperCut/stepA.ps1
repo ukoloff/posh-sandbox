@@ -61,5 +61,8 @@ foreach ($m in $months) {
 }
 
 $fname = $dst + "\all.csv"
-[System.IO.File]::WriteAllLines($fname, $data)
+$grep = '^\d{4}-\d{2}-\d{2}\s'
+$prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
+$prev = ($prev + $data) | Sort-Object -Unique
+[System.IO.File]::WriteAllLines($fname, $prev)
 
