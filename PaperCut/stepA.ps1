@@ -10,6 +10,13 @@ if (!(Test-Path $dst -PathType Container)) {
   mkdir $dst -Force | Out-Null
 }
 
+if ($all) {
+  $data = readAllDays
+}
+else {
+  $data = readDays($days)
+}
+
 function readDay([datetime]$date = [datetime]::Now) {
   $fname = $src + "\PrintLog-" + $date.ToString("dd-MM-yyyy") + ".csv"
   $grep = "^" + $date.ToString("yyyy-MM-dd") + "\s"
@@ -19,4 +26,11 @@ function readDay([datetime]$date = [datetime]::Now) {
   [System.IO.File]::ReadAllLines($fname) | Select-String -Pattern $grep
 }
 
-readDay((Get-Date).AddDays(-1))
+function readDays($days) {
+  $today = [datetime]::Now
+  $lines = @()
+  foreach ($i in 1..$days) {
+    $lines += readDay($today.AddDays(1 - $i))
+  }
+  $lines
+}
