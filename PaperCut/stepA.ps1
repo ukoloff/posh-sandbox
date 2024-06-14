@@ -1,7 +1,9 @@
 param(
   [int]$days = 2,
-  [switch]$all
+  [switch]$all,
+  [switch]$debug
 )
+
 $root = "\\omzglobal.com\uxm\Exchange\PrintStat\Logs"
 $src = Join-Path $root Daily
 $dst = Join-Path $root Aggregate
@@ -12,6 +14,9 @@ $Template = Join-Path $root ("..\PSTools\" + $Template)
 $header = @( [System.IO.File]::ReadAllLines($Template)[0])
 
 if (!(Test-Path $dst -PathType Container)) {
+  if ($debug) {
+    Write-Host "Creating folder: $dst"
+  }
   mkdir $dst -Force | Out-Null
 }
 
@@ -20,6 +25,9 @@ function readDay([datetime]$date = [datetime]::Now) {
   $grep = "^" + $date.ToString("yyyy-MM-dd") + "\s"
   if (!(Test-Path $fname -PathType Leaf)) {
     return @()
+  }
+  if ($debug) {
+    Write-Host "Reading day: $fname"
   }
   [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
 }
@@ -59,15 +67,38 @@ foreach ($m in $months) {
   $y, $mo = $m.Name -split '\D+'
   $d = Get-Date -Year $y -Month $mo -Day 1
   $fname = $dst + "\" + $d.ToString("yyyy-MM") + ".csv"
-  $grep = "^" + $d.ToString("yyyy-MM") + '-\d{2}\s'
-  $prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
+
+  $prev = @()
+  if (Test-Path $fname -PathType Leaf) {
+    $grep = "^" + $d.ToString("yyyy-MM") + '-\d{2}\s'
+    if ($debug) {
+      Write-Host "Reading month: $fname"
+    }
+    $prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
+  }
   $prev = ($prev + $m.Group) | Sort-Object -Unique
-  [System.IO.File]::WriteAllLines($fname, $header + $prev)
+  if ($debug) {
+    Write-Host "Writing month: $fname"
+  }
+[System.IO.File]::WriteAllLines($fname, $header + $prev)
 }
 
 $fname = $dst + "\all.csv"
 $grep = '^\d{4}-\d{2}-\d{2}\s'
-$prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
+$prev = @()
+if (Test-Path $fname -PathType Leaf) {
+  if ($debug) {
+    Write-Host "Reading: $fname"
+  }
+ $prev = [System.IO.File]::ReadAllLines($fname) | Where-Object { $_ | Select-String -Pattern $grep -Quiet }
+}
 $prev = ($prev + $data) | Sort-Object -Unique
+if ($debug) {
+  Write-Host "Writing: $fname"
+}
 [System.IO.File]::WriteAllLines($fname, $header + $prev)
+
+if ($debug) {
+  Write-Host "That's all folks!"
+}
 
