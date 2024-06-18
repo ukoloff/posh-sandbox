@@ -13,6 +13,8 @@ $Template = 'Template.csv'
 $Template = Join-Path $root ("..\PSTools\" + $Template)
 $header = @( [System.IO.File]::ReadAllLines($Template)[0])
 
+$utf8bom = [System.Text.UTF8Encoding]::new($true)
+
 if (!(Test-Path $dst -PathType Container)) {
   if ($debug) {
     Write-Host "Creating folder: $dst"
@@ -80,7 +82,7 @@ foreach ($m in $months) {
   if ($debug) {
     Write-Host "Writing month: $fname"
   }
-[System.IO.File]::WriteAllLines($fname, $header + $prev)
+[System.IO.File]::WriteAllLines($fname, $header + $prev, $utf8bom)
 }
 
 $fname = $dst + "\all.csv"
@@ -96,7 +98,7 @@ $prev = ($prev + $data) | Sort-Object -Unique
 if ($debug) {
   Write-Host "Writing: $fname"
 }
-[System.IO.File]::WriteAllLines($fname, $header + $prev)
+[System.IO.File]::WriteAllLines($fname, $header + $prev, $utf8bom)
 
 if ($debug) {
   Write-Host "That's all folks!"
