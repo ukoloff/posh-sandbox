@@ -47,6 +47,7 @@ Else
 	$Search | Set-ADUser -manager $UserManager
         }
 	Else {
+	$Search | Set-ADUser -Clear manager
 	#Заносим в журнал предупреждение об отсутствии записи о начальнике
 	$Text = "{0} : [ВНИМАНИЕ!] Не заполнено поле начальник для {1} {2}" -f (Get-Date).ToString(), $User.employeeID,$User.displayName
         $warn.AppendLine($Text) | Out-Null }
