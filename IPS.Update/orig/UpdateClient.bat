@@ -1,0 +1,1 @@
+"\\imech\_IPS.InstClient\ClientSetup.exe" -logfolder "\\imech\IPSLogs" -clientupdate IPSHomeClient1
