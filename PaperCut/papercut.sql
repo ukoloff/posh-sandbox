@@ -5,7 +5,7 @@ CREATE TABLE papercut (
 	"Pages" int4 NOT NULL, -- Страниц
 	"Copies" int4 NOT NULL, -- Копий
 	"Printer" varchar NOT NULL, -- Принтер
-	"Document Name" varchar NOT NULL, -- Документ
+	"DocumentName" varchar NOT NULL, -- Документ
 	"Client" varchar NOT NULL, -- Компьютер
 	"PaperSize" varchar NOT NULL, -- Формат листа
 	"Language" varchar NOT NULL, -- Драйвер
@@ -35,3 +35,6 @@ COMMENT ON COLUMN public.papercut."Width" IS 'Ширина';
 COMMENT ON COLUMN public.papercut."Duplex" IS 'Двусторонняя печать';
 COMMENT ON COLUMN public.papercut."Grayscale" IS 'Черно-белый';
 COMMENT ON COLUMN public.papercut."Size" IS 'Размер файла';
+
+GRANT SELECT ON TABLE public.papercut TO "uxmR";
+GRANT DELETE, INSERT, UPDATE ON TABLE public.papercut TO "uxmW";
