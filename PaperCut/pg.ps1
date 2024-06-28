@@ -46,14 +46,41 @@ $sqlAdd = @"
   Values ($($fields.ForEach({"@$_"}) -join ", "))
 "@
 
-readDay |
-ConvertFrom-Csv -Header $fields |
-ForEach-Object {
-  $_.Time = Get-Date $_.Time
-  $_.Pages = [int]$_.Pages
-  $_.Copies = [int]$_.Copies
-  $n = Invoke-SqlScalar $sqlIf -ParamObject $_
-  if ($n -eq 0) {
-    Invoke-SqlUpdate $sqlAdd -ParamObject $_ | Out-Null
+function processDay([datetime]$date = [datetime]::Now) {
+  readDay($date) |
+  ConvertFrom-Csv -Header $fields |
+  ForEach-Object {
+    $_.Time = Get-Date $_.Time
+    $_.Pages = [int]$_.Pages
+    $_.Copies = [int]$_.Copies
+    $n = Invoke-SqlScalar $sqlIf -ParamObject $_
+    if ($n -eq 0) {
+      Invoke-SqlUpdate $sqlAdd -ParamObject $_ | Out-Null
+    }
   }
+}
+
+function processDays($days) {
+  $today = [datetime]::Now
+  foreach ($i in 1..$days) {
+    processDay($today.AddDays(1 - $i))
+  }
+}
+
+function processAllDays() {
+  $csvs = Get-ChildItem $src -Filter 'PrintLog-*.csv'
+  foreach ($f in $csvs) {
+    if ($f -match "-(?<d>\d{2})-(?<m>\d{2})-(?<y>\d{4}).") {
+      [datetime]$d = Get-Date -Day $Matches.d -Month $Matches.m -Year $Matches.y
+      processDay($d)
+    }
+  }
+}
+
+# $all = $true
+if ($all) {
+  processAllDays
+}
+else {
+  processDays($days)
 }
