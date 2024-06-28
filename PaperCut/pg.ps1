@@ -11,7 +11,7 @@ $root = "\\omzglobal.com\uxm\Exchange\PrintStat\Logs"
 $src = Join-Path $root Daily
 $dst = Join-Path $root Aggregate
 
-$Header = 'Time,User,Pages,Copies,Printer,DocumentName,Client,PaperSize,Language,Height,Width,Duplex,Grayscale,Size'
+$Header = 'time,user,pages,copies,printer,document,client,paper,language,height,width,duplex,grayscale,size'
 
 # Install-Module -Name SimplySql
 
