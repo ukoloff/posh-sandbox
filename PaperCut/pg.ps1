@@ -36,15 +36,24 @@ function readDay([datetime]$date = [datetime]::Now) {
 }
 
 $fields = $Header -split ','
-$SQL = @"
+$sqlIf = @"
+  Select Count(*)
+  From papercut
+  Where $(($fields | % { "`"$_`" = @$_"}) -join ' And ')
+"@
+$sqlAdd = @"
   Insert Into papercut($(($fields | % {"`"$_`""}) -join ", "))
   Values ($(($fields | % {"@$_"}) -join ", "))
 "@
+
 readDay |
 ConvertFrom-Csv -Header $fields |
 ForEach-Object {
   $_.Time = Get-Date $_.Time
   $_.Pages = [int]$_.Pages
   $_.Copies = [int]$_.Copies
-  Invoke-SqlUpdate $SQL -ParamObject $_ | Out-Null
+  $n = Invoke-SqlScalar $sqlIf -ParamObject $_
+  if ($n -eq 0) {
+    Invoke-SqlUpdate $sqlAdd -ParamObject $_ | Out-Null
+  }
 }
