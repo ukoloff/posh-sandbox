@@ -63,21 +63,23 @@ function processDay([datetime]$date = [datetime]::Now) {
 function processDays($days) {
   $today = [datetime]::Now
   foreach ($i in 1..$days) {
-    processDay($today.AddDays(1 - $i))
+    processDay($today.AddDays($i - $days))
   }
 }
 
 function processAllDays() {
   $csvs = Get-ChildItem $src -Filter 'PrintLog-*.csv'
+  $days = @()
   foreach ($f in $csvs) {
     if ($f -match "-(?<d>\d{2})-(?<m>\d{2})-(?<y>\d{4}).") {
       [datetime]$d = Get-Date -Day $Matches.d -Month $Matches.m -Year $Matches.y
-      processDay($d)
+      $days += @($d)
     }
   }
+  $days = $days | Sort-Object
+  $days.forEach({ processDay($_) })
 }
 
-# $all = $true
 if ($all) {
   processAllDays
 }
