@@ -47,6 +47,7 @@ $sqlAdd = @"
 "@
 
 function processDay([datetime]$date = [datetime]::Now) {
+  Start-SqlTransaction
   readDay($date) |
   ConvertFrom-Csv -Header $fields |
   ForEach-Object {
@@ -58,6 +59,7 @@ function processDay([datetime]$date = [datetime]::Now) {
       Invoke-SqlUpdate $sqlAdd -ParamObject $_ | Out-Null
     }
   }
+  Complete-SqlTransaction
 }
 
 function processDays($days) {
