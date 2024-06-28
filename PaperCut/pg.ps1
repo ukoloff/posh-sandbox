@@ -39,11 +39,11 @@ $fields = $Header -split ','
 $sqlIf = @"
   Select Count(*)
   From papercut
-  Where $(($fields | % { "`"$_`" = @$_"}) -join ' And ')
+  Where $($fields.ForEach({ "`"$_`" = @$_"}) -join ' And ')
 "@
 $sqlAdd = @"
-  Insert Into papercut($(($fields | % {"`"$_`""}) -join ", "))
-  Values ($(($fields | % {"@$_"}) -join ", "))
+  Insert Into papercut($($fields.ForEach({"`"$_`""}) -join ", "))
+  Values ($($fields.ForEach({"@$_"}) -join ", "))
 "@
 
 readDay |
