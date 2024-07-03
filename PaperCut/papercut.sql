@@ -19,8 +19,8 @@ CREATE TABLE papercut (
 CREATE INDEX "papercut_Client_Time" ON public.papercut USING btree ("client", "time");
 CREATE INDEX "papercut_Time" ON public.papercut USING btree ("time");
 CREATE INDEX "papercut_User_Time" ON public.papercut USING btree ("user", "time");
-COMMENT ON TABLE public.papercut IS 'PaperCut Log';
 
+COMMENT ON TABLE public.papercut IS 'PaperCut Log';
 COMMENT ON COLUMN public.papercut."time" IS 'Дата';
 COMMENT ON COLUMN public.papercut."user" IS 'Пользователь';
 COMMENT ON COLUMN public.papercut."pages" IS 'Страниц';
@@ -50,18 +50,19 @@ CREATE TABLE papercut_log (
 	CONSTRAINT papercut_log_pk PRIMARY KEY (id),
 	CONSTRAINT papercut_log_papercut_log_fk FOREIGN KEY (session_id) REFERENCES papercut_log(id)
 );
-CREATE INDEX papercut_log_day_idx ON public.papercut_log USING btree (day, ctime);
+CREATE INDEX papercut_log_day_idx ON papercut_log USING btree (day, ctime);
 
 -- Column comments
 
-COMMENT ON COLUMN public.papercut_log.ctime IS 'Дата создания';
-COMMENT ON COLUMN public.papercut_log.session_id IS 'В рамках соединения';
-COMMENT ON COLUMN public.papercut_log."day" IS 'Добавляемый день';
-COMMENT ON COLUMN public.papercut_log.duration IS 'Продолжительность, сек';
-COMMENT ON COLUMN public.papercut_log.total IS 'Записей в дне всего';
-COMMENT ON COLUMN public.papercut_log.added IS 'Добавлено записей';
+COMMENT ON TABLE  papercut_log IS 'PaperCut - журнал импорта';
+COMMENT ON COLUMN papercut_log.ctime IS 'Дата создания';
+COMMENT ON COLUMN papercut_log.session_id IS 'В рамках соединения';
+COMMENT ON COLUMN papercut_log."day" IS 'Добавляемый день';
+COMMENT ON COLUMN papercut_log.duration IS 'Продолжительность, сек';
+COMMENT ON COLUMN papercut_log.total IS 'Записей в дне всего';
+COMMENT ON COLUMN papercut_log.added IS 'Добавлено записей';
 
 -- Permissions
 
-GRANT SELECT ON TABLE public.papercut_log TO "uxmR";
-GRANT INSERT, UPDATE ON TABLE public.papercut_log TO "uxmW";
+GRANT SELECT ON TABLE papercut_log TO "uxmR";
+GRANT INSERT, UPDATE ON TABLE papercut_log TO "uxmW";
