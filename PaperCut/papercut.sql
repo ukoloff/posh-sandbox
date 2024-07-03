@@ -41,7 +41,7 @@ GRANT DELETE, INSERT, UPDATE ON TABLE public.papercut TO "uxmW";
 
 CREATE TABLE papercut_log (
 	id serial4 NOT NULL,
-	ctime timestamptz DEFAULT now() NOT NULL, -- Дата создания
+	ctime timestamptz DEFAULT clock_timestamp() NOT NULL, -- Дата создания
 	session_id int4 NULL, -- В рамках соединения
 	"day" date NULL, -- Добавляемый день
 	duration float8 NULL, -- Продолжительность, сек
@@ -66,3 +66,4 @@ COMMENT ON COLUMN papercut_log.added IS 'Добавлено записей';
 
 GRANT SELECT ON TABLE papercut_log TO "uxmR";
 GRANT INSERT, UPDATE ON TABLE papercut_log TO "uxmW";
+GRANT UPDATE ON SEQUENCE papercut_log_id_seq TO "uxmW";

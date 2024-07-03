@@ -50,17 +50,38 @@ $sqlAdd = @"
 
 function processDay([datetime]$date = [datetime]::Now) {
   Start-SqlTransaction
+  $lineID = Invoke-SqlScalar @"
+    Insert Into papercut_log(session_id, day)
+      Values (@s, @d)
+      Returning id
+"@ -Parameters @{s=$session; d=$date}
+
+  $total = 0
+  $added = 0
+
   readDay($date) |
   ConvertFrom-Csv -Header $fields |
   ForEach-Object {
+    $total++
     $_.Time = Get-Date $_.Time
     $_.Pages = [int]$_.Pages
     $_.Copies = [int]$_.Copies
     $n = Invoke-SqlScalar $sqlIf -ParamObject $_
     if ($n -eq 0) {
       Invoke-SqlUpdate $sqlAdd -ParamObject $_ | Out-Null
+      $added++
     }
   }
+
+  Invoke-SqlScalar @"
+    Update papercut_log
+    Set
+      duration = Extract(Epoch FROM (clock_timestamp() - ctime)),
+      total = @total,
+      added = @added
+    Where id=@id
+"@ -Parameters @{id=$lineID; total=$total; added=$added}
+
   Complete-SqlTransaction
 }
 
@@ -83,6 +104,12 @@ function processAllDays() {
   $days = $days | Sort-Object
   $days.forEach({ processDay($_) })
 }
+
+$session = Invoke-SqlScalar @"
+  Insert Into papercut_log(session_id)
+    Values(NULL)
+    Returning id
+"@
 
 if ($all) {
   processAllDays
