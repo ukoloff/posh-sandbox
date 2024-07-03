@@ -38,6 +38,7 @@ COMMENT ON COLUMN papercut."size" IS 'Размер файла';
 
 GRANT SELECT ON TABLE papercut TO "uxmR";
 GRANT DELETE, INSERT, UPDATE ON TABLE papercut TO "uxmW";
+GRANT UPDATE ON SEQUENCE papercut_id_seq TO "uxmW";
 
 CREATE TABLE papercut_log (
 	id serial4 NOT NULL,
