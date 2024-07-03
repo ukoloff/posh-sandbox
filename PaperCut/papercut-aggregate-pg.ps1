@@ -117,3 +117,13 @@ if ($all) {
 else {
   processDays($days)
 }
+
+Invoke-SqlUpdate @"
+  update papercut_log as L
+    set
+      duration = Extract(Epoch FROM (clock_timestamp() - L. ctime)),
+      total = (select sum(C.total) from papercut_log as C where C.session_id = L.id),
+      added = (select sum(C.added) from papercut_log as C where C.session_id = L.id)
+    where
+      L.id=@id
+"@ -Parameters @{id=$session}
