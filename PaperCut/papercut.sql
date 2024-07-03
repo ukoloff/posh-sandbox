@@ -1,5 +1,5 @@
 CREATE TABLE papercut (
-	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	id serial4 NOT NULL,
 	"time" timestamp NOT NULL, -- Дата
 	"user" varchar NOT NULL, -- Пользователь
 	"pages" int4 NOT NULL, -- Страниц
@@ -16,28 +16,28 @@ CREATE TABLE papercut (
 	"size" varchar NOT NULL, -- Размер файла
 	CONSTRAINT papercut_pkey PRIMARY KEY (id)
 );
-CREATE INDEX "papercut_Client_Time" ON public.papercut USING btree ("client", "time");
-CREATE INDEX "papercut_Time" ON public.papercut USING btree ("time");
-CREATE INDEX "papercut_User_Time" ON public.papercut USING btree ("user", "time");
+CREATE INDEX "papercut_Client_Time" ON papercut USING btree ("client", "time");
+CREATE INDEX "papercut_Time" ON papercut USING btree ("time");
+CREATE INDEX "papercut_User_Time" ON papercut USING btree ("user", "time");
 
-COMMENT ON TABLE public.papercut IS 'PaperCut Log';
-COMMENT ON COLUMN public.papercut."time" IS 'Дата';
-COMMENT ON COLUMN public.papercut."user" IS 'Пользователь';
-COMMENT ON COLUMN public.papercut."pages" IS 'Страниц';
-COMMENT ON COLUMN public.papercut."copies" IS 'Копий';
-COMMENT ON COLUMN public.papercut."printer" IS 'Принтер';
-COMMENT ON COLUMN public.papercut."document" IS 'Документ';
-COMMENT ON COLUMN public.papercut."client" IS 'Компьютер';
-COMMENT ON COLUMN public.papercut."paper" IS 'Формат листа';
-COMMENT ON COLUMN public.papercut."language" IS 'Драйвер';
-COMMENT ON COLUMN public.papercut."height" IS 'Высота';
-COMMENT ON COLUMN public.papercut."width" IS 'Ширина';
-COMMENT ON COLUMN public.papercut."duplex" IS 'Двусторонняя печать';
-COMMENT ON COLUMN public.papercut."grayscale" IS 'Черно-белый';
-COMMENT ON COLUMN public.papercut."size" IS 'Размер файла';
+COMMENT ON TABLE  papercut IS 'PaperCut Log';
+COMMENT ON COLUMN papercut."time" IS 'Дата';
+COMMENT ON COLUMN papercut."user" IS 'Пользователь';
+COMMENT ON COLUMN papercut."pages" IS 'Страниц';
+COMMENT ON COLUMN papercut."copies" IS 'Копий';
+COMMENT ON COLUMN papercut."printer" IS 'Принтер';
+COMMENT ON COLUMN papercut."document" IS 'Документ';
+COMMENT ON COLUMN papercut."client" IS 'Компьютер';
+COMMENT ON COLUMN papercut."paper" IS 'Формат листа';
+COMMENT ON COLUMN papercut."language" IS 'Драйвер';
+COMMENT ON COLUMN papercut."height" IS 'Высота';
+COMMENT ON COLUMN papercut."width" IS 'Ширина';
+COMMENT ON COLUMN papercut."duplex" IS 'Двусторонняя печать';
+COMMENT ON COLUMN papercut."grayscale" IS 'Черно-белый';
+COMMENT ON COLUMN papercut."size" IS 'Размер файла';
 
-GRANT SELECT ON TABLE public.papercut TO "uxmR";
-GRANT DELETE, INSERT, UPDATE ON TABLE public.papercut TO "uxmW";
+GRANT SELECT ON TABLE papercut TO "uxmR";
+GRANT DELETE, INSERT, UPDATE ON TABLE papercut TO "uxmW";
 
 CREATE TABLE papercut_log (
 	id serial4 NOT NULL,
