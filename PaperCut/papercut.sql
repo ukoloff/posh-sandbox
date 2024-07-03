@@ -38,3 +38,30 @@ COMMENT ON COLUMN public.papercut."size" IS 'Размер файла';
 
 GRANT SELECT ON TABLE public.papercut TO "uxmR";
 GRANT DELETE, INSERT, UPDATE ON TABLE public.papercut TO "uxmW";
+
+CREATE TABLE papercut_log (
+	id serial4 NOT NULL,
+	ctime timestamptz DEFAULT now() NOT NULL, -- Дата создания
+	session_id int4 NULL, -- В рамках соединения
+	"day" date NULL, -- Добавляемый день
+	duration float8 NULL, -- Продолжительность, сек
+	total int4 NULL, -- Записей в дне всего
+	added int4 NULL, -- Добавлено записей
+	CONSTRAINT papercut_log_pk PRIMARY KEY (id),
+	CONSTRAINT papercut_log_papercut_log_fk FOREIGN KEY (session_id) REFERENCES papercut_log(id)
+);
+CREATE INDEX papercut_log_day_idx ON public.papercut_log USING btree (day, ctime);
+
+-- Column comments
+
+COMMENT ON COLUMN public.papercut_log.ctime IS 'Дата создания';
+COMMENT ON COLUMN public.papercut_log.session_id IS 'В рамках соединения';
+COMMENT ON COLUMN public.papercut_log."day" IS 'Добавляемый день';
+COMMENT ON COLUMN public.papercut_log.duration IS 'Продолжительность, сек';
+COMMENT ON COLUMN public.papercut_log.total IS 'Записей в дне всего';
+COMMENT ON COLUMN public.papercut_log.added IS 'Добавлено записей';
+
+-- Permissions
+
+GRANT SELECT ON TABLE public.papercut_log TO "uxmR";
+GRANT INSERT, UPDATE ON TABLE public.papercut_log TO "uxmW";
