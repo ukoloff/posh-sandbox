@@ -20,10 +20,11 @@ $debug = !$quiet
 # Store Credentials:
 # ------------------
 # $cred = Get-Credential
+# # Install-Module -Name CredentialManager
 # New-StoredCredential -Target pqsql:UXM -Credentials $cred -Persist LocalMachine
 $cred = Get-StoredCredential -Target pqsql:UXM  # Try Kerberos if not found
 
-Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $null
+Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
 
 function readDay([datetime]$date = [datetime]::Now) {
   $fname = $src + "\PrintLog-" + $date.ToString("dd-MM-yyyy") + ".csv"
@@ -127,3 +128,5 @@ Invoke-SqlScalar @"
     where
       L.id=@id
 "@ -Parameters @{id=$session}
+
+Close-SqlConnection
