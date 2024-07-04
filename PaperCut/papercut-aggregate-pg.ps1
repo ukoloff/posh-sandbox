@@ -68,7 +68,7 @@ function processDay([datetime]$date = [datetime]::Now) {
     $_.Copies = [int]$_.Copies
     $n = Invoke-SqlScalar $sqlIf -ParamObject $_
     if ($n -eq 0) {
-      Invoke-SqlUpdate $sqlAdd -ParamObject $_ | Out-Null
+      Invoke-SqlScalar $sqlAdd -ParamObject $_
       $added++
     }
   }
@@ -118,7 +118,7 @@ else {
   processDays($days)
 }
 
-Invoke-SqlUpdate @"
+Invoke-SqlScalar @"
   update papercut_log as L
     set
       duration = Extract(Epoch FROM (clock_timestamp() - L. ctime)),
