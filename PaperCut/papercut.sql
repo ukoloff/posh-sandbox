@@ -1,5 +1,5 @@
 CREATE TABLE papercut (
-	id serial4 NOT NULL,
+	id int NOT NULL generated always as identity primary key,
 	"time" timestamp NOT NULL, -- Дата
 	"user" varchar NOT NULL, -- Пользователь
 	"pages" int4 NOT NULL, -- Страниц
@@ -13,8 +13,7 @@ CREATE TABLE papercut (
 	"width" varchar NOT NULL, -- Ширина
 	"duplex" varchar NOT NULL, -- Двусторонняя печать
 	"grayscale" varchar NOT NULL, -- Черно-белый
-	"size" varchar NOT NULL, -- Размер файла
-	CONSTRAINT papercut_pkey PRIMARY KEY (id)
+	"size" varchar NOT NULL -- Размер файла
 );
 CREATE INDEX "papercut_Client_Time" ON papercut USING btree ("client", "time");
 CREATE INDEX "papercut_Time" ON papercut USING btree ("time");
@@ -38,17 +37,15 @@ COMMENT ON COLUMN papercut."size" IS 'Размер файла';
 
 GRANT SELECT ON TABLE papercut TO "uxmR";
 GRANT DELETE, INSERT, UPDATE ON TABLE papercut TO "uxmW";
-GRANT UPDATE ON SEQUENCE papercut_id_seq TO "uxmW";
 
 CREATE TABLE papercut_log (
-	id serial4 NOT NULL,
+	id int NOT NULL generated always as identity primary key,
 	ctime timestamptz DEFAULT clock_timestamp() NOT NULL, -- Дата создания
 	session_id int4 NULL, -- В рамках соединения
 	"day" date NULL, -- Добавляемый день
 	duration float8 NULL, -- Продолжительность, сек
 	total int4 NULL, -- Записей в дне всего
 	added int4 NULL, -- Добавлено записей
-	CONSTRAINT papercut_log_pk PRIMARY KEY (id),
 	CONSTRAINT papercut_log_papercut_log_fk FOREIGN KEY (session_id) REFERENCES papercut_log(id)
 );
 CREATE INDEX papercut_log_day_idx ON papercut_log USING btree (day, ctime);
@@ -67,4 +64,3 @@ COMMENT ON COLUMN papercut_log.added IS 'Добавлено записей';
 
 GRANT SELECT ON TABLE papercut_log TO "uxmR";
 GRANT INSERT, UPDATE ON TABLE papercut_log TO "uxmW";
-GRANT UPDATE ON SEQUENCE papercut_log_id_seq TO "uxmW";
