@@ -38,7 +38,18 @@ Add-Type -AssemblyName System.Windows.Forms
           <TextBox x:Name="dst" MaxLength="50"  />
           <Button x:Name="btnDst" Grid.Column="1" Content="Обзор" Padding="5 0" />
         </Grid>
-        <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <CheckBox x:Name="overwrite" Content="Отключить запрос на перезапись" />
+          <ComboBox x:Name="mode" Grid.Column="1" SelectedIndex="0" Padding="5 0" Margin="12 2 0 0">
+            <ComboBoxItem>Incremental backup</ComboBoxItem>
+            <ComboBoxItem>Copy only backup</ComboBoxItem>
+            <ComboBoxItem>Full backup</ComboBoxItem>
+          </ComboBox>
+        </Grid>
       </StackPanel>
     </TabItem>
     <TabItem Header="Restore">
@@ -135,6 +146,10 @@ function bakFilter {
 }
 
 function browseBackup {
+  if (!$db.Text) {
+    $db.Focus()
+    return
+  }
   $d = New-Object OpenFileDialog
   $d.Title = "Выберите папку/файл для сохранения резервной копии БД $($db.Text)"
   $d.Filter = bakFilter
@@ -150,8 +165,12 @@ function browseBackup {
 }
 
 function browseRestore() {
+  if (!$db.Text) {
+    $db.Focus()
+    return
+  }
   $Fo = $src.Text
-  if (!Test-Path $Fo -PathType Container) {
+  if (!(Test-Path $Fo -PathType Container)) {
     $Fo = Split-Path $Fo -Parent
   }
   $d = New-Object OpenFileDialog
@@ -208,12 +227,27 @@ function ValidateRestore {
 }
 
 function DoBackup {
+  if ($mode.SelectedIndex -eq 0) {
+    $dst.Text = $dst.Text -replace "[.][^.]*$", ".diff.bak"
+  }
   Write-Output "Action:`t`tBackup"
   Write-Output "Server:`t`t$Server"
   Write-Output "Database:`t$($db.Text)"
   Write-Output "Destination:`t$($dst.Text)"
+  Write-Output "Mode:`t`t$($mode.Text)"
   Write-Output "Starting:`t$(Get-Date)"
-  Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text
+  switch ($mode.SelectedIndex) {
+    0 {
+      Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text -Incremental
+    }
+    1 {
+      Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text -CopyOnly
+    }
+    2 {
+      Backup-SqlDatabase -ServerInstance $Server -Database $db.Text -BackupFile $dst.Text
+    }
+  }
+
   Write-Output "Finished:`t$(Get-Date)"
 }
 
