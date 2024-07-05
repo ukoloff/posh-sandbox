@@ -1,5 +1,5 @@
 CREATE TABLE papercut (
-	id int NOT NULL generated always as identity primary key,
+	id int generated always as identity primary key,
 	"time" timestamp NOT NULL, -- Дата
 	"user" varchar NOT NULL, -- Пользователь
 	"pages" int4 NOT NULL, -- Страниц
@@ -39,7 +39,7 @@ GRANT SELECT ON TABLE papercut TO "uxmR";
 GRANT DELETE, INSERT, UPDATE ON TABLE papercut TO "uxmW";
 
 CREATE TABLE papercut_log (
-	id int NOT NULL generated always as identity primary key,
+	id int generated always as identity primary key,
 	ctime timestamptz DEFAULT clock_timestamp() NOT NULL, -- Дата создания
 	session_id int4 NULL, -- В рамках соединения
 	"day" date NULL, -- Добавляемый день
