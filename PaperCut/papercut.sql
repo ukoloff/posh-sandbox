@@ -1,5 +1,5 @@
 CREATE TABLE papercut (
-	id int generated always as identity primary key,
+	id int generated always as identity NOT NULL,
 	"time" timestamp NOT NULL, -- Дата
 	"user" varchar NOT NULL, -- Пользователь
 	"pages" int4 NOT NULL, -- Страниц
@@ -13,11 +13,13 @@ CREATE TABLE papercut (
 	"width" varchar NOT NULL, -- Ширина
 	"duplex" varchar NOT NULL, -- Двусторонняя печать
 	"grayscale" varchar NOT NULL, -- Черно-белый
-	"size" varchar NOT NULL -- Размер файла
+	"size" varchar NOT NULL, -- Размер файла
+	CONSTRAINT papercut_pkey PRIMARY KEY (id)
 );
 CREATE INDEX "papercut_Client_Time" ON papercut USING btree ("client", "time");
 CREATE INDEX "papercut_Time" ON papercut USING btree ("time");
 CREATE INDEX "papercut_User_Time" ON papercut USING btree ("user", "time");
+cluster papercut using papercut_pkey;
 
 COMMENT ON TABLE  papercut IS 'PaperCut Log';
 COMMENT ON COLUMN papercut."time" IS 'Дата';
@@ -39,16 +41,18 @@ GRANT SELECT ON TABLE papercut TO "uxmR";
 GRANT DELETE, INSERT, UPDATE ON TABLE papercut TO "uxmW";
 
 CREATE TABLE papercut_log (
-	id int generated always as identity primary key,
+	id int generated always as identity NOT NULL,
 	ctime timestamptz DEFAULT clock_timestamp() NOT NULL, -- Дата создания
 	session_id int4 NULL, -- В рамках соединения
 	"day" date NULL, -- Добавляемый день
 	duration float8 NULL, -- Продолжительность, сек
 	total int4 NULL, -- Записей в дне всего
 	added int4 NULL, -- Добавлено записей
+	CONSTRAINT papercut_log_pkey PRIMARY KEY (id),
 	CONSTRAINT papercut_log_papercut_log_fk FOREIGN KEY (session_id) REFERENCES papercut_log(id)
 );
 CREATE INDEX papercut_log_day_idx ON papercut_log USING btree (day, ctime);
+cluster papercut_log using papercut_log_pkey;
 
 -- Column comments
 
