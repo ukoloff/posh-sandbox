@@ -3,7 +3,7 @@
 # Install-Module -Name SimplySql
 #
 
-# Store Creadentials:
+# Store Credentials:
 # ------------------
 # $cred = Get-Credential
 # New-StoredCredential -Target mysql:SKUD -Credentials $cred -Persist LocalMachine
