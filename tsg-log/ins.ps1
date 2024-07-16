@@ -33,8 +33,8 @@ ForEach-Object {
     rec_id   = $_.RecordId;
     # start    = $_.TimeCreated.AddSeconds( - [int]$i.SessionDuration)
     end      = $_.TimeCreated;
+    guid     = $_.ActivityId.Guid;
     duration = [int]$i.SessionDuration;
-    guid     = $e.ActivityId.Guid;
     ip       = $i.IpAddress;
     user     = $i.Username;
     host     = $i.Resource;
