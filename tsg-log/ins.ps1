@@ -1,14 +1,14 @@
 $log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
 
 Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
-$end = Invoke-SqlScalar 'Select max("end") from tsg' -Parameters $row
+$row = Invoke-SqlScalar 'Select max("end") as fence, count(*) as n from tsg'
 
 $Filter = @{
   LogName = $log;
   ID      = 303;
 }
-if($end) {
-  $Filter['StartTime'] = $end.ToLocalTime().AddSeconds(-108)
+if($row.n) {
+  $Filter['StartTime'] = $row.fence.ToLocalTime().AddSeconds(-108)
 }
 
 $Filter
