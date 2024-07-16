@@ -4,6 +4,7 @@ CREATE TABLE tsg_log (
   CONSTRAINT tsg_log_pkey PRIMARY KEY (id)
 );
 CREATE INDEX tsg_log_ctime_idx ON tsg_log USING btree (ctime);
+CLUSTER tsg_log using tsg_log_pkey;
 
 -- Permissions
 GRANT SELECT ON TABLE tsg_log TO "uxmR";
@@ -29,6 +30,7 @@ CREATE INDEX tsg_start_idx ON tsg USING btree (start);
 CREATE INDEX tsg_end_idx ON tsg USING btree ("end");
 CREATE INDEX tsg_user_idx ON tsg USING btree ("user", start);
 ALTER TABLE tsg ADD CONSTRAINT tsg_tsg_log_fk FOREIGN KEY (log_id) REFERENCES tsg_log(id);
+CLUSTER tsg using tsg_pkey;
 
 -- Permissions
 GRANT SELECT ON TABLE public.tsg TO "uxmR";
