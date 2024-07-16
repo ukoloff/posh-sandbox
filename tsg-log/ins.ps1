@@ -1,5 +1,19 @@
 $log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
 
+Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
+$end = Invoke-SqlScalar 'Select max("end") from tsg' -Parameters $row
+
+$Filter = @{
+  LogName = $log;
+  ID      = 303;
+}
+if($end) {
+  $Filter['StartTime'] = $end.ToLocalTime().AddSeconds(-108)
+}
+
+$Filter
+exit
+
 $e = Get-WinEvent -FilterHashTable @{
   LogName = $log;
   ID      = 303;
@@ -25,6 +39,5 @@ $sqlAdd = @"
   Values ($($row.Keys.ForEach({"@$_"}) -join ", "))
 "@
 
-Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
 Invoke-SqlScalar $sqlAdd -Parameters $row
 Close-SqlConnection
