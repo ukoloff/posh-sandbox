@@ -26,6 +26,7 @@ CREATE TABLE tsg (
 	CONSTRAINT tsg_pkey PRIMARY KEY (id)
 );
 CREATE INDEX tsg_start_idx ON tsg USING btree (start);
+CREATE INDEX tsg_end_idx ON tsg USING btree ("end");
 CREATE INDEX tsg_user_idx ON tsg USING btree ("user", start);
 ALTER TABLE tsg ADD CONSTRAINT tsg_tsg_log_fk FOREIGN KEY (log_id) REFERENCES tsg_log(id);
 
