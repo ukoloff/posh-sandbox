@@ -39,8 +39,8 @@ ForEach-Object {
     user     = $i.Username;
     host     = $i.Resource;
     proto    = $i.ConnectionProtocol
-    inb      = [int]$i.BytesReceived;
-    outb     = [int]$i.BytesTransfered;
+    inb      = [long]$i.BytesReceived;
+    outb     = [long]$i.BytesTransfered;
   }
   if (!$sqlFound) {
     $sqlFound = @"
@@ -62,7 +62,7 @@ ForEach-Object {
     }
     Invoke-SqlScalar $sqlAdd -Parameters $row
     $Total++
-    if ($Total % 100 -eq 0) {
+    if ($Total % 1000 -eq 0) {
       [PSCustomObject]$row | Format-Table -HideTableHeaders  end, ip, user, host, duration
     }
     $now = Get-Date

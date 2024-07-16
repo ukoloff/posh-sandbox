@@ -22,8 +22,8 @@ CREATE TABLE tsg (
 	"user" text NULL,
 	host text NULL,
 	proto text NULL,
-	inb int NULL,
-	outb int NULL,
+	inb int8 NULL,
+	outb int8 NULL,
 	CONSTRAINT tsg_pkey PRIMARY KEY (id)
 );
 CREATE INDEX tsg_start_idx ON tsg USING btree (start);
