@@ -15,7 +15,7 @@ $Filter = @{
   LogName = $log;
   ID      = 303;
 }
-$row = Invoke-SqlScalar 'Select max("end") as fence, count(*) as n from tsg'
+$row = Invoke-SqlQuery 'Select max("end") as fence, count(*) as n from tsg'
 if ($row.n) {
   $Filter['StartTime'] = $row.fence.ToLocalTime().AddSeconds(-108)
 }
