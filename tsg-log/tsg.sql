@@ -25,9 +25,9 @@ CREATE TABLE tsg (
 	outb int NULL,
 	CONSTRAINT tsg_pkey PRIMARY KEY (id)
 );
-CREATE INDEX tsg_start_idx ON public.tsg USING btree (start);
-CREATE INDEX tsg_user_idx ON public.tsg USING btree ("user", start);
-ALTER TABLE public.tsg ADD CONSTRAINT tsg_tsg_log_fk FOREIGN KEY (log_id) REFERENCES tsg_log(id);
+CREATE INDEX tsg_start_idx ON tsg USING btree (start);
+CREATE INDEX tsg_user_idx ON tsg USING btree ("user", start);
+ALTER TABLE tsg ADD CONSTRAINT tsg_tsg_log_fk FOREIGN KEY (log_id) REFERENCES tsg_log(id);
 
 -- Permissions
 GRANT SELECT ON TABLE public.tsg TO "uxmR";
