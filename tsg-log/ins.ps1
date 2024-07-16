@@ -15,7 +15,16 @@ $row = @{
   ip    = $i.IpAddress;
   user  = $i.Username;
   host  = $i.Resource;
-  proto = $i.ConnectionProtocol;
+  proto = $i.ConnectionProtocol
   inb   = [int]$i.BytesReceived;
   outb  = [int]$i.BytesTransfered;
 }
+
+$sqlAdd = @"
+  Insert Into tsg($($row.Keys.ForEach({"`"$_`""}) -join ", "))
+  Values ($($row.Keys.ForEach({"@$_"}) -join ", "))
+"@
+
+Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
+Invoke-SqlScalar $sqlAdd -Parameters $row
+Close-SqlConnection
