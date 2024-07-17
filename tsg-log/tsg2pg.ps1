@@ -1,6 +1,27 @@
 #
 # Import Remote Desktop Gateway logs into PostgreSQL
 #
+param(
+    [switch]$install,
+    [switch]$remove
+)
+
+if ($install) {
+    $me = Split-Path $PSCommandPath -Leaf
+    $dir = Split-Path $PSCommandPath -Parent
+    $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+    $Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours 1) -RandomDelay 00:05:00
+    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+    Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+    exit
+}
+
+if ($remove) {
+    $me = Split-Path $PSCommandPath -Leaf
+    Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+    exit
+}
+
 $startAt = Get-Date
 
 $log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
