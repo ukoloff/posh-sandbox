@@ -1,12 +1,13 @@
-$log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
+$startAt = Get-Date
 
+$log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
 
 # Store Credentials:
 # ------------------
 # $cred = Get-Credential
 # # Install-Module -Name CredentialManager
 # New-StoredCredential -Target pqsql:TSG -Credentials $cred -Persist LocalMachine
-$cred = Get-StoredCredential -Target pqsql:TSG  # Try Kerberos if not found
+$cred = Get-StoredCredential -Target pqsql:TSG  # Fallback to Kerberos if not found
 Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
 
 $logID = Invoke-SqlScalar 'Insert Into tsg_log(id) Values(Default) Returning id'
@@ -23,10 +24,14 @@ if ($row.n) {
 Start-SqlTransaction
 
 $Total = 0
+$Already = 0
+$Found = 0
 $txTime = Get-Date
+$lastPing  = ''
 
 Get-WinEvent -FilterHashTable $Filter -Oldest |
 ForEach-Object {
+  $Found++
   $x = [xml]$_.ToXml()
   $i = $x.Event.UserData.EventInfo
   $row = @{
@@ -64,12 +69,15 @@ ForEach-Object {
     }
     Invoke-SqlScalar $sqlAdd -Parameters $row
     $Total++
-    if ($Total % 1000 -eq 0) {
-      [PSCustomObject]$row | Format-Table -HideTableHeaders  end, ip, user, host, duration
+    $now = $row['end'].ToString('d')
+    if ($now -ne $lastPing) {
+      $lastPing = $now
+      Write-Host -NoNewline "`r$now"
     }
     $now = Get-Date
     if (($now - $txTime).TotalSeconds -ge 27) {
-      Write-Host "Commit $Total records"
+      Write-Host "`rCommit $($Total - $Already) records"
+      $Already = $Total
       Complete-SqlTransaction
       Start-SqlTransaction
       $txTime = Get-Date
@@ -77,5 +85,12 @@ ForEach-Object {
   }
 }
 
+Write-Host "`rCommit $($Total - $Already) records"
 Complete-SqlTransaction
 Close-SqlConnection
+
+Write-Host @"
+Found:`t$Found
+Added:`t$Total
+Elapsed:`t$((Get-Date) - $startAt)
+"@
