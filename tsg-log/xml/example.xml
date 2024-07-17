@@ -1,0 +1,350 @@
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:09:12
+Код события:   303
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\o.luchsheva" на клиентском компьютере "94.51.141.181" отключился от следующего сетевого ресурса: "UXM00090.omzglobal.com". До отключения пользователя клиент передал 30333 и получил 295308 байт. Длительность сеанса клиента составила 37 с. Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>303</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>44</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:09:12.559968600Z" />
+    <EventRecordID>343878</EventRecordID>
+    <Correlation ActivityID="{9e4813ba-d239-4ee9-b940-c110a5be0200}" />
+    <Execution ProcessID="9496" ThreadID="7036" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\o.luchsheva</Username>
+      <IpAddress>94.51.141.181</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>UXM00090.omzglobal.com</Resource>
+      <BytesReceived>295308</BytesReceived>
+      <BytesTransfered>30333</BytesTransfered>
+      <SessionDuration>37</SessionDuration>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>1226</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:08:34
+Код события:   302
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\o.luchsheva" на клиентском компьютере "94.51.141.181" подключился к ресурсу "UXM00090.omzglobal.com". Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>302</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>30</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:08:34.837232200Z" />
+    <EventRecordID>343877</EventRecordID>
+    <Correlation ActivityID="{9e4813ba-d239-4ee9-b940-c110a5be0200}" />
+    <Execution ProcessID="9496" ThreadID="9644" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\o.luchsheva</Username>
+      <IpAddress>94.51.141.181</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>UXM00090.omzglobal.com</Resource>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>0</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:06:44
+Код события:   303
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\yu.samgin" на клиентском компьютере "78.132.137.193" отключился от следующего сетевого ресурса: "uxm00052.omzglobal.com". До отключения пользователя клиент передал 586763 и получил 3381831 байт. Длительность сеанса клиента составила 92 с. Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>303</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>44</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:06:44.047231100Z" />
+    <EventRecordID>343873</EventRecordID>
+    <Correlation ActivityID="{3ac861e4-3b50-4fd2-97df-42cd84c20200}" />
+    <Execution ProcessID="9496" ThreadID="4536" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\yu.samgin</Username>
+      <IpAddress>78.132.137.193</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>uxm00052.omzglobal.com</Resource>
+      <BytesReceived>3381831</BytesReceived>
+      <BytesTransfered>586763</BytesTransfered>
+      <SessionDuration>92</SessionDuration>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>1226</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:05:11
+Код события:   302
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\yu.samgin" на клиентском компьютере "78.132.137.193" подключился к ресурсу "uxm00052.omzglobal.com". Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>302</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>30</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:05:11.293470900Z" />
+    <EventRecordID>343872</EventRecordID>
+    <Correlation ActivityID="{3ac861e4-3b50-4fd2-97df-42cd84c20200}" />
+    <Execution ProcessID="9496" ThreadID="9660" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\yu.samgin</Username>
+      <IpAddress>78.132.137.193</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>uxm00052.omzglobal.com</Resource>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>0</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:05:09
+Код события:   303
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\yu.samgin" на клиентском компьютере "78.132.137.193" отключился от следующего сетевого ресурса: "uxm00052.omzglobal.com". До отключения пользователя клиент передал 1124 и получил 1341 байт. Длительность сеанса клиента составила 0 с. Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>303</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>44</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:05:09.777433600Z" />
+    <EventRecordID>343870</EventRecordID>
+    <Correlation ActivityID="{3ac861e4-3b50-4fd2-97df-42cd84c20200}" />
+    <Execution ProcessID="9496" ThreadID="7036" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\yu.samgin</Username>
+      <IpAddress>78.132.137.193</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>uxm00052.omzglobal.com</Resource>
+      <BytesReceived>1341</BytesReceived>
+      <BytesTransfered>1124</BytesTransfered>
+      <SessionDuration>0</SessionDuration>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>1226</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:05:09
+Код события:   302
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\yu.samgin" на клиентском компьютере "78.132.137.193" подключился к ресурсу "uxm00052.omzglobal.com". Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>302</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>30</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:05:09.551564900Z" />
+    <EventRecordID>343869</EventRecordID>
+    <Correlation ActivityID="{3ac861e4-3b50-4fd2-97df-42cd84c20200}" />
+    <Execution ProcessID="9496" ThreadID="9656" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\yu.samgin</Username>
+      <IpAddress>78.132.137.193</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>uxm00052.omzglobal.com</Resource>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>0</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 10:02:22
+Код события:   303
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\o.mkva" на клиентском компьютере "188.16.62.178" отключился от следующего сетевого ресурса: "uxm00098.omzglobal.com". До отключения пользователя клиент передал 4492518 и получил 17033474 байт. Длительность сеанса клиента составила 3806 с. Использован протокол подключения "HTTP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>303</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>44</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T05:02:22.544898600Z" />
+    <EventRecordID>343863</EventRecordID>
+    <Correlation ActivityID="{05be3dfd-1a52-41ad-9220-8893592f0100}" />
+    <Execution ProcessID="9496" ThreadID="7704" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\o.mkva</Username>
+      <IpAddress>188.16.62.178</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>uxm00098.omzglobal.com</Resource>
+      <BytesReceived>17033474</BytesReceived>
+      <BytesTransfered>4492518</BytesTransfered>
+      <SessionDuration>3806</SessionDuration>
+      <ConnectionProtocol>HTTP</ConnectionProtocol>
+      <ErrorCode>1226</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
+
+Имя журнала:   Microsoft-Windows-TerminalServices-Gateway/Operational
+Источник:      Microsoft-Windows-TerminalServices-Gateway
+Дата:          30.05.2024 9:45:37
+Код события:   303
+Категория задачи:(3)
+Уровень:       Сведения
+Ключевые слова:(16777216)
+Пользователь:  NETWORK SERVICE
+Компьютер:     srvrds-ekbh3.omzglobal.com
+Описание:
+Пользователь "OMZGLOBAL\k.kuznetsov1" на клиентском компьютере "10.33.40.93" отключился от следующего сетевого ресурса: "uxm00557.omzglobal.com". До отключения пользователя клиент передал 5260302 и получил 68081204 байт. Длительность сеанса клиента составила 4760 с. Использован протокол подключения "UDP".
+Xml события:
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-TerminalServices-Gateway" Guid="{4d5ae6a1-c7c8-4e6d-b840-4d8080b42e1b}" />
+    <EventID>303</EventID>
+    <Version>0</Version>
+    <Level>4</Level>
+    <Task>3</Task>
+    <Opcode>44</Opcode>
+    <Keywords>0x4000000001000000</Keywords>
+    <TimeCreated SystemTime="2024-05-30T04:45:37.227095400Z" />
+    <EventRecordID>343862</EventRecordID>
+    <Correlation ActivityID="{28c78b6b-7bac-4008-bb1f-cea482dc0000}" />
+    <Execution ProcessID="9496" ThreadID="3156" />
+    <Channel>Microsoft-Windows-TerminalServices-Gateway/Operational</Channel>
+    <Computer>srvrds-ekbh3.omzglobal.com</Computer>
+    <Security UserID="S-1-5-20" />
+  </System>
+  <UserData>
+    <EventInfo xmlns="aag">
+      <Username>OMZGLOBAL\k.kuznetsov1</Username>
+      <IpAddress>10.33.40.93</IpAddress>
+      <AuthType>
+      </AuthType>
+      <Resource>uxm00557.omzglobal.com</Resource>
+      <BytesReceived>68081204</BytesReceived>
+      <BytesTransfered>5260302</BytesTransfered>
+      <SessionDuration>4760</SessionDuration>
+      <ConnectionProtocol>UDP</ConnectionProtocol>
+      <ErrorCode>1226</ErrorCode>
+    </EventInfo>
+  </UserData>
+</Event>
