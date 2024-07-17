@@ -1,6 +1,9 @@
 CREATE TABLE tsg_log (
   id int generated always as identity NOT NULL,
   ctime timestamptz DEFAULT clock_timestamp() NOT NULL,
+	"domain" text NOT NULL,
+	"user" text NOT NULL,
+	host text NOT NULL,
   CONSTRAINT tsg_log_pkey PRIMARY KEY (id)
 );
 CREATE INDEX tsg_log_ctime_idx ON tsg_log USING btree (ctime);

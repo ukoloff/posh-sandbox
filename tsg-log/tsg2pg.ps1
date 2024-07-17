@@ -13,7 +13,11 @@ $log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
 $cred = Get-StoredCredential -Target pqsql:TSG  # Fallback to Kerberos if not found
 Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
 
-$logID = Invoke-SqlScalar 'Insert Into tsg_log(id) Values(Default) Returning id'
+$logID = Invoke-SqlScalar @"
+  Insert Into tsg_log("domain", "user", "host")
+  Values(@domain, @user, @host)
+  Returning id
+"@ -Parameters @{domain=$env:USERDOMAIN; user=$env:USERNAME; host=$env:COMPUTERNAME}
 
 $Filter = @{
   LogName = $log;
