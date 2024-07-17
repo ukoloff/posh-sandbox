@@ -42,13 +42,15 @@ ForEach-Object {
     inb      = [long]$i.BytesReceived;
     outb     = [long]$i.BytesTransfered;
   }
+  if ($row['guid'] -eq $null) {
+    $row['guid'] = '-'
+  }
   if (!$sqlFound) {
     $sqlFound = @"
       Select Count(*)
       From tsg
       Where $($row.Keys.ForEach({ "`"$_`" = @$_"}) -join ' And ')
 "@
-    echo $sqlFound
   }
   $n = Invoke-SqlScalar $sqlFound -Parameters $row
   if ($n -eq 0) {
