@@ -12,18 +12,18 @@ GRANT UPDATE, DELETE, INSERT ON TABLE tsg_log TO "uxmW";
 
 CREATE TABLE tsg (
 	id int generated always as identity NOT NULL,
-	rec_id int NULL,
-	"start" timestamptz NULL,
-	"end" timestamptz NULL,
-	duration int4 NULL,
+	rec_id int NOT NULL,
+	"start" timestamptz NOT NULL,
+	"end" timestamptz NOT NULL,
+	duration int4 NOT NULL,
 	log_id int4 NULL,
-	guid text NULL,
-	ip text NULL,
-	"user" text NULL,
-	host text NULL,
-	proto text NULL,
-	inb int8 NULL,
-	outb int8 NULL,
+	guid text NOT NULL,
+	ip text NOT NULL,
+	"user" text NOT NULL,
+	host text NOT NULL,
+	proto text NOT NULL,
+	inb int8 NOT NULL,
+	outb int8 NOT NULL,
 	CONSTRAINT tsg_pkey PRIMARY KEY (id)
 );
 CREATE INDEX tsg_start_idx ON tsg USING btree (start);
