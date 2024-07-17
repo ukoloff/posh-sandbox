@@ -1,3 +1,6 @@
+#
+# Import Remote Desktop Gateway logs into PostgreSQL
+#
 $startAt = Get-Date
 
 $log = 'Microsoft-Windows-TerminalServices-Gateway/Operational'
@@ -90,7 +93,7 @@ Complete-SqlTransaction
 Close-SqlConnection
 
 Write-Host @"
-Found:`t$Found
-Added:`t$Total
-Elapsed:`t$((Get-Date) - $startAt)
+Records found:`t$Found
+Records added:`t$Total
+Time elapsed:`t$((Get-Date) - $startAt)
 "@
