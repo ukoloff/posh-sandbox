@@ -1,7 +1,7 @@
 ﻿[ServiceDesk]
-Connect=Srvr="srv1c-ekbh3";Ref="UPRIT_WORK";
+Connect=Srvr="srv1c-ekbh3:1641";Ref="UPRIT_WORK";
 ID=13809454-713e-47d3-920b-1dbcab3d96ee
-OrderInList=-1
+OrderInList=16384
 Folder=/
 OrderInTree=256
 External=0
@@ -9,3 +9,4 @@ ClientConnectionSpeed=Normal
 App=Auto
 WA=1
 Version=8.3
+DisableLocalSpeechToText=0
