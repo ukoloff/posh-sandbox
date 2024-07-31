@@ -4,6 +4,7 @@
 
 + В настройках LDAP <https://trueconf.ekb.ru/admin/ldap/settings/>
   выбрать `Автоматическое определение` (контроллера домена)
++ Настройка `/etc/krb5.conf` говорят, не нужна
 
 ```powershell
 Remove-ADComputer trueconf.ekb.ru

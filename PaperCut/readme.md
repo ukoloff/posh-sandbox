@@ -12,6 +12,7 @@ default_realm = OMZGLOBAL.COM
 [realms]
 OMZGLOBAL.COM = {
  kdc = srvdc-ekbh5.omzglobal.com
+ kdc = srvdc-ekbh6.omzglobal.com
  admin_server = srvdc-ekbh5.omzglobal.com
 }
 ```
