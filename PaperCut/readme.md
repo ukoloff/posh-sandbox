@@ -2,6 +2,8 @@
 
 ## Setup Kerberos for PostgreSQL
 
++ См. также [Kerberos для TrueConf](trueconf.md)
+
 ```ini
 # /etc/krb5.conf
 [libdefaults]
