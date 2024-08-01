@@ -9,10 +9,8 @@
 ```powershell
 Remove-ADComputer trueconf.ekb.ru
 New-ADComputer trueconf.ekb.ru -Path 'OU=kerberos,OU=uxm,OU=servers-ekb-uhm,OU=Servers,DC=omzglobal,DC=com'
-$Pass = -join (33..126 * 3 | Get-Random -Count 21 | % { [char]$_ })
-ktpass +answer -princ trueconf/trueconf.ekb.ru@OMZGLOBAL.COM -ptype KRB5_NT_SRV_HST -crypto ALL -mapuser 'OMZGLOBAL\trueconf.ekb.ru$' -pass $Pass -out c:\temp\trueconf.keytab
+ktpass +answer -princ trueconf/trueconf.ekb.ru@OMZGLOBAL.COM -ptype KRB5_NT_SRV_HST -crypto ALL -mapuser 'OMZGLOBAL\trueconf.ekb.ru$' -pass +rndpass -out c:\temp\trueconf.keytab
 Get-ADComputer trueconf.ekb.ru -Properties servicePrincipalName,userPrincipalName,msDS-KeyVersionNumber
-$Pass
 ```
 | Attribure              |  Value                                                                                   |
 |------------------------|------------------------------------------------------------------------------------------|
@@ -27,3 +25,9 @@ $Pass
 | servicePrincipalName   |  {trueconf/trueconf.ekb.ru}                                                              |
 | SID                    |  S-1-5-21-429210517-1838642026-1537874043-149426                                         |
 | UserPrincipalName      |  trueconf/trueconf.ekb.ru@OMZGLOBAL.COM                                                  |
+
+```powershell
+$Pass = -join (33..126 * 3 | Get-Random -Count 21 | % { [char]$_ })
+New-ADUser trueconf.ekb.ru -Path 'OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com' -AccountPassword (ConvertTo-SecureString $Pass -AsPlainText -Force) -Enabled $true -PasswordNeverExpires $true -CannotChangePassword $true
+$Pass
+```
