@@ -24,13 +24,16 @@ $depts = Invoke-SqlQuery @"
 "@
 $deptIndex = @{}
 foreach ($d in $depts) {
-  $deptIndex[$d.kod] = $d.ID
+  if (!$deptIndex[$d.kod]) { $deptIndex[$d.kod] = @() }
+  $deptIndex[$d.kod] += @($d.ID)
 }
 $depts = @{}
 foreach ($row in $data) {
   $id = $row.Номер -replace '\D+', ''
   if (!$deptIndex[$id]) { continue }
-  $depts[$deptIndex[$id]] = 1
+  foreach ($d in $deptIndex[$id]) {
+    $depts[$d] = 1
+  }
 }
 $deptIndex = 0
 $depts = $depts.Keys | Sort-Object
