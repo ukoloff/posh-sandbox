@@ -19,5 +19,5 @@ $d = Get-Date
 $d = $d.AddDays(-$days)
 
 Get-ChildItem -Path $folder -File |
-Where-Object { $_.LastAccessTime -ge $d } |
+Where-Object { $_.LastAccessTime -le $d } |
 ForEach-Object { move2trash($_.FullName) }
