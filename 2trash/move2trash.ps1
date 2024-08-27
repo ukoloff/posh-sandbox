@@ -1,8 +1,29 @@
 ﻿#
 # Удаление файлов старше ... дней в Корзину
 #
+param( # Для самостоятельной установки запуска по расписанию
+  [switch]$install,
+  [switch]$remove
+)
+
 $days = 180
 $folder = 'c:\temp\x'
+
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -At 04:00 -Daily -RandomDelay 01:00:00
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
+}
 
 Add-Type -AssemblyName Microsoft.VisualBasic
 function move2trash($path) {
