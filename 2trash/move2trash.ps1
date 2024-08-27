@@ -1,4 +1,4 @@
-#
+﻿#
 # Удаление файлов старше ... дней в Корзину
 #
 $days = 180
@@ -15,7 +15,9 @@ function move2trash($path) {
   }
 }
 
+$d = Get-Date
+$d = $d.AddDays(-$days)
+
 Get-ChildItem -Path $folder -File |
-ForEach-Object {
-  move2trash($_.FullName)
-}
+Where-Object { $_.LastAccessTime -ge $d } |
+ForEach-Object { move2trash($_.FullName) }
