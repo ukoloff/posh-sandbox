@@ -1,5 +1,5 @@
 #
-# Quick backup
+# Quick incremental backup
 #
 Import-Module SqlServer
 
