@@ -3,6 +3,9 @@
 #
 $Server = "SRVSQL-1C"
 $Folder = '\\SRVSQL-1C\E$\stas'
+# $Folder = '\\SRVSQL-1C\E$\OP_WORK'
+# $Folder = '\\SRVSQL-1C\E$\ERP_WORK'
+# $Folder = '\\SRVSQL-1C\E$\ZUP_20'
 
 Open-SQLConnection -Server $Server
 
@@ -16,11 +19,11 @@ ForEach-Object {
   $row
 }
 $found = @()
-$full = $baks | Where-Object { $_.BackupType -eq 1 }
+[array]$full = $baks | Where-Object { $_.BackupType -eq 1 }
 if ($full) {
   $full = $full[0]
   $found = @($full)
-  $inc = $baks | Where-Object { $_.BackupType -eq 5 -and $_.DifferentialBaseGUID -eq $full.BackupSetGUID}
+  [array]$inc = $baks | Where-Object { $_.BackupType -eq 5 -and $_.DifferentialBaseGUID -eq $full.BackupSetGUID}
   if ($inc) {
     $found += ($inc[0])
   }
@@ -28,4 +31,4 @@ if ($full) {
 
 Close-SqlConnection
 
-$found | Format-Table -Property FullName,BackupStartDate
+$found | Format-Table -Property FullName,BackupType,BackupStartDate
