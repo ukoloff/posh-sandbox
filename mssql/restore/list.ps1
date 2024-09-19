@@ -28,4 +28,4 @@ if ($full) {
 
 Close-SqlConnection
 
-$found | Out-GridView
+$found | Format-Table -Property FullName,BackupStartDate
