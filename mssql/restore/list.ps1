@@ -2,14 +2,33 @@
 # Find latest backup(s)
 #
 $Server = "SRVSQL-1C"
-$Folder = '\\SRVSQL-1C\E$\stas'
-# $Folder = '\\SRVSQL-1C\E$\OP_WORK'
-# $Folder = '\\SRVSQL-1C\E$\ERP_WORK'
-# $Folder = '\\SRVSQL-1C\E$\ZUP_20'
+$Folder = '\\srvsql-1c\e$\'
+$DBs = @('stas', 'OP_WORK', 'ERP_WORK', 'ZUP_20')
 
-Open-SQLConnection -Server $Server
+function getBackups($folder) {
+  $baks = Get-ChildItem $folder -File |
+  Sort-Object CreationTime -Descending |
+  ForEach-Object {
+    $row = Invoke-SqlQuery 'restore headeronly from disk = @file' -Parameters @{file = $_.FullName }
+    $row | Add-Member -NotePropertyName FullName -NotePropertyValue $_.FullName
+    $row
+  }
+  $found = @()
+  [array]$full = $baks | Where-Object {
+    $_.BackupType -eq 1 }
+  if ($full) {
+    $full = $full[0]
+    $found = @($full)
+    [array]$inc = $baks | Where-Object {
+      $_.BackupType -eq 5 -and
+      $_.DifferentialBaseGUID -eq $full.BackupSetGUID }
+    if ($inc) {
+      $found += ($inc[0])
+    }
+  }
+  $found
+}
 
-# $backups = @()
 
 $baks = Get-ChildItem $Folder -File |
 Sort-Object CreationTime -Descending |
@@ -23,12 +42,14 @@ $found = @()
 if ($full) {
   $full = $full[0]
   $found = @($full)
-  [array]$inc = $baks | Where-Object { $_.BackupType -eq 5 -and $_.DifferentialBaseGUID -eq $full.BackupSetGUID}
+  [array]$inc = $baks | Where-Object { $_.BackupType -eq 5 -and $_.DifferentialBaseGUID -eq $full.BackupSetGUID }
   if ($inc) {
     $found += ($inc[0])
   }
 }
 
+Open-SQLConnection -Server $Server
+foreach ($db in $DBs) {
+  getBackups("$Folder/$db") | Format-Table -Property FullName, BackupType, BackupStartDate
+}
 Close-SqlConnection
-
-$found | Format-Table -Property FullName,BackupType,BackupStartDate
