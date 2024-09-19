@@ -11,7 +11,9 @@ Open-SQLConnection -Server $Server
 $baks = Get-ChildItem $Folder -File |
 Sort-Object CreationTime -Descending |
 ForEach-Object {
-  Invoke-SqlQuery 'restore headeronly from disk = @file' -Parameters @{file = $_.FullName }
+  $row = Invoke-SqlQuery 'restore headeronly from disk = @file' -Parameters @{file = $_.FullName }
+  $row | Add-Member -NotePropertyName FullName -NotePropertyValue $_.FullName
+  $row
 }
 $found = @()
 $full = $baks | Where-Object { $_.BackupType -eq 1 }
@@ -26,4 +28,4 @@ if ($full) {
 
 Close-SqlConnection
 
-echo $found
+$found | Out-GridView
