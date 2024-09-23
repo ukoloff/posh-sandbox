@@ -2,7 +2,7 @@
 # Уведомления перед днём рождения
 #
 Import-Module ActiveDirectory
-$adBase = 'OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+$adBase = 'OU=uxm,OU=MS,DC=omzglobal,DC=com'
 
 $then = (Get-Date).AddDays(4).ToString("dd.MM")
 $filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1=$then.*)(mail=*))"
@@ -11,6 +11,8 @@ $Users
 
 $u = 'P.Vazhenin'
 $u = 's.ukolov'
+$u = 'lobza'
+$u = 'gretskaya'
 
 function getManager($adUser) {
   $adUser = Get-ADUser $adUser -Properties Manager
@@ -42,5 +44,5 @@ function listManagers() {
   }
 }
 
-# getManager($u) | Out-GridView
-listManagers
+# listManagers
+getManager($u) | Out-GridView
