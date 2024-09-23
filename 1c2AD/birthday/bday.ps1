@@ -15,15 +15,21 @@ $today = Get-Date -Format "dd.MM"
 $today = '08.07'
 
 $filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1=$today.*)(mail=*)(sAMAccountName=s.*))"
-[array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties mail,middleName
+[array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties mail, middleName
 
 foreach ($user in $Users) {
 
+  $me = Split-Path $PSCommandPath -Parent
+  [array]$assets = Join-Path $me assets |
+  Get-ChildItem -File |
+  ForEach-Object { $_.FullName }
+
+
   $mail = @{
     Body       = 'Проверка связи'
-    # Attachments = $Attachment0.FullName,$Attachment1.FullName
-    # BodyAsHtml = $true
-    Subject    = "Поздравляем с днем рождения, " +  $user.givenName + " " + $User.middleName + "!"
+    Attachments = $assets
+    BodyAsHtml = $true
+    Subject    = "Поздравляем с днем рождения, " + $user.givenName + " " + $User.middleName + "!"
     From       = 'serviceuxm@omzglobal.com'
     To         = $user.mail
     SmtpServer = 'srvmail-ekbh5.omzglobal.com'
