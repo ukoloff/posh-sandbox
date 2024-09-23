@@ -32,9 +32,9 @@ Get-ChildItem -File |
 ForEach-Object { $_.FullName }
 
 $today = Get-Date -Format "dd.MM"
-$today = '08.07'
+# $today = '08.07'
 
-$filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1=$today.*)(mail=*)(sAMAccountName=s.*))"
+$filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1=$today.*)(mail=*))"
 [array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties mail, middleName
 
 foreach ($user in $Users) {
