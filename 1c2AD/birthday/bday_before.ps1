@@ -10,26 +10,27 @@ $filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1
 $Users
 
 $u = 'P.Vazhenin'
-# $u = 's.ukolov'
+$u = 's.ukolov'
 
-$user = Get-ADUser $u -Properties Manager
-$managers = @()
-if ($user.Manager) {
-  $managers = @($user.Manager)
-}
-else {
+function getManager($adUser) {
+  $adUser = Get-ADUser $adUser -Properties Manager
+  $manager = $adUser.Manager
+  if ($manager) {
+    return @($manager)
+  }
   $mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(mail=*)(directReports=*))"
-  $dn = $user.DistinguishedName
+  $dn = $adUser.DistinguishedName
   while (1) {
     $ou = 'OU=' + ($dn -split ',OU=', 2)[1]
     if (!$ou.EndsWith($adBase)) { break }
     [array]$list = Get-ADUser -SearchBase $ou -LDAPFilter $mgrFilter -SearchScope OneLevel
     if ($list) {
       [array]$managers = $list | ForEach-Object { $_.DistinguishedName }
-      break
+      return $managers
     }
     $dn = $ou
   }
+  return @()
 }
 
-$managers | Out-GridView
+getManager($u) | Out-GridView
