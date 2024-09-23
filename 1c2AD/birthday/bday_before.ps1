@@ -33,4 +33,14 @@ function getManager($adUser) {
   return @()
 }
 
-getManager($u) | Out-GridView
+function listManagers() {
+  [array]$users = Get-ADUser -SearchBase $adBase -LDAPFilter "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1=*)(mail=*))"
+  foreach ($u in $users) {
+    $ms = getManager($u)
+    if ($ms.count -eq 1) { continue }
+    Write-Output "$($u.SamAccountName): $($ms.ForEach({ (Get-ADUser $_).SamAccountName }) -join ', ')"
+  }
+}
+
+# getManager($u) | Out-GridView
+listManagers
