@@ -51,7 +51,8 @@ foreach ($user in $Users) {
 <td style="width: 300px; height: 574px;"><img src="cid:bgl.png"></td>
 <td style="width: 444px;">
 <p align=center style='text-align:center'>
-    <span style='font-family:"Trebuchet MS","sans-serif"'>$(Get-Random $Greetings)<br><br><br>Коллектив АО "Уралхиммаш"</span>
+    <span style='font-family:"Trebuchet MS","sans-serif"'>$(Get-Random $Greetings)<br>
+    <br><br><i>Коллектив АО &laquo;Уралхиммаш&raquo;</i></span>
 </p>
 </td>
 <td style="width: 280px;"><img src="cid:bgr.png"></td>
