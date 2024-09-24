@@ -9,10 +9,21 @@ $filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1
 [array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties manager
 $Users
 
+class Send2 {
+  [Microsoft.ActiveDirectory.Management.ADUser] $u
+  [string[]] $managers
+
+  Send2($user) {
+    $this.u = Get-ADUser $user -Properties Manager
+  }
+}
+
 $u = 'P.Vazhenin'
 $u = 's.ukolov'
 $u = 'lobza'
 $u = 'gretskaya'
+
+$z = [Send2]::new($u)
 
 function getManager($adUser) {
   $adUser = Get-ADUser $adUser -Properties Manager
