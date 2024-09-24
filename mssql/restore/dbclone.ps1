@@ -3,7 +3,7 @@
 #
 $Server = "SRVSQL-1C"
 $Src = "\\$Server\e$\"
-$Dst = 'G:\'
+$Dst = "\\$Server\g$\"
 
 $DBs = @{
   stas     = @{
@@ -54,10 +54,28 @@ function getBackups($folder) {
   }
 }
 
+function timeStamp() {
+  Get-Date -UFormat '%Y-%m-%d %T'
+}
 function restoreDB($db) {
   $params = $DBs[$db]
   if (!$params -or $params.skip) { return }
-  echo $db
+  $db2 = $params['dst']
+  if (!$db2) {
+    $db2 = $db + '2'
+  }
+  $folder = "$Dst$db2"
+  $null = New-Item $folder -Force -ItemType Directory
+  $Log = @{
+    LiteralPath = "$folder/restore.log"
+    Append      = $true
+  }
+  "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
+  [array]$baks = getBackups("$Src$db")
+  foreach ($bak in $baks) {
+    "[$(timeStamp)] Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
+  }
+  "[$(timeStamp)] Done!" | Out-File @Log
 }
 
 Open-SQLConnection -Server $Server
