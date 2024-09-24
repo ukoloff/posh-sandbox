@@ -1,6 +1,11 @@
 #
 # Восстановление клонов БД MS SQL
 #
+param(
+  [switch]$install,
+  [switch]$remove
+)
+
 $Server = "SRVSQL-1C"
 
 $Src = "E:\"
@@ -25,6 +30,21 @@ $DBs = @{
   }
 }
 
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -Daily -At 7:40 -RandomDelay 00:05:00
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
+}
 
 function localizePath($path) {
   "\\$Server\" + ($path -replace ':', '$')
