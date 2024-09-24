@@ -11,7 +11,7 @@ $filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1
 
 class Send2 {
   [Microsoft.ActiveDirectory.Management.ADUser] $u
-  [string[]] $managers
+  [object[]] $managers
 
   Send2($user) {
     $this.u = Get-ADUser $user -Properties Manager
@@ -19,9 +19,8 @@ class Send2 {
   }
 
   [void] getManagers() {
-    $manager = $this.u.Manager
-    if ($manager) {
-      $this.managers = @($manager)
+    if ($this.u.Manager) {
+      $this.managers = @(Get-ADUser $this.u.Manager)
       return
     }
     $mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(mail=*)(directReports=*))"
@@ -31,8 +30,7 @@ class Send2 {
       if (!$ou.EndsWith($global:adBase)) { break }
       [array]$list = Get-ADUser -SearchBase $ou -LDAPFilter $mgrFilter -SearchScope OneLevel
       if ($list) {
-        [array]$mgrs = $list | ForEach-Object { $_.DistinguishedName }
-        $this.managers = $mgrs
+        $this.managers = $list
         return
       }
       $dn = $ou
@@ -53,8 +51,8 @@ function listManagers() {
 # listManagers
 
 $u = 'P.Vazhenin'
-$u = 's.ukolov'
-$u = 'lobza'
+# $u = 's.ukolov'
+# $u = 'lobza'
 # $u = 'gretskaya'
 
 $z = [Send2]::new($u)
