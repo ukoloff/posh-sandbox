@@ -37,6 +37,8 @@ function getBackups($folder) {
     switch ($row.BackupType) {
       1 {
         # Full DB backup
+        $files = Invoke-SqlQuery 'restore filelistonly from disk = @file' -Parameters @{file = $bak.FullName }
+        $row | Add-Member -NotePropertyName Files -NotePropertyValue $files
         $result = @($row)
         if ($diffs[$row.BackupSetGUID]) {
           $result += @($diffs[$row.BackupSetGUID])
@@ -57,6 +59,7 @@ function getBackups($folder) {
 function timeStamp() {
   Get-Date -UFormat '%Y-%m-%d %T'
 }
+
 function restoreDB($db) {
   $params = $DBs[$db]
   if (!$params -or $params.skip) { return }
