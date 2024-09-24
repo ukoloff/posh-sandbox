@@ -15,13 +15,12 @@ class Send2 {
 
   Send2($user) {
     $this.u = Get-ADUser $user -Properties Manager
-    $this.getManagers()
+    $this.managers = $this.getManagers()
   }
 
-  [void] getManagers() {
+  [object[]] getManagers() {
     if ($this.u.Manager) {
-      $this.managers = @(Get-ADUser $this.u.Manager)
-      return
+      return @(Get-ADUser $this.u.Manager)
     }
     $mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(mail=*)(directReports=*))"
     $dn = $this.u.DistinguishedName
@@ -30,12 +29,11 @@ class Send2 {
       if (!$ou.EndsWith($global:adBase)) { break }
       [array]$list = Get-ADUser -SearchBase $ou -LDAPFilter $mgrFilter -SearchScope OneLevel
       if ($list) {
-        $this.managers = $list
-        return
+        return $list
       }
       $dn = $ou
     }
-    $this.managers = @()
+    return @()
   }
 }
 
