@@ -52,6 +52,26 @@ class Send2 {
     return $result
   }
 
+  [object[]] getBcc() {
+    $seen = @{}
+    $result = @()
+    $seen[$this.u.SamAccountName] = 1
+    $mgrs = $this.managers + $this.topManagers()
+    foreach ($m in $mgrs) {
+      if ($seen[$m.SamAccountName]) { continue }
+      $seen[$m.SamAccountName] = 1
+      $result += $m
+      $slaves = (Get-ADUser $m -Properties directReports).directReports
+      if (!$slaves) { continue }
+      foreach ($udn in $slaves) {
+        $slave = Get-ADUser $udn -Properties mail
+        if (!$slave.Enabled -or !$slave.mail -or $seen[$slave.SamAccountName]) { continue }
+        $seen[$slave.SamAccountName] = 1
+        $result += $slave
+      }
+    }
+    return $result
+  }
 }
 
 function listManagers() {
@@ -71,4 +91,4 @@ $u = 'P.Vazhenin'
 # $u = 'gretskaya'
 
 $z = [Send2]::new($u)
-$z.topManagers() | Out-GridView
+$z.getBcc() | Out-GridView
