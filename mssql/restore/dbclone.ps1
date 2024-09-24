@@ -102,9 +102,21 @@ function restoreDB($db) {
   foreach ($bak in $baks) {
     $N++
     "[$(timeStamp)] $N. Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
-    if ($N -eq 1) {
-      [array]$reloc = buildReloc "$folder/$db" $bak.Files
+    $params = @{
+      ServerInstance  = $Server
+      Database        = $db2
+      BackupFile      = $bak.FullName
     }
+
+    if ($N -eq 1) {
+      $params['RelocateFile'] = buildReloc "$folder/$db" $bak.Files
+      $params['ReplaceDatabase'] = $True
+      if ($N -lt $baks.count) {
+        $params['NoRecovery'] = $true
+      }
+    }
+
+    Restore-SqlDatabase @params
   }
   "[$(timeStamp)] Done!" | Out-File @Log
 }
