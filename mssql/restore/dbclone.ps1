@@ -7,22 +7,18 @@ $Dst = "\\$Server\g$\"
 
 $DBs = @{
   stas     = @{
-    logname = 'stas'
     dst     = 'stas2'
   }
   OP_WORK  = @{
     skip    = $true
-    logname = 'OP_WORK'
     dst     = 'OP_TEST2'
   }
   ERP_WORK = @{
     skip    = $true
-    logname = 'Jan11'
     dst     = 'ERP_WORK_TEST'
   }
   ZUP_20   = @{
     skip    = $true
-    logname = 'ZUP3_WORK'
     dst     = 'ZUP_20_TEST'
   }
 }
