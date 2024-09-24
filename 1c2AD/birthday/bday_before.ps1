@@ -20,14 +20,14 @@ class Send2 {
 
   [object[]] getManagers() {
     if ($this.u.Manager) {
-      return @(Get-ADUser $this.u.Manager)
+      return @(Get-ADUser $this.u.Manager -Properties Manager)
     }
     $mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(mail=*)(directReports=*))"
     $dn = $this.u.DistinguishedName
     while (1) {
       $ou = 'OU=' + ($dn -split ',OU=', 2)[1]
       if (!$ou.EndsWith($global:adBase)) { break }
-      [array]$list = Get-ADUser -SearchBase $ou -LDAPFilter $mgrFilter -SearchScope OneLevel
+      [array]$list = Get-ADUser -SearchBase $ou -LDAPFilter $mgrFilter -SearchScope OneLevel -Properties Manager
       if ($list) {
         return $list
       }
@@ -35,6 +35,23 @@ class Send2 {
     }
     return @()
   }
+
+  [object[]] topManagers() {
+    $seen = @{}
+    $result = @()
+    foreach ($m in $this.managers) {
+      if ($seen[$m.SamAccountName]) { continue }
+      $seen[$m.SamAccountName] = 1
+      while ($m.Manager) {
+        $m = Get-ADUser $m.Manager -Properties Manager, mail
+        if (!$m.Enabled -or !$m.mail -or !$m.Manager -or $seen[$m.SamAccountName]) { break }
+        $seen[$m.SamAccountName] = 1
+        $result += @($m)
+      }
+    }
+    return $result
+  }
+
 }
 
 function listManagers() {
@@ -54,4 +71,4 @@ $u = 'P.Vazhenin'
 # $u = 'gretskaya'
 
 $z = [Send2]::new($u)
-$z.managers | Out-GridView
+$z.topManagers() | Out-GridView
