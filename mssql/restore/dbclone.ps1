@@ -60,6 +60,29 @@ function timeStamp() {
   Get-Date -UFormat '%Y-%m-%d %T'
 }
 
+function buildReloc($path, $files) {
+  $exts = @{
+    D = 'mdf'
+    L = 'ldf'
+    X = 'xdf'
+  }
+  $counts = @{}
+  $files.ForEach({
+      $result = $path
+      $t = $_.Type
+      if (!$exts[$t]) { $t = 'X' }
+      if ($counts[$t]) {
+        $result += "." + $counts[$t]
+      }
+      else {
+        $counts[$t] = 0
+      }
+      $counts[$t]++
+      $result += '.' + $exts[$t]
+      New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($_.LogicalName, $result)
+    })
+}
+
 function restoreDB($db) {
   $params = $DBs[$db]
   if (!$params -or $params.skip) { return }
@@ -75,8 +98,13 @@ function restoreDB($db) {
   }
   "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
   [array]$baks = getBackups("$Src$db")
+  $N = 0
   foreach ($bak in $baks) {
-    "[$(timeStamp)] Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
+    $N++
+    "[$(timeStamp)] $N. Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
+    if ($N -eq 1) {
+      [array]$reloc = buildReloc "$folder/$db" $bak.Files
+    }
   }
   "[$(timeStamp)] Done!" | Out-File @Log
 }
