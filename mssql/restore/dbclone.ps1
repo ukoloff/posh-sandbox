@@ -3,27 +3,39 @@
 #
 $Server = "SRVSQL-1C"
 
-$Src = "\\$Server\e$\"
-$Dst = "\\$Server\g$\"
-#^^^ На самом сервере заменить на 'E:\' и 'G:\'
+$Src = "E:\"
+$Dst = "G:\"
 
 $DBs = @{
   stas     = @{
-    dst     = 'stas2'
+    dst = 'stas2'
   }
   OP_WORK  = @{
-    skip    = $true
-    dst     = 'OP_TEST2'
+    skip = $true
+    dst  = 'OP_TEST2'
   }
   ERP_WORK = @{
-    skip    = $true
-    dst     = 'ERP_WORK_TEST'
+    skip = $true
+    dst  = 'ERP_WORK_TEST'
   }
   ZUP_20   = @{
-    skip    = $true
-    dst     = 'ZUP_20_TEST'
+    skip = $true
+    dst  = 'ZUP_20_TEST'
   }
 }
+
+
+function localizePath($path) {
+  "\\$Server\" + ($path -replace ':', '$')
+}
+
+function LocalizePaths() {
+  if ($env:COMPUTERNAME.ToLower() -eq $Server.ToLower()) { return }
+  $global:Src = localizePath($Src)
+  $global:Dst = localizePath($Dst)
+}
+
+LocalizePaths
 
 function getBackups($folder) {
   $diffs = @{}
@@ -86,7 +98,7 @@ function restoreDB($db) {
   if (!$params -or $params.skip) { return }
   $db2 = $params['dst']
   if (!$db2) {
-    $db2 = $db + '2'
+    $db2 = $db + '_2'
   }
   $folder = "$Dst$db2"
   $null = New-Item $folder -Force -ItemType Directory
@@ -101,9 +113,9 @@ function restoreDB($db) {
     $N++
     "[$(timeStamp)] $N. Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
     $params = @{
-      ServerInstance  = $Server
-      Database        = $db2
-      BackupFile      = $bak.FullName
+      ServerInstance = $Server
+      Database       = $db2
+      BackupFile     = $bak.FullName
     }
 
     if ($N -eq 1) {
