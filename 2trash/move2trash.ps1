@@ -51,6 +51,7 @@ function move2trash($path) {
 }
 
 $d = Get-Date
+$timestamp = $d.ToString("yyyy-MM-dd_HH-mm-ss_fff")
 $d = $d.AddDays(-$days.Remove)
 
 $src = New-Item $paths.Folder -Force -ItemType Directory
@@ -60,6 +61,10 @@ $trash = New-Item $paths.MyTrash -Force -ItemType Directory
 Get-ChildItem -Path $src -File -Recurse |
 Where-Object { $_.LastAccessTime -le $d } |
 ForEach-Object {
-  echo $_.FullName.Substring($srcFull.Length + 1)
+  $rel = $_.FullName.Substring($srcFull.Length + 1)
+  $dst = Join-Path $trash $timestamp
+  $dst = Join-Path $dst $rel
+  $null = New-Item (Split-Path $dst -Parent) -Force -ItemType Directory
+  Move-Item $_.FullName $dst
   # move2trash($_.FullName)
 }
