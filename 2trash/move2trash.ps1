@@ -6,9 +6,23 @@ param( # Для самостоятельной установки запуска
   [switch]$remove
 )
 
-$days = 180
-$folder = 'c:\temp\x'
+#
+# Параметры
+#
+$days = [object]@{
+  Remove = 7      # Удаление в самодельную корзину
+  Zip    = 7      # Сжатие самодельной корзины
+  Trash  = 7      # Удаление из самодельной корзины в стандартную
+}
 
+$paths = [object]@{
+  Folder  = 'c:\temp\x'
+  MyTrash = 'c:\temp\MyTrash'
+}
+
+#
+# Самостоятельная установка / удаление в Планировщик заданий
+#
 if ($install) {
   $me = Split-Path $PSCommandPath -Leaf
   $dir = Split-Path $PSCommandPath -Parent
