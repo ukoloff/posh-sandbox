@@ -72,7 +72,6 @@ ForEach-Object {
   $dst = Join-Path $dst $rel
   $null = New-Item (Split-Path $dst -Parent) -Force -ItemType Directory
   Move-Item $_.FullName $dst
-  # move2trash($_.FullName)
 }
 
 #
@@ -85,4 +84,14 @@ ForEach-Object {
   $f = $_.FullName
   7z a -sdel "$f.zip" "$f\."
   Remove-Item $f
+}
+
+#
+# Удаляем архивы
+#
+$d = $d.AddDays(-$days.Trash)
+Get-ChildItem -Path $trash -File |
+Where-Object { $_.CreationTime -le $d } |
+ForEach-Object {
+  move2trash($_.FullName)
 }
