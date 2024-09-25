@@ -7,7 +7,7 @@ param(
 )
 
 Import-Module ActiveDirectory
-$adBase = 'OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+$adBase = 'OU=uxm,OU=MS,DC=omzglobal,DC=com'
 
 if ($install) {
   $me = Split-Path $PSCommandPath -Leaf
@@ -52,6 +52,15 @@ $me = Split-Path $PSCommandPath -Parent
 Get-ChildItem -File |
 ForEach-Object { $_.FullName }
 
+$Log = @{
+  LiteralPath = Join-Path $env:TMP "$(Split-Path $PSCommandPath -Leaf).log"
+  Append      = $true
+}
+
+function timeStamp() {
+  Get-Date -UFormat '%Y-%m-%d %T'
+}
+
 $today = Get-Date -Format "dd.MM"
 # $today = '08.07'
 
@@ -59,6 +68,7 @@ $filter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(extensionAttribute1
 [array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties mail, middleName
 
 foreach ($user in $Users) {
+  "[$(timeStamp)] Congratulate [$($user.SamAccountName)] via [$($user.mail)]" | Out-File @Log
   $body = @"
 <html>
 <head>
