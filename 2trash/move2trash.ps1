@@ -53,6 +53,13 @@ function move2trash($path) {
 $d = Get-Date
 $d = $d.AddDays(-$days.Remove)
 
-Get-ChildItem -Path $paths.Folder -File |
+$src = New-Item $paths.Folder -Force -ItemType Directory
+$srcFull = $src.FullName
+$trash = New-Item $paths.MyTrash -Force -ItemType Directory
+
+Get-ChildItem -Path $src -File -Recurse |
 Where-Object { $_.LastAccessTime -le $d } |
-ForEach-Object { move2trash($_.FullName) }
+ForEach-Object {
+  echo $_.FullName.Substring($srcFull.Length + 1)
+  # move2trash($_.FullName)
+}
