@@ -50,13 +50,19 @@ function move2trash($path) {
   }
 }
 
-$d = Get-Date
-$timestamp = $d.ToString("yyyy-MM-dd_HH-mm-ss_fff")
-$d = $d.AddDays(-$days.Remove)
-
+#
+# Создаём папки при необходимости
+#
 $src = New-Item $paths.Folder -Force -ItemType Directory
 $srcFull = $src.FullName
 $trash = New-Item $paths.MyTrash -Force -ItemType Directory
+
+#
+# Переносим в собственную корзину
+#
+$d = Get-Date
+$timestamp = $d.ToString("yyyy-MM-dd_HH-mm-ss_fff")
+$d = $d.AddDays(-$days.Remove)
 
 Get-ChildItem -Path $src -File -Recurse |
 Where-Object { $_.LastAccessTime -le $d } |
@@ -67,4 +73,16 @@ ForEach-Object {
   $null = New-Item (Split-Path $dst -Parent) -Force -ItemType Directory
   Move-Item $_.FullName $dst
   # move2trash($_.FullName)
+}
+
+#
+# Архивируем старые папки
+#
+$d = $d.AddDays(-$days.Zip)
+Get-ChildItem -Path $trash -Directory |
+Where-Object { $_.CreationTime -le $d } |
+ForEach-Object {
+  $f = $_.FullName
+  7z a -sdel "$f.zip" "$f\."
+  Remove-Item $f
 }
