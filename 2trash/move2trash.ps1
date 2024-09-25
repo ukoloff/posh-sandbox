@@ -77,7 +77,7 @@ ForEach-Object {
 #
 # Архивируем старые папки
 #
-$d = $d.AddDays(-$days.Zip)
+$d = (Get-Date).AddDays(-$days.Zip)
 Get-ChildItem -Path $trash -Directory |
 Where-Object { $_.CreationTime -le $d } |
 ForEach-Object {
@@ -89,7 +89,7 @@ ForEach-Object {
 #
 # Удаляем архивы
 #
-$d = $d.AddDays(-$days.Trash)
+$d = (Get-Date).AddDays(-$days.Trash)
 Get-ChildItem -Path $trash -File |
 Where-Object { $_.CreationTime -le $d } |
 ForEach-Object {
