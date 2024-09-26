@@ -12,6 +12,7 @@ $filter = "(&$filtEn(extensionAttribute1=$then.*))"
 [array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties Manager
 $Users
 
+$mgrFilter = "(&$filtEn(directReports=*)(Manager=*))"
 function getManagers($u) {
   $u = Get-ADUser $u -Properties Manager
   if ($u.Manager -and $u.Enabled) {
@@ -21,7 +22,6 @@ function getManagers($u) {
     }
   }
 
-  $mgrFilter = "(&$filtEn(directReports=*)(Manager=*))"
   $dn = $u.DistinguishedName
   while (1) {
     $ou = ($dn -split ',OU=', 2)[1]
