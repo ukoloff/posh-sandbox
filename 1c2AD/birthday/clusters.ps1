@@ -65,7 +65,7 @@ function descend($managers) {
       ForEach({ Get-ADUser $_ -Properties directReports, mail }).
       Where({ $_.Enabled }))
   }
-  ,$result
+  , $result
 }
 
 function buildPeers($u) {
@@ -73,10 +73,21 @@ function buildPeers($u) {
   $ms = $ms.ForEach({ escalate $_ })
   $rcpt = descend $ms
   $id = (Get-ADUser $u).SamAccountName
-  ,$rcpt.Where({ $_.SamAccountName -ne $id })
+  , $rcpt.Where({ $_.SamAccountName -ne $id })
 }
 
+function getMails($u) {
+  $peers = buildPeers $u
+  ,$peers.ForEach({ $_.mail })
+}
+
+$Users.ForEach({
+  $pz = getMails $_
+  Write-Output "$($_.SamAccountName):`t$($pz -join ', ')"
+})
+
 # Тесты
+<#
 @(
   'P.Vazhenin'
   's.ukolov'
@@ -85,7 +96,8 @@ function buildPeers($u) {
   'lobza'
   'gretskaya'
   'e.ermakova'
-).ForEach({
-    $pz = buildPeers $_
-    Write-Output "$($_):`t$($pz.ForEach({$_.SamAccountName}) -join ', ')"
+  ).ForEach({
+    $pz = getMails $_
+    Write-Output "$($_):`t$($pz -join ', ')"
   })
+#>
