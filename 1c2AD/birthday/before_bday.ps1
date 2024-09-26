@@ -50,7 +50,6 @@ $fullday = $bday.ToString('dd MMMM yyyy г. (dddd)')
 $filtEn = '(!userAccountControl:1.2.840.113556.1.4.803:=2)'
 $filter = "(&$filtEn(extensionAttribute1=$then.*))"
 [array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties Manager, title, department, displayName
-$Users
 
 $mgrFilter = "(&$filtEn(directReports=*)(Manager=*))"
 function getManagers($u) {
@@ -132,16 +131,21 @@ $Users.ForEach({
 <style>
 body {
     text-align: center;
+    font-family: Trebuchet MS, sans-serif;
 }</style>
 </head>
 <body>
 $fullday свой день рождения празднует
 <br>
+<big>
 $($_.displayName)
+</big>
 <br>
 $($_.title)
 <br>
+<i>
 $($_.department)
+</i>
 </body>
 </html>
 "@
