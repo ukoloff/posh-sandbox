@@ -4,8 +4,8 @@
 Import-Module ActiveDirectory
 $adBase = 'OU=uxm,OU=MS,DC=omzglobal,DC=com'
 
-# List all managers exept the Top
-$mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(mail=*)(directReports=*)(Manager=*))"
+# List all managers except the Top
+$mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(directReports=*)(Manager=*))"
 
 $ms = Get-ADUser -SearchBase $adBase -LDAPFilter $mgrFilter -Properties Manager, CanonicalName, directReports |
 Sort-Object Name
