@@ -53,6 +53,7 @@ $filter = "(&$filtEn(extensionAttribute1=$then.*))"
 
 $mgrFilter = "(&$filtEn(directReports=*)(Manager=*))"
 function getManagers($u) {
+  # Для одного пользователя найти непосредственного руководителя или нескольких
   $u = Get-ADUser $u -Properties Manager
   if ($u.Manager -and $u.Enabled) {
     $m = Get-ADUser $u.Manager -Properties Manager
@@ -61,6 +62,7 @@ function getManagers($u) {
     }
   }
 
+  # Руководитель не указан, ищем руководителей в подразделении
   $dn = $u.DistinguishedName
   while (1) {
     $ou = ($dn -split ',OU=', 2)[1]
@@ -77,6 +79,7 @@ function getManagers($u) {
 }
 
 function escalate([object]$u) {
+  # Для руководителя найти самого высокого руководителя
   $seen = @{}
   while (1) {
     $seen[$u.SamAccountName] = 1
@@ -89,7 +92,7 @@ function escalate([object]$u) {
 }
 
 function descend($managers) {
-  # [OutputType([System.Collections.ArrayList])]
+  # Составить список всех подчинённых для (нескольких) руководителей
   $seen = @{}
   [System.Collections.ArrayList]$result = @()
   [System.Collections.ArrayList]$q = $managers.ForEach({ Get-ADUser $_ -Properties directReports, mail, CanonicalName })
@@ -108,6 +111,7 @@ function descend($managers) {
 }
 
 function buildPeers($u) {
+  # Составить список, кого предупреждать о дне рождения пользователя
   [array]$ms = getManagers $u
   $ms = $ms.ForEach({ escalate $_ })
   $rcpt = descend $ms
