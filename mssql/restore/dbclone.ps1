@@ -110,7 +110,11 @@ function buildReloc($path, $files) {
       }
       $counts[$t]++
       $result += '.' + $exts[$t]
-      New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($_.LogicalName, $result)
+      # New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($_.LogicalName, $result)
+      [object]@{
+        LogicalFileName  = $_.LogicalName
+        PhysicalFileName = $result
+      }
     })
 }
 
