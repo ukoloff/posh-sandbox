@@ -124,10 +124,10 @@ $Users.ForEach({
     $pz = buildPeers $_
     "[$(timeStamp)] Prepare to congratulate [$($_.SamAccountName)], $($pz.Count) recepients" | Out-File @Log
     if (!$pz) { return }
-    $pz |
+    $recepients = $pz |
     ForEach-Object { $_.CanonicalName + "`t<" + $_.mail + ">" } |
-    Sort-Object |
-    Out-File @Log
+    Sort-Object | Out-String
+    $recepients | Out-File @Log
 
     $body = @"
 <html>
@@ -151,6 +151,9 @@ $($_.title)
 <i>
 $($_.department)
 </i>
+<!--
+$recepients
+-->
 </body>
 </html>
 "@
