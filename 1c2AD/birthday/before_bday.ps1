@@ -1,15 +1,55 @@
 ﻿#
 # Уведомления перед днём рождения
-# Поиск кластера начальников
 #
+param(
+  [switch]$install,
+  [switch]$remove
+)
+
 Import-Module ActiveDirectory
 $adBase = 'OU=uxm,OU=MS,DC=omzglobal,DC=com'
 
+#
+# Установка / удаление ежедневного задания
+#
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -Daily -At 7:40 -RandomDelay 00:05:00
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
+}
+
+# Store Credentials:
+# ------------------
+# $cred = Get-Credential
+# # Install-Module -Name CredentialManager
+# New-StoredCredential -Target serviceuxm@omzglobal.com -Credentials $cred -Persist LocalMachine
+$cred = Get-StoredCredential -Target serviceuxm@omzglobal.com
+
+$Log = @{
+  LiteralPath = Join-Path $env:TMP "$(Split-Path $PSCommandPath -Leaf).log"
+  Append      = $true
+}
+function timeStamp() {
+  Get-Date -UFormat '%Y-%m-%d %T'
+}
+
 $bday = (Get-Date).AddDays(3)
 $then = $bday.ToString("dd.MM")
+$fullday = $bday.ToString('dd MMMM yyyy г. (dddd)')
+
 $filtEn = '(!userAccountControl:1.2.840.113556.1.4.803:=2)'
 $filter = "(&$filtEn(extensionAttribute1=$then.*))"
-[array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties Manager
+[array]$Users = Get-ADUser -SearchBase $adBase -LDAPFilter $filter -Properties Manager, title, department, displayName
 $Users
 
 $mgrFilter = "(&$filtEn(directReports=*)(Manager=*))"
@@ -78,13 +118,47 @@ function buildPeers($u) {
 
 function getMails($u) {
   $peers = buildPeers $u
-  ,$peers.ForEach({ $_.mail })
+  , $peers.ForEach({ $_.mail })
 }
 
 $Users.ForEach({
-  $pz = getMails $_
-  Write-Output "$($_.SamAccountName):`t$($pz -join ', ')"
-})
+    $pz = getMails $_
+    "[$(timeStamp)] Prepare to congratulate [$($_.SamAccountName)], $($pz.Count) recepients" | Out-File @Log
+    if (!$pz) { return }
+    $body = @"
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<style>
+body {
+    text-align: center;
+}</style>
+</head>
+<body>
+$fullday свой день рождения празднует
+<br>
+$($_.displayName)
+<br>
+$($_.title)
+<br>
+$($_.department)
+</body>
+</html>
+"@
+    $mail = @{
+      Body       = $body
+      BodyAsHtml = $true
+      Subject    = "Поздравляем с днем рождения..."
+      From       = 'serviceuxm@omzglobal.com'
+      To         = 'Stanislav.Ukolov@omzglobal.com'
+      SmtpServer = 'srvmail-ekbh5.omzglobal.com'
+      Port       = '2525'
+      Encoding   = 'UTF8'
+      Credential = $cred
+    }
+
+    Send-MailMessage @mail
+  })
 
 # Тесты
 <#
