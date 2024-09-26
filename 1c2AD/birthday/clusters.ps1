@@ -37,6 +37,18 @@ function getManagers($u) {
   }
 }
 
+function escalate([object]$u) {
+  $seen = @{}
+  while (1) {
+    $seen[$u.SamAccountName] = 1
+    $m = Get-ADUser $u.Manager -Properties Manager
+    if ($seen[$m.SamAccountName] -or !$m.Enabled -or !$m.Manager) {
+      return $u
+    }
+    $u = $m
+  }
+}
+
 # Тесты
 @(
   'P.Vazhenin'
@@ -48,5 +60,6 @@ function getManagers($u) {
   'e.ermakova'
 ).ForEach({
     [array]$ms = getManagers($_)
+    $ms = $ms.ForEach({ escalate $_ })
     Write-Output "$($_):`t$($ms.ForEach({$_.SamAccountName}) -join ', ')"
   })
