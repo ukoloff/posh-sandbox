@@ -49,6 +49,33 @@ function escalate([object]$u) {
   }
 }
 
+function descend($managers) {
+  # [OutputType([System.Collections.ArrayList])]
+  $seen = @{}
+  [System.Collections.ArrayList]$result = @()
+  [System.Collections.ArrayList]$q = $managers.ForEach({ Get-ADUser $_ -Properties directReports, mail })
+  while ($q.Count) {
+    $u = $q[0]
+    $q.RemoveAt(0)
+    if ($seen[$u.SamAccountName]) { continue }
+    $seen[$u.SamAccountName] = 1
+    $null = $result.Add($u)
+    $q.AddRange($u.
+      directReports.
+      ForEach({ Get-ADUser $_ -Properties directReports, mail }).
+      Where({ $_.Enabled }))
+  }
+  ,$result
+}
+
+function buildPeers($u) {
+  [array]$ms = getManagers $u
+  $ms = $ms.ForEach({ escalate $_ })
+  $rcpt = descend $ms
+  $id = (Get-ADUser $u).SamAccountName
+  ,$rcpt.Where({ $_.SamAccountName -ne $id })
+}
+
 # Тесты
 @(
   'P.Vazhenin'
@@ -59,7 +86,6 @@ function escalate([object]$u) {
   'gretskaya'
   'e.ermakova'
 ).ForEach({
-    [array]$ms = getManagers($_)
-    $ms = $ms.ForEach({ escalate $_ })
-    Write-Output "$($_):`t$($ms.ForEach({$_.SamAccountName}) -join ', ')"
+    $pz = buildPeers $_
+    Write-Output "$($_):`t$($pz.ForEach({$_.SamAccountName}) -join ', ')"
   })
