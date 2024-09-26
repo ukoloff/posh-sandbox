@@ -7,7 +7,7 @@ $adBase = 'OU=uxm,OU=MS,DC=omzglobal,DC=com'
 # List all managers except the Top
 $mgrFilter = "(&(!userAccountControl:1.2.840.113556.1.4.803:=2)(directReports=*)(Manager=*))"
 
-$ms = Get-ADUser -SearchBase $adBase -LDAPFilter $mgrFilter -Properties Manager, CanonicalName, directReports |
+$ms = Get-ADUser -SearchBase $adBase -LDAPFilter $mgrFilter -Properties Manager, CanonicalName, directReports, mail |
 Sort-Object Name
 
 $idx = @{}
@@ -29,7 +29,7 @@ $ms.ForEach({
 
 function Tree($u = $root, $indent = 0) {
   foreach ($z in $u.xch) {
-    Write-Output "$("`t" * $indent)$($z.SamAccountName)[$($z.directReports.count)]`t$($z.CanonicalName)"
+    Write-Output "$("`t" * $indent)$($z.SamAccountName)[$($z.directReports.count)]`t$($z.CanonicalName)`t<$($z.mail)>"
     if (!$z.xch.count) { continue }
     Tree $z ($indent + 1)
   }
