@@ -92,7 +92,7 @@ function descend($managers) {
   # [OutputType([System.Collections.ArrayList])]
   $seen = @{}
   [System.Collections.ArrayList]$result = @()
-  [System.Collections.ArrayList]$q = $managers.ForEach({ Get-ADUser $_ -Properties directReports, mail })
+  [System.Collections.ArrayList]$q = $managers.ForEach({ Get-ADUser $_ -Properties directReports, mail, CanonicalName })
   while ($q.Count) {
     $u = $q[0]
     $q.RemoveAt(0)
@@ -101,7 +101,7 @@ function descend($managers) {
     $null = $result.Add($u)
     $q.AddRange($u.
       directReports.
-      ForEach({ Get-ADUser $_ -Properties directReports, mail }).
+      ForEach({ Get-ADUser $_ -Properties directReports, mail, CanonicalName }).
       Where({ $_.Enabled }))
   }
   , $result
@@ -121,9 +121,14 @@ function getMails($u) {
 }
 
 $Users.ForEach({
-    $pz = getMails $_
+    $pz = buildPeers $_
     "[$(timeStamp)] Prepare to congratulate [$($_.SamAccountName)], $($pz.Count) recepients" | Out-File @Log
     if (!$pz) { return }
+    $pz |
+    ForEach-Object { $_.CanonicalName + "`t<" + $_.mail + ">" } |
+    Sort-Object |
+    Out-File @Log
+
     $body = @"
 <html>
 <head>
@@ -155,6 +160,7 @@ $($_.department)
       Subject    = "Поздравляем с днем рождения..."
       From       = 'serviceuxm@omzglobal.com'
       To         = 'Stanislav.Ukolov@omzglobal.com'
+      # To         = $pz.ForEach({ $_.mail })
       SmtpServer = 'srvmail-ekbh5.omzglobal.com'
       Port       = '2525'
       Encoding   = 'UTF8'
