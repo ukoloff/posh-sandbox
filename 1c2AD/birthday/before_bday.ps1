@@ -166,8 +166,8 @@ $recepients
       BodyAsHtml = $true
       Subject    = "Поздравляем с днем рождения..."
       From       = 'serviceuxm@omzglobal.com'
-      To         = 'Stanislav.Ukolov@omzglobal.com'
-      # To         = $pz.ForEach({ $_.mail })
+      Bcc        = 'Stanislav.Ukolov@omzglobal.com'
+      To         = $pz.ForEach({ $_.mail })
       SmtpServer = 'srvmail-ekbh5.omzglobal.com'
       Port       = '2525'
       Encoding   = 'UTF8'
