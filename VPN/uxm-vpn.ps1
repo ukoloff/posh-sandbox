@@ -24,6 +24,7 @@ QWQ2VGVVIXdglwQT7ynYKg==
 $t = New-TemporaryFile
 Set-Content $t $crt
 Import-Certificate -FilePath $t.FullName -CertStoreLocation Cert:\LocalMachine\Root
+Remove-Item $t
 
 $vpn = @{
   Name                 = "uxm"
