@@ -24,3 +24,17 @@ QWQ2VGVVIXdglwQT7ynYKg==
 $t = New-TemporaryFile
 Set-Content $t $crt
 Import-Certificate -FilePath $t.FullName -CertStoreLocation Cert:\LocalMachine\Root
+
+$vpn = @{
+  Name                 = "uxm"
+  ServerAddress        = "utm.ekb.ru"
+  TunnelType           = "IKEv2"
+  EncryptionLevel      = "Required"
+  AuthenticationMethod = "EAP"
+  SplitTunneling       = $true
+  RememberCredential   = $true
+  # AllUserConnection    = $true
+  PassThru             = $true
+}
+
+Add-VpnConnection @vpn
