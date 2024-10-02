@@ -1,6 +1,8 @@
 ﻿#
 # Настройка VPN @Уралхиммаш
 #
+param([switch]$elevated)
+
 function isAdmin {
   $user = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
   $user.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -27,11 +29,13 @@ Import-Certificate -FilePath $t.FullName -CertStoreLocation Cert:\LocalMachine\R
 Remove-Item $t
 
 $vpn = @{
-  Name                 = "uxm"
+  Name                 = "uxm+"
   ServerAddress        = "utm.ekb.ru"
+  DnsSuffix            = "omzglobal.com"
   TunnelType           = "IKEv2"
   EncryptionLevel      = "Required"
   AuthenticationMethod = "EAP"
+  Force                = $true
   SplitTunneling       = $true
   RememberCredential   = $true
   # AllUserConnection    = $true
