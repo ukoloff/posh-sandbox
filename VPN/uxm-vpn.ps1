@@ -29,7 +29,7 @@ Import-Certificate -FilePath $t.FullName -CertStoreLocation Cert:\LocalMachine\R
 Remove-Item $t
 
 $vpn = @{
-  Name                 = "uxm+"
+  Name                 = "uxm"
   ServerAddress        = "utm.ekb.ru"
   DnsSuffix            = "omzglobal.com"
   TunnelType           = "IKEv2"
