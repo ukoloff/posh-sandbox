@@ -8,6 +8,15 @@ function isAdmin {
   $user.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
+if (!(isAdmin)) {
+  if (!$elevated) {
+    # Run elevated
+    $self = @('-noprofile', '-noexit', '-file', $PSCommandPath, '-elevated')
+    Start-Process powershell -Verb RunAs -ArgumentList $self
+  }
+  exit
+}
+
 $crt = @"
 -----BEGIN CERTIFICATE-----
 MIIBvDCCAWKgAwIBAgIUJYGeuYqtuYrRYCji+q0kgdwYmdwwCgYIKoZIzj0EAwIw
