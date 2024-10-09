@@ -12,20 +12,20 @@ $Dst = "G:\"
 
 $DBs = @{
   stas     = @{
-    # skip = $true
-    dst = 'stas2'
+    skip = $true
+    dst  = 'stas2'
   }
   OP_WORK  = @{
-    skip = $true
-    dst  = 'OP_TEST2'
+    # skip = $true
+    dst = 'OP_TEST2'
   }
   ERP_WORK = @{
-    skip = $true
-    dst  = 'ERP_WORK_TEST'
+    # skip = $true
+    dst = 'ERP_WORK_TEST'
   }
   ZUP_20   = @{
-    skip = $true
-    dst  = 'ZUP_20_TEST'
+    # skip = $true
+    dst = 'ZUP_20_TEST'
   }
 }
 
