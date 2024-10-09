@@ -13,19 +13,19 @@ $Dst = "G:\"
 $DBs = @{
   stas     = @{
     # skip = $true
-    dst  = 'stas2'
+    dst = 'stas2'
   }
   OP_WORK  = @{
     skip = $true
-    dst = 'OP_TEST2'
+    dst  = 'OP_TEST2'
   }
   ERP_WORK = @{
     skip = $true
-    dst = 'ERP_WORK_TEST'
+    dst  = 'ERP_WORK_TEST'
   }
   ZUP_20   = @{
     skip = $true
-    dst = 'ZUP_20_TEST'
+    dst  = 'ZUP_20_TEST'
   }
 }
 
@@ -45,6 +45,12 @@ if ($remove) {
   exit
 }
 
+function localizePath($path) {
+  if ($env:COMPUTERNAME.ToLower() -ne $Server.ToLower()) {
+    $path = "\\$Server\" + ($path -replace ':', '$')
+  }
+  $path
+}
 
 function getBackups($DB) {
   [array]$baks = Invoke-SqlQuery -WarningAction SilentlyContinue @"
@@ -59,7 +65,7 @@ function getBackups($DB) {
     And type in ('I', 'D')
     Order By
       backup_start_date Desc
-"@ -Parameters @{DB = $DB}
+"@ -Parameters @{DB = $DB }
   $diffs = @{}
   foreach ($bak in $baks) {
     continue
@@ -125,13 +131,15 @@ function restoreDB($db) {
   if (!$db2) {
     $db2 = $db + '_2'
   }
-  # $folder = "$Dst$db2"
-  # $null = New-Item $folder -Force -ItemType Directory
-  # $Log = @{
-  #   LiteralPath = "$folder/restore.log"
-  #   Append      = $true
-  # }
-  # "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
+
+  $folder = localizePath "$Dst$db2"
+  $null = New-Item $folder -Force -ItemType Directory
+  $Log = @{
+    LiteralPath = "$folder/restore.log"
+    Append      = $true
+  }
+  "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
+
   [array]$baks = getBackups($db)
   $N = 0
   foreach ($bak in $baks) {
