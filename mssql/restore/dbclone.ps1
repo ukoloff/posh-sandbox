@@ -110,7 +110,7 @@ function buildReloc($path, $files) {
   $counts = @{}
   $files.ForEach({
       $result = $path
-      $t = $_.Type
+      $t = $_.file_type
       if (!$exts[$t]) { $t = 'X' }
       if ($counts[$t]) {
         $result += "." + $counts[$t]
@@ -122,7 +122,7 @@ function buildReloc($path, $files) {
       $result += '.' + $exts[$t]
       # New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($_.LogicalName, $result)
       [object]@{
-        LogicalFileName  = $_.LogicalName
+        LogicalFileName  = $_.logical_name
         PhysicalFileName = $result
       }
     })
@@ -148,11 +148,11 @@ function restoreDB($db) {
   $N = 0
   foreach ($bak in $baks) {
     $N++
-    "[$(timeStamp)] $N. Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
+    "[$(timeStamp)] $N. Restoring [$($bak.physical_device_name)] from $($bak.backup_start_date)" | Out-File @Log
     $params = @{
       ServerInstance = $Server
       Database       = $db2
-      BackupFile     = $bak.FullName
+      BackupFile     = $bak.physical_device_name
     }
 
     if ($N -eq 1) {
