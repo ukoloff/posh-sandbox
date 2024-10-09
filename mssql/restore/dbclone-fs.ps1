@@ -8,23 +8,24 @@ param(
 
 $Server = "SRVSQL-1C"
 
+$Src = "E:\"
 $Dst = "G:\"
 
 $DBs = @{
   stas     = @{
-    # skip = $true
+    skip = $true
     dst  = 'stas2'
   }
   OP_WORK  = @{
-    skip = $true
+    # skip = $true
     dst = 'OP_TEST2'
   }
   ERP_WORK = @{
-    skip = $true
+    # skip = $true
     dst = 'ERP_WORK_TEST'
   }
   ZUP_20   = @{
-    skip = $true
+    # skip = $true
     dst = 'ZUP_20_TEST'
   }
 }
@@ -45,24 +46,23 @@ if ($remove) {
   exit
 }
 
+function localizePath($path) {
+  "\\$Server\" + ($path -replace ':', '$')
+}
 
-function getBackups($DB) {
-  [array]$baks = Invoke-SqlQuery -WarningAction SilentlyContinue @"
-    Select
-      *
-    From
-      msdb..backupset S
-      Join msdb..backupmediafamily M
-        on S.media_set_id = M.media_set_id
-    Where
-    database_name = @DB
-    And type in ('I', 'D')
-    Order By
-      backup_start_date Desc
-"@ -Parameters @{DB = $DB}
+function LocalizePaths() {
+  if ($env:COMPUTERNAME.ToLower() -eq $Server.ToLower()) { return }
+  $global:Src = localizePath($Src)
+  $global:Dst = localizePath($Dst)
+}
+
+LocalizePaths
+
+function getBackups($folder) {
   $diffs = @{}
+  [array]$baks = Get-ChildItem $folder -File |
+  Sort-Object CreationTime -Descending
   foreach ($bak in $baks) {
-    continue
     $row = Invoke-SqlQuery 'restore headeronly from disk = @file' -Parameters @{file = $bak.FullName }
     $row | Add-Member -NotePropertyName FullName -NotePropertyValue $bak.FullName
     switch ($row.BackupType) {
@@ -125,14 +125,14 @@ function restoreDB($db) {
   if (!$db2) {
     $db2 = $db + '_2'
   }
-  # $folder = "$Dst$db2"
-  # $null = New-Item $folder -Force -ItemType Directory
-  # $Log = @{
-  #   LiteralPath = "$folder/restore.log"
-  #   Append      = $true
-  # }
-  # "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
-  [array]$baks = getBackups($db)
+  $folder = "$Dst$db2"
+  $null = New-Item $folder -Force -ItemType Directory
+  $Log = @{
+    LiteralPath = "$folder/restore.log"
+    Append      = $true
+  }
+  "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
+  [array]$baks = getBackups("$Src$db")
   $N = 0
   foreach ($bak in $baks) {
     $N++
