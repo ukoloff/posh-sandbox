@@ -68,24 +68,28 @@ function getBackups($DB) {
 "@ -Parameters @{DB = $DB }
   $diffs = @{}
   foreach ($bak in $baks) {
-    continue
-    $row = Invoke-SqlQuery 'restore headeronly from disk = @file' -Parameters @{file = $bak.FullName }
-    $row | Add-Member -NotePropertyName FullName -NotePropertyValue $bak.FullName
-    switch ($row.BackupType) {
-      1 {
+    switch ($bak.type) {
+      'D' {
         # Full DB backup
-        $files = Invoke-SqlQuery 'restore filelistonly from disk = @file' -Parameters @{file = $bak.FullName }
-        $row | Add-Member -NotePropertyName Files -NotePropertyValue $files
-        $result = @($row)
-        if ($diffs[$row.BackupSetGUID]) {
-          $result += @($diffs[$row.BackupSetGUID])
+        $files = Invoke-SqlQuery @"
+          Select
+            *
+          From
+            msdb..backupfile
+          Where
+            backup_set_id =  @id
+"@  -Parameters @{id = $bak.backup_set_id }
+        $bak | Add-Member -NotePropertyName Files -NotePropertyValue $files
+        $result = @($bak)
+        if ($diffs[$bak.backup_set_uuid]) {
+          $result += @($diffs[$bak.backup_set_uuid])
         }
         return $result
       }
-      5 {
+      'I' {
         # Incremental DB backup
-        if (!$diffs[$row.DifferentialBaseGUID]) {
-          $diffs[$row.DifferentialBaseGUID] = $row
+        if (!$diffs[$bak.differential_base_guid]) {
+          $diffs[$bak.differential_base_guid] = $bak
         }
         continue
       }
