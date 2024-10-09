@@ -8,6 +8,7 @@ param(
 
 $Server = "SRVSQL-1C"
 
+$Src = "E:\"
 $Dst = "G:\"
 
 $DBs = @{
@@ -46,50 +47,39 @@ if ($remove) {
 }
 
 function localizePath($path) {
-  if ($env:COMPUTERNAME.ToLower() -ne $Server.ToLower()) {
-    $path = "\\$Server\" + ($path -replace ':', '$')
-  }
-  $path
+  "\\$Server\" + ($path -replace ':', '$')
 }
 
-function getBackups($DB) {
-  [array]$baks = Invoke-SqlQuery -WarningAction SilentlyContinue @"
-    Select
-      *
-    From
-      msdb..backupset S
-      Join msdb..backupmediafamily M
-        on S.media_set_id = M.media_set_id
-    Where
-    database_name = @DB
-    And type in ('I', 'D')
-    Order By
-      backup_start_date Desc
-"@ -Parameters @{DB = $DB }
+function LocalizePaths() {
+  if ($env:COMPUTERNAME.ToLower() -eq $Server.ToLower()) { return }
+  $global:Src = localizePath($Src)
+  $global:Dst = localizePath($Dst)
+}
+
+LocalizePaths
+
+function getBackups($folder) {
   $diffs = @{}
+  [array]$baks = Get-ChildItem $folder -File |
+  Sort-Object CreationTime -Descending
   foreach ($bak in $baks) {
-    switch ($bak.type) {
-      'D' {
+    $row = Invoke-SqlQuery 'restore headeronly from disk = @file' -Parameters @{file = $bak.FullName }
+    $row | Add-Member -NotePropertyName FullName -NotePropertyValue $bak.FullName
+    switch ($row.BackupType) {
+      1 {
         # Full DB backup
-        $files = Invoke-SqlQuery @"
-          Select
-            *
-          From
-            msdb..backupfile
-          Where
-            backup_set_id =  @id
-"@  -Parameters @{id = $bak.backup_set_id }
-        $bak | Add-Member -NotePropertyName Files -NotePropertyValue $files
-        $result = @($bak)
-        if ($diffs[$bak.backup_set_uuid]) {
-          $result += @($diffs[$bak.backup_set_uuid])
+        $files = Invoke-SqlQuery 'restore filelistonly from disk = @file' -Parameters @{file = $bak.FullName }
+        $row | Add-Member -NotePropertyName Files -NotePropertyValue $files
+        $result = @($row)
+        if ($diffs[$row.BackupSetGUID]) {
+          $result += @($diffs[$row.BackupSetGUID])
         }
         return $result
       }
-      'I' {
+      5 {
         # Incremental DB backup
-        if (!$diffs[$bak.differential_base_guid]) {
-          $diffs[$bak.differential_base_guid] = $bak
+        if (!$diffs[$row.DifferentialBaseGUID]) {
+          $diffs[$row.DifferentialBaseGUID] = $row
         }
         continue
       }
@@ -110,7 +100,7 @@ function buildReloc($path, $files) {
   $counts = @{}
   $files.ForEach({
       $result = $path
-      $t = $_.file_type
+      $t = $_.Type
       if (!$exts[$t]) { $t = 'X' }
       if ($counts[$t]) {
         $result += "." + $counts[$t]
@@ -122,7 +112,7 @@ function buildReloc($path, $files) {
       $result += '.' + $exts[$t]
       # New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($_.LogicalName, $result)
       [object]@{
-        LogicalFileName  = $_.logical_name
+        LogicalFileName  = $_.LogicalName
         PhysicalFileName = $result
       }
     })
@@ -135,24 +125,22 @@ function restoreDB($db) {
   if (!$db2) {
     $db2 = $db + '_2'
   }
-
-  $folder = localizePath "$Dst$db2"
+  $folder = "$Dst$db2"
   $null = New-Item $folder -Force -ItemType Directory
   $Log = @{
     LiteralPath = "$folder/restore.log"
     Append      = $true
   }
   "[$(timeStamp)] Restoring [$db] to [$db2]" | Out-File @Log
-
-  [array]$baks = getBackups($db)
+  [array]$baks = getBackups("$Src$db")
   $N = 0
   foreach ($bak in $baks) {
     $N++
-    "[$(timeStamp)] $N. Restoring [$($bak.physical_device_name)] from $($bak.backup_start_date)" | Out-File @Log
+    "[$(timeStamp)] $N. Restoring [$($bak.FullName)] from $($bak.BackupStartDate)" | Out-File @Log
     $params = @{
       ServerInstance = $Server
       Database       = $db2
-      BackupFile     = $bak.physical_device_name
+      BackupFile     = $bak.FullName
     }
 
     if ($N -eq 1) {
