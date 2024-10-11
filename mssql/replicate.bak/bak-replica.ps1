@@ -10,11 +10,13 @@ $tables = -split "backupfile backupfilegroup backupset backupmediafamily backupm
 Open-SQLConnection -ConnectionName xa -Server $src -Database msdb
 Open-SQLConnection -ConnectionName xz -Server $dst -Database msdb
 
-$table = Invoke-SqlQuery -ConnectionName xa "Select * From backupmediaset"
-$table[0]
-
 foreach ($t in $tables) {
   Invoke-SqlUpdate -ConnectionName xz "Delete From $t"
+}
+
+[array]::Reverse($tables)
+foreach ($t in $tables) {
+  Invoke-SqlBulkCopy -SourceConnectionName xa -DestinationConnectionName xz -SourceTable $t -DestinationTable $t
 }
 
 Close-SqlConnection xa
