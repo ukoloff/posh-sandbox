@@ -42,3 +42,14 @@ backupset ||--|{ backupfile : "Содержит файлы БД"
 backupset ||--|| backupmediaset : "Хранится в файлах на диске"
 backupmediaset ||--|| backupmediafamily : "Содержит файл(ы)"
 ```
+
+## Prerequisites
+
+- Установите модуль `SimplySql`
+- Дать права пользователю `System` на SQL
+    + `msdb`/`db_datareader` на источнике
+    + `sysadmin` на приёмнике
+- Создать задание
+    ```powershell
+    .\bak-replica.ps1 -install
+    ```
