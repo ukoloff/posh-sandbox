@@ -19,5 +19,14 @@ foreach ($t in $tables) {
   Invoke-SqlBulkCopy -SourceConnectionName xa -DestinationConnectionName xz -SourceTable $t -DestinationTable $t
 }
 
+Invoke-SqlUpdate -ConnectionName xz @"
+  Update
+    backupmediafamily
+  Set
+    physical_device_name = STUFF(physical_device_name, 1, 2, '\\srvSQL-1C\Backup$')
+  Where
+    physical_device_name LIKE 'e:\%'
+"@
+
 Close-SqlConnection xa
 Close-SqlConnection xz
