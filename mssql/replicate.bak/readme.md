@@ -26,6 +26,11 @@ backupset {
   string name
   string user_name
   string database_name
+  char type
+  date backup_start_date
+  date backup_finish_date
+  int differential_base_lsn
+  guid differential_base_guid
 }
 backupmediaset {
   int media_set_id PK
@@ -43,7 +48,7 @@ restorehistory {
   date restore_date
   string destination_database_name
   string user_name
-  string restore_type
+  char restore_type
   bit replace
   bit recovery
 }
