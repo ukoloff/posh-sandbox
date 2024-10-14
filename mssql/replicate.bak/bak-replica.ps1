@@ -10,6 +10,8 @@ $tables = -split "backupfile backupfilegroup backupset backupmediafamily backupm
 Open-SQLConnection -ConnectionName xa -Server $src -Database msdb
 Open-SQLConnection -ConnectionName xz -Server $dst -Database msdb
 
+Start-SqlTransaction -ConnectionName xz
+
 foreach ($t in $tables) {
   Invoke-SqlUpdate -ConnectionName xz "Delete From $t"
 }
@@ -27,6 +29,8 @@ Invoke-SqlUpdate -ConnectionName xz @"
   Where
     physical_device_name LIKE 'e:\%'
 "@
+
+Complete-SqlTransaction -ConnectionName xz
 
 Close-SqlConnection xa
 Close-SqlConnection xz
