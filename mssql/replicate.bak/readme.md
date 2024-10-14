@@ -37,10 +37,33 @@ backupmediafamily {
   int mirror PK
   string physical_device_name
 }
-backupset ||--|| backupfilegroup : ""
+restorehistory {
+  int restore_history_id PK
+  int backup_set_id FK
+  date restore_date
+  string destination_database_name
+  string user_name
+  string restore_type
+  bit replace
+  bit recovery
+}
+restorefilegroup {
+  int restore_history_id
+  string filegroup_name
+}
+restorefile {
+  int restore_history_id PK
+  int file_number PK
+  string destination_phys_drive
+  string destination_phys_name
+}
+backupset ||--|{ backupfilegroup : ""
 backupset ||--|{ backupfile : "Содержит файлы БД"
 backupset ||--|| backupmediaset : "Хранится в файлах на диске"
 backupmediaset ||--|| backupmediafamily : "Содержит файл(ы)"
+backupset ||--|{ restorehistory : "Восстановления"
+restorehistory ||--|{ restorefilegroup : "Какие-то группы"
+restorehistory ||--|{ restorefile : "Куда раскатано"
 ```
 
 ## Prerequisites
