@@ -12,16 +12,23 @@ Open-SQLConnection -ConnectionName xz -Server $dst -Database msdb
 
 Start-SqlTransaction -ConnectionName xz
 
+Write-Output "Records deleted:"
+$len = ($tables | ForEach-Object {$_.Length} | Measure-Object -Maximum).Maximum + 1
 foreach ($t in $tables) {
-  Invoke-SqlUpdate -ConnectionName xz "Delete From $t"
+  $count = Invoke-SqlUpdate -ConnectionName xz "Delete From $t"
+  Write-Output "  $($t.PadRight($len))$count"
 }
 
+Write-Output "Records copied:"
 [array]::Reverse($tables)
 foreach ($t in $tables) {
-  Invoke-SqlBulkCopy -SourceConnectionName xa -DestinationConnectionName xz -SourceTable $t -DestinationTable $t
+  $count = Invoke-SqlBulkCopy -SourceConnectionName xa -DestinationConnectionName xz -SourceTable $t -DestinationTable $t
+  Write-Output "  $($t.PadRight($len))$count"
 }
 
-Invoke-SqlUpdate -ConnectionName xz @"
+Write-Output "Backup paths patched:"
+$t = 'backupmediafamily'
+$count = Invoke-SqlUpdate -ConnectionName xz @"
   Update
     backupmediafamily
   Set
@@ -29,6 +36,7 @@ Invoke-SqlUpdate -ConnectionName xz @"
   Where
     physical_device_name LIKE 'e:\%'
 "@
+Write-Output "  $($t.PadRight($len))$count"
 
 Complete-SqlTransaction -ConnectionName xz
 
