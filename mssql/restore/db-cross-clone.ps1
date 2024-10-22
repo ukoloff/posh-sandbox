@@ -1,6 +1,11 @@
 #
 # Восстановить БД из бэкапа на другом сервере
 #
+param(
+  [switch]$install,
+  [switch]$remove
+)
+
 $src = "SRVSQL-1C"
 $dst = "SRVSQL-1Ctests"
 $dstFolder = "E:\"
@@ -25,6 +30,22 @@ $DBs = @{
     skip = $true
     dst  = 'ZUP_20_TEST'
   }
+}
+
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -Daily -At 7:40 -RandomDelay 00:05:00
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
 }
 
 function timeStamp() {
