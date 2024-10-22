@@ -8,7 +8,7 @@ $dstFolder = "E:\"
 $DBs = @{
   stas       = @{
     # skip = $true
-    dst = 'stas2'
+    # dst = 'stas2'
   }
   UPRIT_WORK = @{
     skip = $true
@@ -31,7 +31,14 @@ function timeStamp() {
   Get-Date -UFormat '%Y-%m-%d %T'
 }
 
-function localizePath($path) {
+function localizeSrcPath($path) {
+  if ($env:COMPUTERNAME.ToLower() -ne $src.ToLower()) {
+    $path = "\\$src\" + ($path -replace '^e:', 'Backup$')
+  }
+  $path
+}
+
+function localizeDstPath($path) {
   if ($env:COMPUTERNAME.ToLower() -ne $dst.ToLower()) {
     $path = "\\$dst\" + ($path -replace ':', '$')
   }
@@ -118,13 +125,37 @@ function restoreDB($db) {
     $db2 = $db
   }
 
-  $folder = localizePath "$dstFolder$db2"
+  $folder = localizeDstPath "$dstFolder$db2"
   $null = New-Item $folder -Force -ItemType Directory
   $Log = @{
     LiteralPath = "$folder/restore.log"
     Append      = $true
   }
   "[$(timeStamp)] Restoring \\$src\[$db] to [$db2]" | Out-File @Log
+
+  [array]$baks = getBackups($db)
+  $N = 0
+  foreach ($bak in $baks) {
+    $N++
+    $bakPath = localizeSrcPath $bak.physical_device_name
+    "[$(timeStamp)] $N. Restoring [$bakPath] from $($bak.backup_start_date)" | Out-File @Log
+    $params = @{
+      ServerInstance = $dst
+      Database       = $db2
+      BackupFile     = $bakPath
+    }
+
+    if ($N -eq 1) {
+      $params['RelocateFile'] = buildReloc "$folder/$db" $bak.Files
+      $params['ReplaceDatabase'] = $True
+      if ($N -lt $baks.count) {
+        $params['NoRecovery'] = $true
+      }
+    }
+
+    Restore-SqlDatabase @params
+  }
+  "[$(timeStamp)] Done!" | Out-File @Log
 
 }
 
