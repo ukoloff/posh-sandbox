@@ -10,7 +10,7 @@ $src = "SRVSQL-1C"
 $dst = "SRVSQL-1Ctests"
 
 $tables = -split "backupfile backupfilegroup backupset backupmediafamily backupmediaset"
-$rtables = -split "restorehistory restorefilegroup restorefile"
+$rtables = -split "restorefilegroup restorefile restorehistory"
 
 if ($install) {
   $me = Split-Path $PSCommandPath -Leaf
