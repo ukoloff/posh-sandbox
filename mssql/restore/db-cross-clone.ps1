@@ -7,11 +7,11 @@ $dstFolder = "E:\"
 
 $DBs = @{
   stas       = @{
-    # skip = $true
+    skip = $true
     # dst = 'stas2'
   }
   UPRIT_WORK = @{
-    skip = $true
+    # skip = $true
   }
   OP_WORK    = @{
     skip = $true
