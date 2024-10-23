@@ -11,12 +11,12 @@ $Log = @{
 }
 
 function timeStamp() {
-  Get-Date -UFormat '%Y-%m-%d %T'
+  Get-Date -UFormat '%Y-%m-%d %T %Z'
 }
 
 "Starting: $(timeStamp)" | Out-File @Log
 [array]$kompas = Get-WmiObject -Class "Win32_Product" -Filter "IdentifyingNumber='$GUID'"
-"Kompas versions found:" | Out-File @Log
+"Kompas version(s) found:" | Out-File @Log
 $kompas | Format-List | Out-File @Log
 
 $cnt = ($kompas | ForEach-Object { $_.Version.StartsWith("$v.")}).Count
