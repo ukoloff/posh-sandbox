@@ -14,3 +14,9 @@
 ## Узнать версию Компас
 
 Реестр: `HKLM\SOFTWARE\ASCON\KOMPAS-3D\21\ProductVersion`
+
+Удалённо:
+```powershell
+Invoke-Command -ComputerName uxm00536 -ScriptBlock { ls HKLM:\SOFTWARE\ASCON\KOMPAS-3D }
+Invoke-Command -ComputerName uxm00536 -ScriptBlock { ls "HKLM:\SOFTWARE\ASCON\KOMPAS-3D Viewer" }
+```
