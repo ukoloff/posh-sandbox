@@ -8,6 +8,7 @@
 + Задача однократная (немедленно), сама себя удаляет
 + На последней вкладке есть крыжик "Выполнять один раз"
 
+Разрешить `Domain Computers` писать в папку логов
 
 ## См. также
 - https://pyatilistnik.org/running-powershell-script-through-gpo/
