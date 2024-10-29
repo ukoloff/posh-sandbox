@@ -8,4 +8,8 @@ $Log = @{
   Append      = $true
 }
 
+"Clearing credentials..." | Out-File @Log
+cmdkey /delete:imech
+cmdkey /delete:service-old
+
 cmdkey /list | Out-File @Log
