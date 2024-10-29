@@ -2,6 +2,12 @@
 
 Создание служб RAS для 1C
 
+## Firewall Rule
+
+```powershell
+New-NetFirewallRule -DisplayName "1C RAS" -Direction Inbound -Program "%ProgramFiles%\1cv8\8.3.25.1336\bin\ras.exe" -Action Allow
+```
+
 ## See also
 
 + [RAS@infostart]
