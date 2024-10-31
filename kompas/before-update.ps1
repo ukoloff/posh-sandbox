@@ -2,8 +2,8 @@
 # Проверка хоста на готовность (ручного) обновления
 #
 
-# $who = 'uxm00926'
-$who = 'uxm00437'
+$who = 'uxm00743'
+# $who = 'uxm00437'
 
 Write-Output "Testing: $who"
 
@@ -28,3 +28,6 @@ if ($run.count -gt 0 -or !($ver.StartsWith('21.0.0'))) {
   Write-Output "Exiting"
   exit
 }
+
+echo "Installing..."
+psexec -s "\\$who" msiexec /update \\service\Soft\kompasspatch\KOMPAS-3D_v21.0.26_x64.msp /quiet
