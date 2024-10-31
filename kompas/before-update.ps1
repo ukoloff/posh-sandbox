@@ -21,6 +21,8 @@ foreach ($who in $hosts) {
 
   Write-Output "Kompas version: $ver"
 
+  query user "/server:$who"
+
   [array]$run = Get-CimInstance -ComputerName $who -ClassName Win32_Process -Filter "Name Like 'kompas%' Or Name Like 'msiexec%'"
   Write-Output "Running process(es): $($run.count)"
   $run
