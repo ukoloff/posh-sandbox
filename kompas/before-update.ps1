@@ -24,10 +24,10 @@ Write-Output "Running process(es): $($run.count)"
 $run
 Write-Output ""
 
-if ($run.count -gt 0 -or !($ver.StartsWith('21.0.0'))) {
+if ($run.count -gt 0 -or !($ver.StartsWith('21.0.0.'))) {
   Write-Output "Exiting"
   exit
 }
 
-echo "Installing..."
+Write-Output "Installing..."
 psexec -s "\\$who" msiexec /update \\service\Soft\kompasspatch\KOMPAS-3D_v21.0.26_x64.msp /quiet
