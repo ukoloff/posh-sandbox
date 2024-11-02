@@ -129,6 +129,10 @@ function buildReloc($path, $files) {
 }
 
 function dropDB($db) {
+  $id = Invoke-SqlScalar "Select IsNull(DB_ID(@DB), 0)" -Parameters @{DB = $db }
+  if (!$id) {
+    return
+  }
   $null = Invoke-SqlUpdate @"
     Alter Database $db
       SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
