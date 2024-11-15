@@ -25,6 +25,6 @@ $src = Split-Path ($MyInvocation.MyCommand.Source) -Parent
 $dst = Join-Path $src 'jpeg'
 
 foreach ($z in $data) {
-  $fname = Join-Path $dst (($z.TABID -replace '\W+', '-') + '.' + $z.NAME  + '.jpg')
+  $fname = Join-Path $dst ($z.NAME + ' [' + ($z.TABID -replace '\W+', '-') + '].jpg')
   [System.Io.File]::WriteAllBytes($fname, $z.HIRES_RASTER)
 }
