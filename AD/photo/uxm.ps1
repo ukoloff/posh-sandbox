@@ -9,6 +9,6 @@ $base = 'OU=uxm,OU=MS,DC=omzglobal,DC=com'
 Get-ADUser -LDAPFilter $ldap -SearchBase $base -Properties * `
 | % {
   # https://github.com/chrisdee/Scripts/blob/master/PowerShell/Working/AD/GetADUserThumbnailPhotos.ps1
-  $fname = Join-Path $dst ($_.SamAccountName + '.jpg')
+  $fname = Join-Path $dst "$($_.Displayname) [$($_.SamAccountName)].jpg"
   [System.Io.File]::WriteAllBytes($fname, $_.jpegPhoto[0])
 }
