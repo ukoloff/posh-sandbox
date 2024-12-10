@@ -22,10 +22,10 @@ foreach ($user in $Users) {
     Select Count(*)
     From personal
     Where
-      NAME = @name
+      NAME = @displayName
       And
       EXTID is NULL
-"@ -Parameters @{name = $user.displayName }
+"@ -ParamObject $user
   if ($n -eq 1) {
     $Found++
     continue
@@ -34,16 +34,16 @@ foreach ($user in $Users) {
     Select Count(*)
     From personal
     Where
-      TABID = @tab
+      TABID = @employeeID
       And
       EXTID is NULL
-"@ -Parameters @{tab = $user.employeeID }
+"@ -ParamObject $user
   if ($t -eq 1) {
     $Found++
     continue
   }
   $NotFound++
-  Write-Output "$($user.displayName)`t$($user.employeeID)`t$n`t$t"
+  Write-Output "$n`t$t`t$($user.employeeID)`t$($user.displayName)"
 }
 Write-Output "Found: $Found"
 Write-Output "Not found: $NotFound"
