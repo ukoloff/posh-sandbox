@@ -1,4 +1,4 @@
-#
+﻿#
 # Update Sigur persons
 #
 
@@ -13,6 +13,7 @@ $Users = Import-Csv  $src -Delimiter ";" -Encoding UTF8
 
 $Found = 0
 foreach ($user in $Users) {
+  if ($user.company.Trim() -ne 'УЗХМ') { continue }
   $n = Invoke-SqlScalar @"
     Select Count(*)
     From personal
