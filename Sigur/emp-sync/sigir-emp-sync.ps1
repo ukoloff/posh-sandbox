@@ -14,7 +14,10 @@ $Users = Import-Csv  $src -Delimiter ";" -Encoding UTF8
 $Found = 0
 $NotFound = 0
 foreach ($user in $Users) {
-  if ($user.company.Trim() -ne 'УЗХМ') { continue }
+  foreach ($p in $user.PSObject.Properties) {
+    $p.Value = $p.Value.Trim()
+  }
+  if ($user.company -ne 'УЗХМ') { continue }
   $n = Invoke-SqlScalar @"
     Select Count(*)
     From personal
@@ -22,7 +25,7 @@ foreach ($user in $Users) {
       NAME = @name
       And
       EXTID is NULL
-"@ -Parameters @{name = $user.displayName.Trim() }
+"@ -Parameters @{name = $user.displayName }
   if ($n -eq 1) {
     $Found++
     continue
@@ -34,7 +37,7 @@ foreach ($user in $Users) {
       TABID = @tab
       And
       EXTID is NULL
-"@ -Parameters @{tab = $user.employeeID.Trim() }
+"@ -Parameters @{tab = $user.employeeID }
   if ($t -eq 1) {
     $Found++
     continue
