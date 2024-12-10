@@ -1,7 +1,22 @@
 # Update Sigur persons
 
-Set fields
+Set fields for all employees inside Sigur
 + Department
 + DepartmentNo
-for all employees inside Sigur
 
+## Setup
+
+```powershell
+Install-Module -Name SimplySql
+```
+
+```powershell
+# Store Credentials:
+
+Install-Module CredentialManager
+
+$cred = Get-Credential
+New-StoredCredential -Target mysql:SKUD -Credentials $cred -Persist LocalMachine
+```
+
+If running as System, store credentials for that account
