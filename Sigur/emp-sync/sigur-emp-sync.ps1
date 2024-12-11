@@ -1,9 +1,29 @@
 ﻿#
 # Update Sigur persons
 #
+param(
+  [switch]$install,
+  [switch]$remove
+)
 
 $Server = 'srvskud-ekbh1-d'
 $src = "\\omzglobal.com\uxm\Exchange\employee_changes.csv"
+
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -Daily -At 3:45 -RandomDelay 00:27:00
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
+}
 
 $cred = Get-StoredCredential -Target 'mysql:SKUD'
 
