@@ -28,8 +28,10 @@ function findField($name) {
   exit
 }
 
-$idDept = findField 'Отдел'
-$idDeptNo = findField '№ Отдела'
+$ids = [PSCustomObject]@{
+  department       = findField 'Отдел'
+  departmentNumber = findField '№ Отдела'
+}
 
 function getUsers($user, $adAttr, $dbAttr) {
   Invoke-SqlQuery @"
@@ -44,6 +46,23 @@ function getUsers($user, $adAttr, $dbAttr) {
 }
 
 function syncUser($user, $id) {
+  foreach ($f in $ids.PSObject.Properties) {
+    $n = Invoke-SqlUpdate @"
+      Insert Into
+        sideparamvalues
+      Set
+        TABLE_ID=0,
+        OBJ_ID=@id,
+        PARAM_IDX=@idx,
+        VALUE=@value
+      On DUPLICATE KEY UPDATE
+        VALUE=@value
+"@ -Parameters @{
+      id     = $id
+      idx   = $f.Value
+      value = $user.($f.Name)
+    }
+  }
 }
 
 $Found = 0
