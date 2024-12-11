@@ -18,3 +18,11 @@ ForEach-Object {
   $f = $_.FullName
   7z a -sdel "$f.7z" $f
 }
+
+$d = Get-Date
+$d = $d.AddDays(-$Days.move)
+Get-ChildItem -Path $src -File -Filter *.7z |
+Where-Object { $_.CreationTime -le $d } |
+ForEach-Object {
+  Move-Item $_.FullName $dst
+}
