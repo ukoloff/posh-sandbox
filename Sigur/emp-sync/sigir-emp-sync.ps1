@@ -11,6 +11,26 @@ Open-MySqlConnection -Server $Server -Port 3305 -Database  tc-db-main -Credentia
 
 $Users = Import-Csv  $src -Delimiter ";" -Encoding UTF8
 
+function findField($name) {
+  $id = Invoke-SqlScalar @"
+    select
+      PARAM_IDX
+    from
+      sideparamtypes
+    where
+      TABLE_ID = 0
+      and NAME = @name
+      and `TYPE` = 'STRING'
+      and READONLY
+"@ -Parameters @{name = $name }
+  if ($id) { return $id }
+  Write-Error "Parameter<string,readonly> not found: $name"
+  exit
+}
+
+$idDept = findField 'Отдел'
+$idDeptNo = findField '№ Отдела'
+
 function getUsers($user, $adAttr, $dbAttr) {
   Invoke-SqlQuery @"
     Select ID
@@ -21,6 +41,9 @@ function getUsers($user, $adAttr, $dbAttr) {
       EXTID is NULL
     Limit 2
 "@ -ParamObject $user -WarningAction Ignore
+}
+
+function syncUser($user, $id) {
 }
 
 $Found = 0
@@ -34,12 +57,14 @@ foreach ($user in $Users) {
   $n = $x.Count
   if ($n -eq 1) {
     $Found++
+    syncUser $user $x[0].ID
     continue
   }
   [array]$x = getUsers $user employeeID TABID
   $t = $x.Count
   if ($t -eq 1) {
     $Found++
+    syncUser $user $x[0].ID
     continue
   }
   $NotFound++
