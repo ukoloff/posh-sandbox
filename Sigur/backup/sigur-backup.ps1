@@ -24,5 +24,5 @@ $d = $d.AddDays(-$Days.move)
 Get-ChildItem -Path $src -File -Filter *.7z |
 Where-Object { $_.CreationTime -le $d } |
 ForEach-Object {
-  Move-Item $_.FullName $dst
+  Move-Item $_.FullName $dst -Force
 }
