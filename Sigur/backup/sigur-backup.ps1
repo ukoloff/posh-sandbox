@@ -10,3 +10,11 @@ $Days = [PSCustomObject]@{
   drop = 42
 }
 
+$d = Get-Date
+$d = $d.AddDays(-$Days.zip)
+Get-ChildItem -Path $src -File -Filter *.sql |
+Where-Object { $_.LastAccessTime -le $d } |
+ForEach-Object {
+  $f = $_.FullName
+  7z a -sdel "$f.7z" $f
+}
