@@ -11,6 +11,18 @@ Open-MySqlConnection -Server $Server -Port 3305 -Database  tc-db-main -Credentia
 
 $Users = Import-Csv  $src -Delimiter ";" -Encoding UTF8
 
+function getUsers($user, $adAttr, $dbAttr) {
+  Invoke-SqlQuery @"
+    Select ID
+    From personal
+    Where
+      $dbAttr = @$adAttr
+      And
+      EXTID is NULL
+    Limit 2
+"@ -ParamObject $user -WarningAction Ignore
+}
+
 $Found = 0
 $NotFound = 0
 foreach ($user in $Users) {
@@ -18,26 +30,14 @@ foreach ($user in $Users) {
     $p.Value = $p.Value.Trim()
   }
   if ($user.company -ne 'УЗХМ') { continue }
-  $n = Invoke-SqlScalar @"
-    Select Count(*)
-    From personal
-    Where
-      NAME = @displayName
-      And
-      EXTID is NULL
-"@ -ParamObject $user
+  [array]$x = getUsers $user displayName NAME
+  $n = $x.Count
   if ($n -eq 1) {
     $Found++
     continue
   }
-  $t = Invoke-SqlScalar @"
-    Select Count(*)
-    From personal
-    Where
-      TABID = @employeeID
-      And
-      EXTID is NULL
-"@ -ParamObject $user
+  [array]$x = getUsers $user employeeID TABID
+  $t = $x.Count
   if ($t -eq 1) {
     $Found++
     continue
