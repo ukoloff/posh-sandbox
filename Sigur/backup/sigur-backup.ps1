@@ -26,3 +26,12 @@ Where-Object { $_.CreationTime -le $d } |
 ForEach-Object {
   Move-Item $_.FullName $dst -Force
 }
+
+$d = Get-Date
+$d = $d.AddDays(-$Days.drop)
+Get-ChildItem -Path $dst -File -Filter *.7z |
+Where-Object { $_.CreationTime -le $d } |
+Where-Object { $_.Name -notcontains "-01.sql." } |
+ForEach-Object {
+  Remove-Item $_.FullName
+}
