@@ -23,7 +23,7 @@ function findField($name) {
       and `TYPE` = 'STRING'
       and READONLY
 "@ -Parameters @{name = $name }
-  if ($id) { return $id }
+  if ($id -ne $null) { return $id }
   Write-Error "Parameter<string,readonly> not found: $name"
   exit
 }
