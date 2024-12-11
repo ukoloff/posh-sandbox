@@ -58,7 +58,7 @@ function syncUser($user, $id) {
       On DUPLICATE KEY UPDATE
         VALUE=@value
 "@ -Parameters @{
-      id     = $id
+      id    = $id
       idx   = $f.Value
       value = $user.($f.Name)
     }
@@ -72,6 +72,10 @@ foreach ($user in $Users) {
     $p.Value = $p.Value.Trim()
   }
   if ($user.company -ne 'УЗХМ') { continue }
+
+  $user.department = $user.department -replace '\s*/.*', ''
+  $user.department = $user.department -replace '\s*\([^()]*\)\s*$', ''
+
   [array]$x = getUsers $user displayName NAME
   $n = $x.Count
   if ($n -eq 1) {
