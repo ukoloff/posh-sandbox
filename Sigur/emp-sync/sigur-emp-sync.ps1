@@ -43,7 +43,7 @@ function findField($name) {
       and `TYPE` = 'STRING'
       and READONLY
 "@ -Parameters @{name = $name }
-  if ($id -ne $null) { return $id }
+  if ($null -ne $id) { return $id }
   Write-Error "Parameter<string,readonly> not found: $name"
   exit
 }
@@ -115,3 +115,5 @@ foreach ($user in $Users) {
 }
 Write-Output "Found: $Found"
 Write-Output "Not found: $NotFound"
+
+Close-SqlConnection
