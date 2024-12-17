@@ -6,7 +6,7 @@ param(
   [switch]$remove
 )
 
-$Server = 'srvskud-ekbh1-d'
+$Server = 'srvskud-ekbh1'
 $src = "\\omzglobal.com\uxm\Exchange\employee_changes.csv"
 
 if ($install) {
