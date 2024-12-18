@@ -26,6 +26,15 @@ function importModule() {
 }
 
 & {
-  Write-Output "Hello, world!"
   importModule
+
+  Write-Output "[Installing updates]"
+  Install-WindowsUpdate -AcceptAll -IgnoreReboot
+
+  Write-Output "[History]"
+  Get-WUHistory -MaxDate (Get-Date).AddDays(-1)
+
+  Write-Output "[Settings]"
+  Get-WUSettings
+
 } > $log 2>&1
