@@ -32,7 +32,7 @@ function importModule() {
   Install-WindowsUpdate -AcceptAll -IgnoreReboot
 
   Write-Output "[Reboot]"
-  Get-WURebootStatus
+  Get-WURebootStatus -Silent
 
   Write-Output "[History]"
   Get-WUHistory -MaxDate (Get-Date).AddDays(-1)
