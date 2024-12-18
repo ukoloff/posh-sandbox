@@ -4,7 +4,7 @@
 $d = Get-Date
 if ([int]$d.DayOfWeek -ne 6 -or [Math]::Truncate(($d.Day + 6) / 7) -ne 3) {
   # НЕ 3-я суббота
-  # exit
+  exit
 }
 
 $dir = Split-Path $PSCommandPath -Parent
@@ -30,6 +30,9 @@ function importModule() {
 
   Write-Output "[Installing updates]"
   Install-WindowsUpdate -AcceptAll -IgnoreReboot
+
+  Write-Output "[Reboot]"
+  Get-WURebootStatus
 
   Write-Output "[History]"
   Get-WUHistory -MaxDate (Get-Date).AddDays(-1)
