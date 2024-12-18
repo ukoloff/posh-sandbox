@@ -12,4 +12,7 @@ $log = Join-Path $dir Logs
 $log = Join-Path $log $d.ToString("yyyy-MM-dd")
 $log = New-Item $log -Force -ItemType Directory
 $log = Join-Path $log "$($env:COMPUTERNAME)-$($d.ToString("HH-mm-ss_fff")).log"
-echo $log
+
+& {
+  echo "Hello, world!"
+} > $log 2>&1
