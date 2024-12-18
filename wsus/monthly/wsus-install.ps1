@@ -13,20 +13,16 @@ $log = Join-Path $log $d.ToString("yyyy-MM-dd")
 $log = New-Item $log -Force -ItemType Directory
 $log = Join-Path $log "$($env:COMPUTERNAME)-$($d.ToString("HH-mm-ss_fff")).log"
 
-
 function installModule() {
   Expand-Archive -LiteralPath (Join-Path $dir PSWindowsUpdate.zip) -DestinationPath "$env:ProgramFiles\WindowsPowerShell\Modules" -Force
 }
 
 function importModule() {
-  try {
-    Import-Module PSWindowsUpdate
-  }
-  catch {
-    Write-Output "Installing module: PSWindowsUpdate"
-    installModule
-    Import-Module PSWindowsUpdate
-  }
+  Import-Module PSWindowsUpdate -ErrorVariable $err
+  if (!$err) { return }
+  Write-Output "Installing module: PSWindowsUpdate"
+  installModule
+  Import-Module PSWindowsUpdate
 }
 
 & {
