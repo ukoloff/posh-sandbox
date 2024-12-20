@@ -128,6 +128,18 @@ function buildReloc($path, $files) {
     })
 }
 
+function dropDB($db) {
+  $id = Invoke-SqlScalar "Select IsNull(DB_ID(@DB), 0)" -Parameters @{DB = $db }
+  if (!$id) {
+    return
+  }
+  $null = Invoke-SqlUpdate @"
+    Alter Database $db
+      SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    Drop Database If Exists $db
+"@
+}
+
 function restoreDB($db) {
   $params = $DBs[$db]
   if (!$params -or $params.skip) { return }
@@ -156,6 +168,7 @@ function restoreDB($db) {
     }
 
     if ($N -eq 1) {
+      dropDB $db2
       $params['RelocateFile'] = buildReloc "$folder/$db" $bak.Files
       $params['ReplaceDatabase'] = $True
       if ($N -lt $baks.count) {
