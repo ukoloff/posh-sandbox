@@ -11,6 +11,9 @@ $kompas21 = '{05AB476A-CCCF-456F-B37F-43DDD7AE5F72}'
 
 msiexec /X $kompas21 /quiet
 
+$msi = Join-Path $src Modules\KOMPAS-3D_v22_x64.msi
+msiexec /i $msi /quiet
+
 $lic = Join-Path $src license.ini
 $licDst = Join-Path $env:ProgramData ASCON
 Copy-Item $lic $licDst -Force
