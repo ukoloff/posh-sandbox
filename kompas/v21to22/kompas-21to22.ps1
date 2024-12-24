@@ -28,6 +28,9 @@ foreach ($msi in (Get-ChildItem $src -Filter *.msi -File)) {
   msiexec /i $msi.FullName /passive | Write-Verbose
 }
 
+foreach ($msi in (Get-ChildItem $src -Filter *.msp -File -Recurse)) {
+  msiexec /update $msi.FullName /passive | Write-Verbose
+}
 
 $lic = Join-Path $src license.ini
 $licDst = Join-Path $env:ProgramData ASCON
