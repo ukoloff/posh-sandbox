@@ -18,7 +18,7 @@ $msi = Join-Path $modules KOMPAS-3D_v22_x64.msi
 msiexec /i $msi /passive | Write-Verbose
 
 foreach ($msi in (Get-ChildItem $modules -Filter *.msi -File)) {
-  if ($msi.Name -contains '-3D') {
+  if ($msi.Name.Contains('-3D')) {
     continue
   }
   msiexec /i $msi.FullName /passive | Write-Verbose
