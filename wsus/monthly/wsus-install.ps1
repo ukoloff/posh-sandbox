@@ -25,7 +25,7 @@ function installModule() {
 }
 
 function importModule() {
-  Import-Module PSWindowsUpdate -ErrorVariable $err
+  Import-Module PSWindowsUpdate -ErrorVariable err
   if (!$err) { return }
   Write-Output "Installing module: PSWindowsUpdate"
   installModule
