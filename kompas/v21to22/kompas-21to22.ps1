@@ -11,10 +11,19 @@ Stop-Process -Name kompas -Force -ErrorAction SilentlyContinue
 
 $kompas21 = '{05AB476A-CCCF-456F-B37F-43DDD7AE5F72}'
 
-msiexec.exe /X $kompas21 /quiet | Write-Verbose
+msiexec.exe /X $kompas21 /passive | Write-Verbose
 
-$msi = Join-Path $src Modules\KOMPAS-3D_v22_x64.msi
-msiexec /i $msi /quiet
+$modules = Join-Path $src Modules
+$msi = Join-Path $modules KOMPAS-3D_v22_x64.msi
+msiexec /i $msi /passive | Write-Verbose
+
+foreach ($msi in (Get-ChildItem $modules -Filter *.msi -File)) {
+  if ($msi.Name -contains '-3D') {
+    continue
+  }
+  msiexec /i $msi.FullName /passive | Write-Verbose
+}
+
 
 $lic = Join-Path $src license.ini
 $licDst = Join-Path $env:ProgramData ASCON
