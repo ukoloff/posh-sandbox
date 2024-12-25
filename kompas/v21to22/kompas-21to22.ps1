@@ -25,6 +25,10 @@ $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff"
   Write-Output "$(timeStamp)Removing Kompas v21"
   msiexec.exe /X $kompas21 /passive | Write-Verbose
 
+  Write-Output "$(timeStamp)Removing CadMech"
+  c:\IM\UNWISE.EXE /S /Z c:\IM\Install.log | Write-Verbose
+  Remove-Item c:\IM\ -Recurse -Force
+
   $modules = Join-Path $src Modules
   $msi = Join-Path $modules KOMPAS-3D_v22_x64.msi
   Write-Output "$(timeStamp)Installing Kompas v22: $msi"
