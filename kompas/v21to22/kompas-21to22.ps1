@@ -67,7 +67,7 @@ $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff"
     Remove-Item c:\IM\ -Recurse -Force
 
     Write-Output "Installing CadMech: $cadMech"
-    $cadMech | Write-Verbose
+    &$cadMech | Write-Verbose
   }
 
   Write-Output "$(timeStamp)That's all folks!"
