@@ -2,6 +2,7 @@
 # Обновление Компас с v21 на v22
 #
 $src = '\\omzglobal.com\uxm\Distribute\kompas\KOMPAS-3D_v22_x64\'
+$cadMech = '\\imech_temp\IPS.InstClient1\CADSystem\Setup_CAD_IPS.exe'
 
 if (!(Test-Path HKLM:\SOFTWARE\ASCON\KOMPAS-3D\21)) {
   exit
@@ -24,10 +25,6 @@ $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff"
 
   Write-Output "$(timeStamp)Removing Kompas v21"
   msiexec.exe /X $kompas21 /passive | Write-Verbose
-
-  Write-Output "$(timeStamp)Removing CadMech"
-  c:\IM\UNWISE.EXE /S /Z c:\IM\Install.log | Write-Verbose
-  Remove-Item c:\IM\ -Recurse -Force
 
   $modules = Join-Path $src Modules
   $msi = Join-Path $modules KOMPAS-3D_v22_x64.msi
@@ -56,6 +53,20 @@ $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff"
   $licDst = Join-Path $env:ProgramData ASCON
   Write-Output "$(timeStamp)Copying licensing config: $licDst"
   Copy-Item $lic $licDst -Force
+
+  $exe = 'c:\IM\UNWISE.EXE'
+  $log = 'c:\IM\Install.log'
+  $exeOk = Test-Path $exe -PathType Leaf
+  $logOk = Test-Path $log -PathType Leaf
+  if ($exeOk -and  $logOk) {
+    Write-Output "$(timeStamp)Removing CadMech"
+    &$exe /S /Z $log | Write-Verbose
+  }
+  Write-Output "$(timeStamp)Removing CadMech folder"
+  Remove-Item c:\IM\ -Recurse -Force
+
+  Write-Output "Installing CadMech: $cadMech"
+  $cadMech | Write-Verbose
 
   Write-Output "$(timeStamp)That's all folks!"
 } >$Log 2>&1
