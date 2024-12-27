@@ -54,19 +54,21 @@ $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff"
   Write-Output "$(timeStamp)Copying licensing config: $licDst"
   Copy-Item $lic $licDst -Force
 
-  $exe = 'c:\IM\UNWISE.EXE'
-  $log = 'c:\IM\Install.log'
-  $exeOk = Test-Path $exe -PathType Leaf
-  $logOk = Test-Path $log -PathType Leaf
-  if ($exeOk -and  $logOk) {
-    Write-Output "$(timeStamp)Removing CadMech"
-    &$exe /S /Z $log | Write-Verbose
-  }
-  Write-Output "$(timeStamp)Removing CadMech folder"
-  Remove-Item c:\IM\ -Recurse -Force
+  if (Test-Path c:\IM -PathType Container) {
+    $exe = 'c:\IM\UNWISE.EXE'
+    $log = 'c:\IM\Install.log'
+    $exeOk = Test-Path $exe -PathType Leaf
+    $logOk = Test-Path $log -PathType Leaf
+    if ($exeOk -and $logOk) {
+      Write-Output "$(timeStamp)Removing CadMech"
+      &$exe /S /Z $log | Write-Verbose
+    }
+    Write-Output "$(timeStamp)Removing CadMech folder"
+    Remove-Item c:\IM\ -Recurse -Force
 
-  Write-Output "Installing CadMech: $cadMech"
-  $cadMech | Write-Verbose
+    Write-Output "Installing CadMech: $cadMech"
+    $cadMech | Write-Verbose
+  }
 
   Write-Output "$(timeStamp)That's all folks!"
 } >$Log 2>&1
