@@ -2,7 +2,7 @@
 # Обновление Компас с v21 на v22
 #
 $src = '\\omzglobal.com\uxm\Distribute\kompas\KOMPAS-3D_v22_x64\'
-$cadMech = '\\imech_temp\IPS.InstClient1\CADSystem\Setup_CAD_IPS.exe'
+$cadMech = '\\imech\IPS.InstClient\CADSystem\Setup_CAD_IPS.exe'
 
 if (!(Test-Path HKLM:\SOFTWARE\ASCON\KOMPAS-3D\21)) {
   exit
