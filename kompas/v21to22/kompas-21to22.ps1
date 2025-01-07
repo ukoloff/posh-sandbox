@@ -17,7 +17,7 @@ $Log = Join-Path $Log (Get-Date -UFormat '%Y-%m-%d')
 $Log = New-Item $Log -Force -ItemType Directory
 $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff")).log"
 
-& {
+function doKompas {
   Write-Output "$(timeStamp)Killing Kompas if any"
   Stop-Process -Name kompas -Force -ErrorAction SilentlyContinue
 
@@ -71,4 +71,6 @@ $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff"
   }
 
   Write-Output "$(timeStamp)That's all folks!"
-} >$Log 2>&1
+}
+
+doKompas >$Log 2>&1
