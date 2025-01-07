@@ -66,7 +66,7 @@ function doKompas {
     Write-Output "$(timeStamp)Removing CadMech folder"
     Remove-Item c:\IM\ -Recurse -Force
 
-    Write-Output "Installing CadMech: $cadMech"
+    Write-Output "$(timeStamp)Installing CadMech: $cadMech"
     &$cadMech | Write-Verbose
   }
 
