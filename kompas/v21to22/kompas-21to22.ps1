@@ -24,29 +24,29 @@ function doKompas {
   $kompas21 = '{05AB476A-CCCF-456F-B37F-43DDD7AE5F72}'
 
   Write-Output "$(timeStamp)Removing Kompas v21"
-  msiexec.exe /X $kompas21 /passive | Write-Verbose
+  msiexec.exe /X $kompas21 /passive /norestart | Write-Verbose
 
   $modules = Join-Path $src Modules
   $msi = Join-Path $modules KOMPAS-3D_v22_x64.msi
   Write-Output "$(timeStamp)Installing Kompas v22: $msi"
-  msiexec /i $msi /passive | Write-Verbose
+  msiexec /i $msi /passive /norestart | Write-Verbose
 
   foreach ($msi in (Get-ChildItem $modules -Filter *.msi -File)) {
     if ($msi.Name.Contains('-3D')) {
       continue
     }
     Write-Output "$(timeStamp)Installing: $($msi.FullName)"
-    msiexec /i $msi.FullName /passive | Write-Verbose
+    msiexec /i $msi.FullName /passive /norestart | Write-Verbose
   }
 
   foreach ($msi in (Get-ChildItem $src -Filter *.msi -File)) {
     Write-Output "$(timeStamp)Installing: $($msi.FullName)"
-    msiexec /i $msi.FullName /passive | Write-Verbose
+    msiexec /i $msi.FullName /passive /norestart | Write-Verbose
   }
 
   foreach ($msi in (Get-ChildItem $src -Filter *.msp -File -Recurse)) {
     Write-Output "$(timeStamp)Patching: $($msi.FullName)"
-    msiexec /update $msi.FullName /passive | Write-Verbose
+    msiexec /update $msi.FullName /passive /norestart | Write-Verbose
   }
 
   $lic = Join-Path $src license.ini
