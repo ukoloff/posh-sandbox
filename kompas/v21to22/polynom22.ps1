@@ -11,11 +11,15 @@ $Log = Join-Path $src Logs/p
 $Log = Join-Path $Log (Get-Date -UFormat '%Y-%m-%d')
 $Log = New-Item $Log -Force -ItemType Directory
 $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff")).log"
+
 function timeStamp() {
   "[$(Get-Date -UFormat '%Y-%m-%d %T %Z')]`t"
 }
 
 function doPolynom {
+  Write-Output "$(timeStamp)Users:"
+  Get-Process -IncludeUserName | Select-Object UserName | Select-Object -Unique
+
   foreach ($exe in Get-ChildItem $src -Recurse -Filter *-runtime-*.exe) {
     Write-Output "$(timeStamp)Installing:`t$($exe.FullName)"
     & $exe.FullName /passive /norestart | Write-Verbose
