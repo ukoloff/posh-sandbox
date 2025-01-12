@@ -7,10 +7,19 @@ if (!(Test-Path HKLM:\SOFTWARE\ASCON\KOMPAS-3D\22)) {
   # exit
 }
 
+$Log = Join-Path $src Logs/p
+$Log = Join-Path $Log (Get-Date -UFormat '%Y-%m-%d')
+$Log = New-Item $Log -Force -ItemType Directory
+$Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff")).log"
+function timeStamp() {
+  "[$(Get-Date -UFormat '%Y-%m-%d %T %Z')]`t"
+}
+
 function doPolynom {
   foreach ($exe in Get-ChildItem $src -Recurse -Filter *-runtime-*.exe) {
-    $exe.FullName
+    Write-Output "$(timeStamp)Installing:`t$($exe.FullName)"
+    & $exe.FullName /passive /norestart | Write-Verbose
   }
 }
 
-doPolynom
+doPolynom >$Log 2>&1
