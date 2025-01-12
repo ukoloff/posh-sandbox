@@ -31,6 +31,11 @@ function doKompas {
   Write-Output "$(timeStamp)Installing Kompas v22: $msi"
   msiexec /i $msi /passive /norestart | Write-Verbose
 
+  $lic = Join-Path $src license.ini
+  $licDst = Join-Path $env:ProgramData ASCON
+  Write-Output "$(timeStamp)Copying licensing config: $licDst"
+  Copy-Item $lic $licDst -Force
+
   foreach ($msi in (Get-ChildItem $modules -Filter *.msi -File)) {
     if ($msi.Name.Contains('-3D')) {
       continue
@@ -48,11 +53,6 @@ function doKompas {
     Write-Output "$(timeStamp)Patching: $($msi.FullName)"
     msiexec /update $msi.FullName /passive /norestart | Write-Verbose
   }
-
-  $lic = Join-Path $src license.ini
-  $licDst = Join-Path $env:ProgramData ASCON
-  Write-Output "$(timeStamp)Copying licensing config: $licDst"
-  Copy-Item $lic $licDst -Force
 
   if (Test-Path c:\IM -PathType Container) {
     $exe = 'c:\IM\UNWISE.EXE'
