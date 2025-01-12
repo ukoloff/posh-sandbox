@@ -26,7 +26,7 @@ function doPolynom {
   }
 
   foreach ($msp in Get-ChildItem $src -Recurse Polynom*.msp) {
-    Write-Output "$(timeStamp)Pathching:`t$($msp.FullName)"
+    Write-Output "$(timeStamp)Patching:`t$($msp.FullName)"
     msiexec /update $msp.FullName /passive /norestart | Write-Verbose
   }
 
