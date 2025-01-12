@@ -7,3 +7,10 @@ if (!(Test-Path HKLM:\SOFTWARE\ASCON\KOMPAS-3D\22)) {
   # exit
 }
 
+function doPolynom {
+  foreach ($exe in Get-ChildItem $src -Recurse -Filter *-runtime-*.exe) {
+    $exe.FullName
+  }
+}
+
+doPolynom
