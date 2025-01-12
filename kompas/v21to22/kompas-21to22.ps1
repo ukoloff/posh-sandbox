@@ -1,4 +1,4 @@
-#
+﻿#
 # Обновление Компас с v21 на v22
 #
 $src = '\\omzglobal.com\uxm\Distribute\kompas\KOMPAS-3D_v22_x64\'
