@@ -17,8 +17,13 @@ function timeStamp() {
 }
 
 function doPolynom {
-  Write-Output "$(timeStamp)Users:"
-  Get-Process -IncludeUserName | Select-Object UserName | Select-Object -Unique
+  Write-Output @"
+$(timeStamp)Users:`t$((
+  Get-Process -IncludeUserName |
+  Select-Object -ExpandProperty UserName -Unique |
+  Where-Object {$_ -notmatch ' '} |
+  Sort-Object) -join ' ')
+"@
 
   foreach ($exe in Get-ChildItem $src -Recurse -Filter *-runtime-*.exe) {
     Write-Output "$(timeStamp)Installing:`t$($exe.FullName)"

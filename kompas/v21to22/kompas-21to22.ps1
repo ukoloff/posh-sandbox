@@ -18,6 +18,15 @@ $Log = New-Item $Log -Force -ItemType Directory
 $Log = Join-Path $Log "$($env:COMPUTERNAME)@$((Get-Date).ToString("HH-mm-ss_fff")).log"
 
 function doKompas {
+  Write-Output "$(timeStamp)Host:`t$($env:COMPUTERNAME)"
+  Write-Output @"
+$(timeStamp)Users:`t$((
+  Get-Process -IncludeUserName |
+  Select-Object -ExpandProperty UserName -Unique |
+  Where-Object {$_ -notmatch ' '} |
+  Sort-Object) -join ' ')
+"@
+
   Write-Output "$(timeStamp)Killing Kompas if any"
   Stop-Process -Name kompas -Force -ErrorAction SilentlyContinue
 
