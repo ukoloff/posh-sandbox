@@ -19,7 +19,11 @@
 [Пример настройки](ScheduledTasks.xml) задания
 <details>
 <summary>
-Лежит в 
+Лежит в
 </summary>
 \\srvdc-ekbh5.omzglobal.com\SysVol\omzglobal.com\Policies\{18E26CA4-3418-47CD-AF1D-0B96A9C96367}\Machine\Preferences\ScheduledTasks
 </details>
+
++ Лучше включить Общие параметры / Применить один раз и не применять повторно.
+В противном случае задача запускается не каждый день.
+
