@@ -16,7 +16,7 @@ if (!(Test-Path $path -PathType Container)) {
   exit
 }
 
-New-Item -path "$to\$handler\shell\open\command" -force -value "`"$path\7zFM.exe`" `"%1`""
+New-Item -Path "$to\$handler\shell\open\command" -Force -Value "`"$path\7zFM.exe`" `"%1`""
 foreach ($ext in $exts) {
-  New-Item -path "$to\.$ext" -force -value $handler
+  New-Item -Path "$to\.$ext" -Force -Value $handler
 }
