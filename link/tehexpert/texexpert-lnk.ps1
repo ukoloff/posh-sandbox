@@ -8,5 +8,8 @@ ForEach-Object {
   if (!(Test-Path $x)) {
     return
   }
-  echo $sid
+  $p = Get-ItemPropertyValue $x -Name ProfileImagePath
+  $q = (Get-Item "$($_.PSPath)\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").GetValue('Desktop', $null, 'DoNotExpandEnvironmentNames')
+  $q = $q -replace '%USERPROFILE%', $p
+  echo $q
 }
