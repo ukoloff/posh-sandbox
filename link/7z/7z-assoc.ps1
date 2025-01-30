@@ -7,16 +7,20 @@ $to = 'Registry::HKCR'
 
 $cfg = 'HKLM:\SOFTWARE\7-Zip'
 
-if (!(Test-Path $cfg -PathType Container)) {
-  exit
+function Associate7zip {
+  if (!(Test-Path $cfg -PathType Container)) {
+    exit
+  }
+
+  $path = (Get-Item $cfg).GetValue('Path')
+  if (!(Test-Path $path -PathType Container)) {
+    exit
+  }
+
+  New-Item -Path "$to\$handler\shell\open\command" -Force -Value "`"$path\7zFM.exe`" `"%1`""
+  foreach ($ext in $exts) {
+    New-Item -Path "$to\.$ext" -Force -Value $handler
+  }
 }
 
-$path = (Get-Item $cfg).GetValue('Path')
-if (!(Test-Path $path -PathType Container)) {
-  exit
-}
-
-New-Item -Path "$to\$handler\shell\open\command" -Force -Value "`"$path\7zFM.exe`" `"%1`""
-foreach ($ext in $exts) {
-  New-Item -Path "$to\.$ext" -Force -Value $handler
-}
+Associate7zip
