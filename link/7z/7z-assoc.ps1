@@ -17,7 +17,9 @@ function Associate7zip {
     exit
   }
 
-  New-Item -Path "$to\$handler\shell\open\command" -Force -Value "`"$path\7zFM.exe`" `"%1`""
+  $bin = Join-Path $path 7zFM.exe
+
+  New-Item -Path "$to\$handler\shell\open\command" -Force -Value "`"$bin`" `"%1`""
   foreach ($ext in $exts) {
     New-Item -Path "$to\.$ext" -Force -Value $handler
   }
