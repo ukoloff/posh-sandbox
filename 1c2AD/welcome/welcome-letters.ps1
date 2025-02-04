@@ -3,6 +3,8 @@
 #
 $newEmployees = '\\omzglobal.com\uxm\Exchange\employee_mail.csv'
 
+$newEmployees = Join-Path (Split-Path $PSCommandPath -Parent) test\users.csv
+
 $db = Join-Path (Split-Path $PSCommandPath -Parent) .db
 $db = New-Item $db -Force -ItemType Directory
 $db = Join-Path $db welcome.sq3
