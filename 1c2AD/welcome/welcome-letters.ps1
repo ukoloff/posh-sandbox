@@ -22,10 +22,28 @@ foreach ($user in Import-Csv $newEmployees -Delimiter ';' -Encoding UTF8) {
     Values(@u)
 "@ -Parameters @{u=$user.sAMAccountName}
 }
+
 if ($isNew) {
   $n = Invoke-SqlUpdate @"
     Update users
     Set ztime = CURRENT_TIMESTAMP
 "@
 }
+
+[array]$users = Invoke-SqlQuery @"
+  Select user
+  From users
+  Where
+    ztime is Null
+"@ -WarningAction Ignore
+
+foreach ($user in $users) {
+  $u = $user.user
+  $u = Get-ADUser $u -Properties mail,middleName
+  if (!$u.Enabled -or !$u.mail) {
+    continue
+  }
+  $u
+}
+
 Close-SqlConnection
