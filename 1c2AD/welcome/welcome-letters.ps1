@@ -17,7 +17,7 @@ if ($install) {
   $me = Split-Path $PSCommandPath -Leaf
   $dir = Split-Path $PSCommandPath -Parent
   $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
-  $Trigger = New-ScheduledTaskTrigger -At 07:30 -Weekly -RandomDelay 00:05:00 -DaysOfWeek Monday,Tuesday,Wednesday,Thursday,Friday
+  $Trigger = New-ScheduledTaskTrigger -At 07:30 -Weekly -RandomDelay 00:05:00 -DaysOfWeek Monday, Tuesday, Wednesday, Thursday, Friday
   $tRep = New-ScheduledTaskTrigger -Once -At 07:30 -RepetitionDuration 10:00:00 -RepetitionInterval 00:10:00
   $Trigger.Repetition = $tRep.Repetition
   $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
@@ -104,6 +104,25 @@ foreach ($user in $users) {
       sent(user, stage)
     Values(@id, @stage)
 "@ -Parameters @{id = $user.id; stage = $stage }
+  $body = [System.IO.File]::ReadAllLines($body)
+  $subject = $body[0]
+  $body = ($body | Select-Object -Skip 1) -join "`n"
+  $body = "Здравствуйте, $($u.givenName) $($u.middleName)!`n`n$($body.Trim())"
+
+  $cred = Get-StoredCredential -Target serviceuxm@omzglobal.com
+
+  $mail = @{
+    Body       = $body
+    Subject    = $subject
+    From       = 'serviceuxm@omzglobal.com'
+    To         = $u.mail
+    SmtpServer = 'srvmail-ekbh5.omzglobal.com'
+    Port       = '2525'
+    Encoding   = 'UTF8'
+    Credential = $cred
+  }
+
+  Send-MailMessage @mail
 }
 
 Close-SqlConnection
