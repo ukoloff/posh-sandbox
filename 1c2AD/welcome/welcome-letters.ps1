@@ -1,9 +1,36 @@
 ﻿#
 # Рассылка серии приветственных писем новому сотруднику
 #
+param( # Для самостоятельной установки запуска по расписанию
+  [switch]$install,
+  [switch]$remove
+)
+
 $newEmployees = '\\omzglobal.com\uxm\Exchange\employee_mail.csv'
 
 $newEmployees = Join-Path (Split-Path $PSCommandPath -Parent) test\users.csv
+
+#
+# Самостоятельная установка / удаление в Планировщик заданий
+#
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -At 07:30 -Weekly -RandomDelay 00:05:00 -DaysOfWeek Monday,Tuesday,Wednesday,Thursday,Friday
+  $tRep = New-ScheduledTaskTrigger -Once -At 07:30 -RepetitionDuration 10:00:00 -RepetitionInterval 00:10:00
+  $Trigger.Repetition = $tRep.Repetition
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
+}
+
 
 $db = Join-Path (Split-Path $PSCommandPath -Parent) .db
 $db = New-Item $db -Force -ItemType Directory
