@@ -9,4 +9,10 @@
 Скрипт `\\srvhasp-ekbh2\c$\Scripts\employee_hiring.ps1` делает из него
 `\\omzglobal.com\uxm\Exchange\employee_mail.csv`,
 из него мы просто берём список пользователей
- 
+
+
+## Install
+
+```powershell
+Install-Module SimplySQL
+```
