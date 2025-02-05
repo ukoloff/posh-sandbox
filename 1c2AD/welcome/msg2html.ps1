@@ -21,7 +21,13 @@ $src = $d.FileName
 $o = New-Object -ComObject Outlook.Application
 $z = $o.Session.OpenSharedItem($src)
 
-$z.Subject
+$name = (Get-Item $src).BaseName
+$dst = New-Item -Force -ItemType Directory (Join-Path $folder $name)
+# Move-Item $src $dst
+$z.Subject | Out-File (Join-Path $dst subject.txt)
+$z.HTMLbody | Out-File (Join-Path $dst body.html)
+$z.body | Out-File (Join-Path $dst body.txt)
+'*' | Out-File (Join-Path $dst .gitignore)
 
 $z.Close(1) # olDiscard
 # $o.Quit()
