@@ -28,6 +28,9 @@ $z.Subject | Out-File (Join-Path $dst subject.txt) -Encoding utf8
 $z.HTMLbody | Out-File (Join-Path $dst body.html) -Encoding utf8
 $z.body | Out-File (Join-Path $dst body.txt) -Encoding utf8
 '*' | Out-File (Join-Path $dst .gitignore) -Encoding utf8
-
+foreach ($a in $z.Attachments) {
+  $aFolder = New-Item -Force -ItemType Directory (Join-Path $dst files)
+  $a.SaveAsFile((Join-Path $aFolder $a.FileName))
+}
 $z.Close(1) # olDiscard
 # $o.Quit()
