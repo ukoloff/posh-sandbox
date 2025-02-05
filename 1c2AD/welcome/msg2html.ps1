@@ -1,11 +1,27 @@
-#
+﻿#
 # Преобразовать сообщение Outlook .msg -> .html + вложения
 #
 
-# $msg = Join-Path (Split-Path $PSCommandPath -Parent) msg\uxm.msg
-$msg = 'C:\Users\s.ukolov\Documents\repo\posh-sandbox\1c2AD\welcome\msg\uxm.msg'
+$folder = Join-Path (Split-Path $PSCommandPath -Parent) msg
+
+Add-Type -AssemblyName System.Windows.Forms
+
+$d = New-Object System.Windows.Forms.OpenFileDialog
+$d.Title = "Выберите почтовое сообщение"
+$d.Filter = 'Почтовые сообщения|*.msg|Все файлы|*.*'
+$d.InitialDirectory = $folder
+
+if ($d.ShowDialog() -ne "OK") {
+  exit
+}
+$src = $d.FileName
+
+# $msg = 'C:\Users\s.ukolov\Documents\repo\posh-sandbox\1c2AD\welcome\msg\uxm.msg'
 
 $o = New-Object -ComObject Outlook.Application
-$z = $o.Session.OpenSharedItem($msg)
+$z = $o.Session.OpenSharedItem($src)
 
-echo $z.HTMLBody
+$z.Subject
+
+$z.Close(1) # olDiscard
+# $o.Quit()
