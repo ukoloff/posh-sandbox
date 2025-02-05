@@ -6,7 +6,6 @@
 $msg = 'C:\Users\s.ukolov\Documents\repo\posh-sandbox\1c2AD\welcome\msg\uxm.msg'
 
 $o = New-Object -ComObject Outlook.Application
-echo $msg
 $z = $o.Session.OpenSharedItem($msg)
 
-echo $z.body
+echo $z.HTMLBody
