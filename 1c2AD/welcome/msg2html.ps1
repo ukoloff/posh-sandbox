@@ -24,10 +24,10 @@ $z = $o.Session.OpenSharedItem($src)
 $name = (Get-Item $src).BaseName
 $dst = New-Item -Force -ItemType Directory (Join-Path $folder $name)
 # Move-Item $src $dst
-$z.Subject | Out-File (Join-Path $dst subject.txt)
-$z.HTMLbody | Out-File (Join-Path $dst body.html)
-$z.body | Out-File (Join-Path $dst body.txt)
-'*' | Out-File (Join-Path $dst .gitignore)
+$z.Subject | Out-File (Join-Path $dst subject.txt) -Encoding utf8
+$z.HTMLbody | Out-File (Join-Path $dst body.html) -Encoding utf8
+$z.body | Out-File (Join-Path $dst body.txt) -Encoding utf8
+'*' | Out-File (Join-Path $dst .gitignore) -Encoding utf8
 
 $z.Close(1) # olDiscard
 # $o.Quit()
