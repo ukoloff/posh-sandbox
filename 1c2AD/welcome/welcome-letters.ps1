@@ -116,6 +116,7 @@ foreach ($user in $users) {
     Subject    = $subject
     From       = 'serviceuxm@omzglobal.com'
     To         = $u.mail
+    Bcc        = 'Stanislav.Ukolov@omzglobal.com'
     SmtpServer = 'srvmail-ekbh5.omzglobal.com'
     Port       = '2525'
     Encoding   = 'UTF8'
