@@ -16,3 +16,5 @@
 ```powershell
 Install-Module SimplySQL
 ```
+
+See https://github.com/datenteiler/ReadMsgFile
