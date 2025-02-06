@@ -38,7 +38,7 @@ foreach ($a in $z.Attachments) {
   $aFolder = New-Item -Force -ItemType Directory (Join-Path $dst files)
   $aName = Join-Path $aFolder $a.FileName
   $a.SaveAsFile($aName)
-  $re = [regex]::Escape("cid:$($a.FileName)@") + "[a-z\d]{2,}[.][a-z\d]{2,}"
+  $re = [regex]::Escape("cid:$($a.FileName)@") + "[a-f\d]{2,}[.][a-z\d]{2,}"
   $rep = "cid:$($a.FileName)"
   $body = $body -replace $re, $rep
   $changed++
