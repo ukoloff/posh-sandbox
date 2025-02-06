@@ -2,7 +2,7 @@
 # Преобразовать сообщение Outlook .msg -> .html + вложения
 #
 
-$folder = Join-Path (Split-Path $PSCommandPath -Parent) ..\msg
+$folder = Join-Path (Split-Path $PSCommandPath -Parent) .
 
 Add-Type -AssemblyName System.Windows.Forms
 $d = New-Object System.Windows.Forms.OpenFileDialog
