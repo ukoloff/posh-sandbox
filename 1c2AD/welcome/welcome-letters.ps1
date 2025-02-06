@@ -42,6 +42,38 @@ if ($isNew) {
   $n = Invoke-SqlUpdate $sql
 }
 
+function textMessage($path, $u) {
+  if (!(Test-Path $path -PathType Leaf)) {
+    return
+  }
+  $body = [System.IO.File]::ReadAllLines($path)
+  $subject = $body[0]
+  $body = ($body | Select-Object -Skip 1) -join "`n"
+  $body = "Здравствуйте, $($u.givenName) $($u.middleName)!`n`n$($body.Trim())"
+  return @{
+    Body    = $body
+    Subject = $subject
+  }
+}
+
+function htmlMessage($path, $u) {
+  if (!(Test-Path $path -PathType Container)) {
+    return
+  }
+  $subject = (Get-Content -Raw (Join-Path $path subject.txt)).Trim()
+  $body = (Get-Content -Raw (Join-Path $path body.html)).Trim()
+  [array]$az = Join-Path $path files |
+  Get-ChildItem -File |
+  ForEach-Object { $_.FullName }
+
+  return @{
+    BodyAsHtml  = $true
+    Body        = $body
+    Subject     = $subject
+    Attachments = $az
+  }
+}
+
 foreach ($user in Import-Csv $newEmployees -Delimiter ';' -Encoding UTF8) {
   $n = Invoke-SqlUpdate @"
     Insert Or Ignore Into
@@ -90,8 +122,13 @@ foreach ($user in $users) {
     }
     $stage = $user.stage + 1
   }
-  $body = Join-Path (Split-Path $PSCommandPath -Parent) "body\$stage.txt"
-  if (!(Test-Path $body -PathType Leaf)) {
+
+  $path = Join-Path (Split-Path $PSCommandPath -Parent) "body\$stage"
+  $msg = htmlMessage $path $u
+  if (!$msg) {
+    $msg = textMessage "$path.txt" $u
+  }
+  if (!$msg) {
     $n = Invoke-SqlUpdate @"
       Update users
       Set ztime = CURRENT_TIMESTAMP
@@ -99,21 +136,8 @@ foreach ($user in $users) {
 "@ -Parameters @{id = $user.id }
     continue
   }
-  $n = Invoke-SqlUpdate @"
-    Insert Into
-      sent(user, stage)
-    Values(@id, @stage)
-"@ -Parameters @{id = $user.id; stage = $stage }
-  $body = [System.IO.File]::ReadAllLines($body)
-  $subject = $body[0]
-  $body = ($body | Select-Object -Skip 1) -join "`n"
-  $body = "Здравствуйте, $($u.givenName) $($u.middleName)!`n`n$($body.Trim())"
 
-  $cred = Get-StoredCredential -Target serviceuxm@omzglobal.com
-
-  $mail = @{
-    Body       = $body
-    Subject    = $subject
+  $msg += @{
     From       = 'serviceuxm@omzglobal.com'
     To         = $u.mail
     Bcc        = 'Stanislav.Ukolov@omzglobal.com'
@@ -122,8 +146,13 @@ foreach ($user in $users) {
     Encoding   = 'UTF8'
     Credential = $cred
   }
+  Send-MailMessage @msg
 
-  Send-MailMessage @mail
+  $n = Invoke-SqlUpdate @"
+    Insert Into
+      sent(user, stage)
+    Values(@id, @stage)
+"@ -Parameters @{id = $user.id; stage = $stage }
 }
 
 Close-SqlConnection
