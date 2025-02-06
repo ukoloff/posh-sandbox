@@ -47,9 +47,11 @@ function textMessage($path, $u) {
     return
   }
   $body = [System.IO.File]::ReadAllLines($path)
-  $subject = $body[0]
+  $subject = $body[0].Trim()
   $body = ($body | Select-Object -Skip 1) -join "`n"
-  $body = "Здравствуйте, $($u.givenName) $($u.middleName)!`n`n$($body.Trim())"
+  $body = $body.Trim()
+  $io = ($u.givenName + ' ' + $u.middleName).Trim()
+  $body = "Здравствуйте, $io!`n`n$body"
   return @{
     Body    = $body
     Subject = $subject
