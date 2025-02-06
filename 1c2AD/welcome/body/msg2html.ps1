@@ -19,8 +19,9 @@ $o = New-Object -ComObject Outlook.Application
 $z = $o.Session.OpenSharedItem($src)
 
 $name = (Get-Item $src).BaseName
+$folder = Split-Path $src -Parent
 $dst = New-Item -Force -ItemType Directory (Join-Path $folder $name)
-# Move-Item $src $dst
+$dst = $dst.FullName
 
 $z.Subject |
 Out-File (Join-Path $dst subject.txt) -Encoding utf8
