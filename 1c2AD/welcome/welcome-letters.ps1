@@ -136,9 +136,11 @@ foreach ($user in $users) {
       Set ztime = CURRENT_TIMESTAMP
       Where id = @id
 "@ -Parameters @{id = $user.id }
+    "Done with <$($u.mail)>!"
     continue
   }
 
+  $cred = Get-StoredCredential -Target serviceuxm@omzglobal.com
   $msg += @{
     From       = 'serviceuxm@omzglobal.com'
     To         = $u.mail
@@ -148,6 +150,7 @@ foreach ($user in $users) {
     Encoding   = 'UTF8'
     Credential = $cred
   }
+  "Sending letter #$stage to <$($msg.To)>"
   Send-MailMessage @msg
 
   $n = Invoke-SqlUpdate @"
