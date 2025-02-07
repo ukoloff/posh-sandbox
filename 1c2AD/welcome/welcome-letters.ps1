@@ -139,6 +139,7 @@ foreach ($user in $users) {
     continue
   }
 
+  $cred = Get-StoredCredential -Target serviceuxm@omzglobal.com
   $msg += @{
     From       = 'serviceuxm@omzglobal.com'
     To         = $u.mail
