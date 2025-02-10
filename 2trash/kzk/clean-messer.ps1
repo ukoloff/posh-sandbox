@@ -38,5 +38,10 @@ Where-Object { $_.LastWriteTime -le $d } |
 ForEach-Object {
   $dst = Join-Path "$folder.sav" $_.LastWriteTime.ToString("yyyy\\MM")
   $dst = New-Item $dst -Force -ItemType Directory
+  $log = Join-Path "$folder.sav" $_.LastWriteTime.ToString("yyyy")
+  $log = Join-Path $log transfer.log
+  $message = "[$(Get-Date -UFormat '%Y-%m-%d %T %Z')]`tMoving: $($_.FullName)`tto: $($dst.FullName)"
+  $message
+  $message >> $log
   Move-Item $_.FullName $dst.FullName -Force
 }
