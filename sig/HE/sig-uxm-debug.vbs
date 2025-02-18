@@ -18,8 +18,8 @@ t.Range.Font.Name = "WeblySleek UI Semibold"
 t.Range.Font.Size = 9
 
 t.Columns(1).Cells.Merge
+t.Range.Cells(1).Width = 134
 t.Range.Cells(1).Range.InlineShapes.AddPicture strLogo
-t.Range.Cells(1).Width = 130
 
 Set c2 = t.Columns(2)
 
