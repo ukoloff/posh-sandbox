@@ -18,7 +18,7 @@ Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
 Invoke-SqlQuery @"
 select
 	"user",
-	date_trunc('month', start)::date as "month",
+	to_char(date_trunc('month', start)::date, 'YYYY-MM') as "month",
 	count(*) as "count",
 	count(distinct date_part('day', start)) as days,
 	sum(duration) as "seconds",
