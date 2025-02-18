@@ -53,9 +53,6 @@ If tel7 <> "" And strMobile = "" Then
     c2.Cells(5).Range.Text = "+7 (343) " & Left(tel7, 3) & "-" & Mid(tel7, 4, 2) & "-" & Right(tel7, 2) & dopPhone
 End If
 
-c2.Cells(6).Range.Text = "www.uralhimmash.ru"
-objDoc.Hyperlinks.Add c2.Cells(6).Range, "https://uralhimmash.ru"
-
 objWord.Visible = True
 
 Function digitsOnly(s)
