@@ -49,7 +49,7 @@ If IsEmpty(tel7) Then
     tel7 = Right(digitsOnly(objUser.telephoneNumber), 7)
 End If
 
-If tel7 <> "" And strMobile = "" Then
+If tel7 <> "" Then
     c2.Cells(5).Range.Text = "+7 (343) " & Left(tel7, 3) & "-" & Mid(tel7, 4, 2) & "-" & Right(tel7, 2) & dopPhone
 End If
 
