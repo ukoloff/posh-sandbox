@@ -3,15 +3,15 @@
 #
 $Groups = Write-Output  RDP RDP_UMZ Support RDP-enable-resourse
 
-# foreach ($g in $Groups) {
-#   (Get-ADGroup $g -Properties member).member |
-#   ForEach-Object {
-#     Get-ADUser $_ -Properties CanonicalName, Title |
-#     Select-Object Name, CanonicalName, Enabled, SamAccountName, Title |
-#     Sort-Object Name
-#   } |
-#   Export-Excel -WorksheetName $g
-# }
+foreach ($g in $Groups) {
+  (Get-ADGroup $g -Properties member).member |
+  ForEach-Object {
+    Get-ADUser $_ -Properties CanonicalName, Title |
+    Select-Object Name, CanonicalName, Enabled, SamAccountName, Title |
+    Sort-Object Name
+  } |
+  Export-Excel -WorksheetName $g
+}
 
 $cred = Get-StoredCredential -Target pqsql:TSG  # Fallback to Kerberos if not found
 Open-PostGreConnection -Server 'pg.ekb.ru' -Database uxm -Credential $cred
@@ -27,7 +27,7 @@ select
 from
 	tsg
 where
-	start >= '2025-01-01'
+	start >= date_trunc('month', now()::date - 42)
 group by
 	"user",
 	date_trunc('month', start)::date
