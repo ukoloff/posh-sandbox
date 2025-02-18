@@ -53,7 +53,12 @@ If tel7 <> "" Then
     c2.Cells(5).Range.Text = "+7 (343) " & Left(tel7, 3) & "-" & Mid(tel7, 4, 2) & "-" & Right(tel7, 2) & dopPhone
 End If
 
-objWord.Visible = True
+Set sigName = "Õטללאר Ýםונדמ"
+Set objSignatureObject = objWord.EmailOptions.EmailSignature
+objSignatureObject.EmailSignatureEntries.Add sigName, objDoc.Range
+objSignatureObject.NewMessageSignature = sigName
+objDoc.Saved = True
+objWord.Quit
 
 Function digitsOnly(s)
     Rem Only digits
