@@ -3,7 +3,7 @@ On Error Resume Next
 Set objWord = CreateObject("Word.Application")
 Set objDoc = objWord.Documents.Add()
 
-strLogo = "\\omzglobal.com\SysVol\omzglobal.com\scripts\Bin\signatures\logo_new3.png"
+strLogo = "\\omzglobal.com\SysVol\omzglobal.com\scripts\Bin\signatures\HimEnergo\logo_HE.png"
 
 Set objSysInfo = CreateObject("ADSystemInfo")
 Set objUser = GetObject("LDAP://" & objSysInfo.UserName)
