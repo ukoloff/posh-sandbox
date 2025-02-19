@@ -27,7 +27,7 @@ for /f "tokens=2 delims=:(" %%d in ('ipconfig /all^|FIND /I "IP"^|FINDSTR /c:"19
 :: Так как ip разной длинны обрезка :~1.10% нам не подходит разбиваем на октеты
 for /f "tokens=1-4 delims=. " %%k in ("%%d") do set IP=%%k.%%l.%%m
 )
-set Server=http://10.33.10.72:80/ocsinventory
+set Server=http://ocs.ekb.ru:80/ocsinventory
 
 ::Запрос Инвентарного номера
 ::set /P inventar=Введите Инвентарный Номер вашего ПК и нажмите Enter!:
@@ -42,42 +42,42 @@ if /i %%b==XP (goto :WindowsXP) else (if /i %%a==Vista (goto :WindowsVista) else
 ::Определяем разрядность и откуда запущен батник путь %~dp0 и запускаем тихую установку с параметрами
 Set xOS=x64
 If "%PROCESSOR_ARCHITECTURE%"=="x86" If Not Defined PROCESSOR_ARCHITEW6432 Set xOS=x86
-If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.1.1.1-xp-2003r2\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCSNG-Windows-Agent-2.1.1.1-xp-2003r2\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
+If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.1.1.1-xp-2003r2\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCSNG-Windows-Agent-2.1.1.1-xp-2003r2\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
 goto :end
 
 :WindowsVista
 ::Определяем разрядность и откуда запущен батник путь %~dp0 и запускаем тихую установку с параметрами
 Set xOS=x64
 If "%PROCESSOR_ARCHITECTURE%"=="x86" If Not Defined PROCESSOR_ARCHITEW6432 Set xOS=x86
-If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
+If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
 goto :end
 
 :Windows7
 ::Определяем разрядность и откуда запущен батник путь %~dp0 и запускаем тихую установку с параметрами
 Set xOS=x64
 If "%PROCESSOR_ARCHITECTURE%"=="x86" If Not Defined PROCESSOR_ARCHITEW6432 Set xOS=x86
-If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
+If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
 goto :end
 
 :Windows8
 ::Определяем разрядность и откуда запущен батник путь %~dp0 и запускаем тихую установку с параметрами
 Set xOS=x64
 If "%PROCESSOR_ARCHITECTURE%"=="x86" If Not Defined PROCESSOR_ARCHITEW6432 Set xOS=x86
-If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
+If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
 goto :end
 
 :Windows8.1
 ::Определяем разрядность и откуда запущен батник путь %~dp0 и запускаем тихую установку с параметрами
 Set xOS=x64
 If "%PROCESSOR_ARCHITECTURE%"=="x86" If Not Defined PROCESSOR_ARCHITEW6432 Set xOS=x86
-If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
+If %xOS%==x86 (start "" "%~dp0OCSNG-Windows-Agent-2.4.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCS-Windows-Agent-2.6.0.0\OCS-NG-Windows-Agent-Setup.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
 goto :end
 
 :Windows10
 ::Определяем разрядность и откуда запущен батник путь %~dp0 и запускаем тихую установку с параметрами
 Set xOS=x64
 If "%PROCESSOR_ARCHITECTURE%"=="x86" If Not Defined PROCESSOR_ARCHITEW6432 Set xOS=x86
-If %xOS%==x86 (start "" "%~dp0OCS-Windows-Agent-2.10.1.0\OCS-Windows-Agent-Setup-x86.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCSNG-Windows-Agent-2.10.1.0\OCS-Windows-Agent-Setup-x64.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://10.33.10.72:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
+If %xOS%==x86 (start "" "%~dp0OCS-Windows-Agent-2.10.1.0\OCS-Windows-Agent-Setup-x86.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY) Else (start "" "%~dp0OCSNG-Windows-Agent-2.10.1.0\OCS-Windows-Agent-Setup-x64.exe" /S /NOSPLASH /NOW /SSL=0 /SERVER=http://ocs.ekb.ru:80/ocsinventory /DEBUG=0 /TAG="GHM" /NO_SYSTRAY)
 goto :end
 
 :end
