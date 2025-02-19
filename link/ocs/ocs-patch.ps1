@@ -11,6 +11,7 @@ function timeStamp() {
 
 function sysInfo {
   "$(timeStamp)Host:`t$($env:COMPUTERNAME)"
+  "$(timeStamp)IP:`t$(-join ((Get-NetIPAddress -AddressFamily IPv4).IPAddress | ? { $_ -match "^10[.]"}))"
   @"
 $(timeStamp)Users:`t$((
     Get-Process -IncludeUserName |
