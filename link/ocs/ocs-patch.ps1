@@ -1,6 +1,9 @@
 #
 # Patch OCS Client config
 #
+$Logs = '\\service\Soft\Scripts\Logs'
+
+$Log = Join-Path $Logs "$($env:COMPUTERNAME).log"
 
 function timeStamp() {
   "[$(Get-Date -UFormat '%Y-%m-%d %T %Z')]`t"
@@ -33,14 +36,17 @@ function patchOCS {
     return
   }
 
-  "$(timeStamp)Patching:`t$ini"
-  Set-Content -LiteralPath $ini -Value $textOCS -Force
-
   $svc = "OCS Inventory Service"
-  "$(timeStamp)Restarting:`t$svc"
-  Restart-Service -Name $svc -Force
+  "$(timeStamp)Stopping:`t$svc"
+  Stop-Service -Name $svc -Force
+
+  "$(timeStamp)Patching:`t$ini"
+  Set-Content -LiteralPath $ini -Value $txtOCS -Force
+
+  "$(timeStamp)Starting:`t$svc"
+  Start-Service -Name $svc
 
   "$(timeStamp)That's all folks!"
 }
 
-patchOCS
+patchOCS >>$Log 2>&1
