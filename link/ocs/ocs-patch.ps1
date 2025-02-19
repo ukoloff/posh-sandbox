@@ -32,6 +32,15 @@ function patchOCS {
     "$(timeStamp)Quit:`tNothing to patch..."
     return
   }
+
+  "$(timeStamp)Patching:`t$ini"
+  Set-Content -LiteralPath $ini -Value $textOCS -Force
+
+  $svc = "OCS Inventory Service"
+  "$(timeStamp)Restarting:`t$svc"
+  Restart-Service -Name $svc -Force
+
+  "$(timeStamp)That's all folks!"
 }
 
 patchOCS
