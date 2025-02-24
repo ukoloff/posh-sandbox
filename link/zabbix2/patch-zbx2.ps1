@@ -9,7 +9,7 @@ function timeStamp() {
 
 function sysInfo {
   "$(timeStamp)Host:`t$($env:COMPUTERNAME)"
-  "$(timeStamp)IP:`t$(-join ((Get-NetIPAddress -AddressFamily IPv4).IPAddress | ? { $_ -match "^10[.]|^192[.]168[.]"}))"
+  "$(timeStamp)IP:`t$(((Get-NetIPAddress -AddressFamily IPv4).IPAddress | ? { $_ -match "^10[.]|^192[.]168[.]"}) -join ' ')"
   @"
 $(timeStamp)Users:`t$((
     Get-Process -IncludeUserName |
