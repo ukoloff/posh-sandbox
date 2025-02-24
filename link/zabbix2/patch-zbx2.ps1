@@ -3,6 +3,8 @@
 #
 $Logs = '\\service\Soft\Scripts\Logs\Zabbix2'
 
+$ini = 'C:\Program Files\Zabbix Agent 2\zabbix_agent2.conf'
+
 function timeStamp() {
   "[$(Get-Date -UFormat '%Y-%m-%d %T %Z')]`t"
 }
@@ -21,6 +23,29 @@ $(timeStamp)Users:`t$((
 
 function patchZabbix2 {
   sysInfo
+
+  if (!(Test-Path $ini -PathType Leaf)) {
+    "$(timeStamp)Quit:`tZabbix Agent2 not found!"
+    return
+  }
+
+  $txtIP = Get-Content -Raw $ini
+  $txt2 = $txtIP.Replace('10.33.10.120', 'zbx.ekb.ru')
+  if ($txtIP -eq $txt2) {
+    "$(timeStamp)Quit:`tNothing to patch..."
+    return
+  }
+
+  "$(timeStamp)Patching:`t$ini"
+  Set-Content -LiteralPath $ini -Value $txt2 -Force
+
+  "$(timeStamp)Restarting service..."
+  Restart-Service "Zabbix Agent 2"
+
+  "$(timeStamp)That's all folks!"
 }
 
-patchZabbix2
+$null = New-Item $Logs -Force -ItemType Directory
+$Logs = Join-Path $Logs "$($env:COMPUTERNAME).log"
+
+patchZabbix2 >>$Logs 2>&1
