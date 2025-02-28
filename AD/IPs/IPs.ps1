@@ -11,4 +11,6 @@ Where-Object { $_ } |
 ForEach-Object { Resolve-DNSName $_ -Type A } |
 Select-Object -ExpandProperty IPAddress
 
-$IPs
+$ARP = Invoke-WebRequest https://nc.ekb.ru/omz/service/arp/
+(ConvertFrom-Json $ARP.Content).ip |
+Where-Object { !$IPs.Contains($_) }
