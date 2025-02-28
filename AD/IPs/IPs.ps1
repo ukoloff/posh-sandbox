@@ -8,4 +8,6 @@ $OUs = @(
 
 $OUs |
 ForEach-Object { Get-ADComputer -Filter * -SearchBase $_ } |
-Out-GridView
+Select-Object -ExpandProperty DNSHostName
+Where-Object { $ } |
+Sort-Object
