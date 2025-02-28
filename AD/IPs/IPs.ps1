@@ -10,7 +10,6 @@ $OUs |
 ForEach-Object { Get-ADComputer -Filter * -SearchBase $_ } |
 Select-Object -ExpandProperty DNSHostName |
 Where-Object { $_ } |
-Sort-Object |
 ForEach-Object { Resolve-DNSName $_ -Type A } |
 Select-Object -ExpandProperty IPAddress |
 Sort-Object |
