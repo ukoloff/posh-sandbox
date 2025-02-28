@@ -71,7 +71,9 @@ ForEach-Object {
   $dst = Join-Path $trash $timestamp
   $dst = Join-Path $dst $rel
   $null = New-Item (Split-Path $dst -Parent) -Force -ItemType Directory
-  Move-Item $_.FullName $dst
+  "Moving: $($_.FullName) to:`t$dst"
+  # Move-Item $_.FullName $dst
+  [System.IO.File]::Move($_.FullName, $dst)
 }
 
 #
