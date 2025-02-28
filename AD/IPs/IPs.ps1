@@ -8,9 +8,24 @@
 ForEach-Object { Get-ADComputer -Filter * -SearchBase $_ } |
 Select-Object -ExpandProperty DNSHostName |
 Where-Object { $_ } |
-ForEach-Object { Resolve-DNSName $_ -Type A } |
+ForEach-Object { Resolve-DNSName $_ -Type A -ErrorAction SilentlyContinue } |
 Select-Object -ExpandProperty IPAddress
+
+function ptrReq($IP) {
+  try {
+    (Resolve-DnsName $IP -Type PTR -ErrorAction SilentlyContinue).NameHost -join ' '
+  }
+  catch {
+    $null
+  }
+}
 
 $ARP = Invoke-WebRequest https://nc.ekb.ru/omz/service/arp/
 (ConvertFrom-Json $ARP.Content).ip |
-Where-Object { !$IPs.Contains($_) }
+Where-Object { !$IPs.Contains($_) } |
+Sort-Object |
+ForEach-Object { [PSCustomObject]@{
+    ip   = $_
+    host = ptrReq $_
+  } } |
+Export-Excel
