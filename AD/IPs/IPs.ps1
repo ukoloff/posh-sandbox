@@ -12,5 +12,6 @@ Select-Object -ExpandProperty DNSHostName |
 Where-Object { $_ } |
 Sort-Object |
 ForEach-Object { Resolve-DNSName $_ -Type A } |
-Select-Object * |
+Select-Object -ExpandProperty IPAddress |
+Sort-Object |
 Out-GridView
