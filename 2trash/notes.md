@@ -35,3 +35,9 @@
   Технически возможно, но,
   пожалуй,
   чересчур много для такой простой задачи
+
+## Пути длинее 256 символов:
+
+```powershell
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+```
