@@ -31,3 +31,8 @@ $Pass = -join (33..126 * 3 | Get-Random -Count 21 | % { [char]$_ })
 New-ADUser trueconf.ekb.ru -Path 'OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com' -AccountPassword (ConvertTo-SecureString $Pass -AsPlainText -Force) -Enabled $true -PasswordNeverExpires $true -CannotChangePassword $true
 $Pass
 ```
+
+New-ADUser pg.ekb.ru -Path 'OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com' -PasswordNeverExpires $true -CannotChangePassword $true
+ktpass +answer -princ postgres/pg.ekb.ru@OMZGLOBAL.COM -ptype KRB5_NT_PRINCIPAL -crypto ALL -mapuser 'OMZGLOBAL\pg.ekb.ru' -pass $Pass -out c:\temp\pg.keytab
+
+Get-ADUser pg.ekb.ru -Properties servicePrincipalName,userPrincipalName,msDS-KeyVersionNumber
