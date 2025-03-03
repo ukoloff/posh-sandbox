@@ -83,8 +83,11 @@ function escalate([object]$u) {
   $seen = @{}
   while (1) {
     $seen[$u.SamAccountName] = 1
+    if (!$u.Manager) {
+      return $u
+    }
     $m = Get-ADUser $u.Manager -Properties Manager
-    if ($seen[$m.SamAccountName] -or !$m.Enabled -or !$m.Manager) {
+    if (!$m -or $seen[$m.SamAccountName] -or !$m.Enabled) {
       return $u
     }
     $u = $m

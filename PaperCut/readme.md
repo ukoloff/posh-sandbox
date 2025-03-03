@@ -23,7 +23,7 @@ New-ADComputer pg.ekb.ru -Path 'OU=kerberos,OU=uxm,OU=servers-ekb-uhm,OU=Servers
 ktpass -princ postgres/pg.ekb.ru@OMZGLOBAL.COM -ptype KRB5_NT_SRV_HST -crypto ALL -mapuser 'OMZGLOBAL\pg.ekb.ru$' -pass +rndpass -out c:\temp\pg.keytab +answer
 Get-ADComputer pg.ekb.ru -Properties servicePrincipalName,userPrincipalName,msDS-KeyVersionNumber
 ```
-| Attribure              |  Value                                                                             |
+| Attribute              |  Value                                                                             |
 |------------------------|------------------------------------------------------------------------------------|
 | DistinguishedName      |  CN=pg.ekb.ru,OU=kerberos,OU=uxm,OU=servers-ekb-uhm,OU=Servers,DC=omzglobal,DC=com |
 | DNSHostName            |                                                                                    |
@@ -36,6 +36,29 @@ Get-ADComputer pg.ekb.ru -Properties servicePrincipalName,userPrincipalName,msDS
 | servicePrincipalName   |  {postgres/pg.ekb.ru}                                                              |
 | SID                    |  S-1-5-21-429210517-1838642026-1537874043-149424                                   |
 | UserPrincipalName      |  postgres/pg.ekb.ru@OMZGLOBAL.COM                                                  |
+
+## Switch to User account for Kerberos
+```powershell
+$Pass = -join (33..126 * 3 | Get-Random -Count 21 | % { [char]$_ })
+New-ADUser pg.ekb.ru -Path 'OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com' -PasswordNeverExpires $true -CannotChangePassword $true
+ktpass +answer -princ postgres/pg.ekb.ru@OMZGLOBAL.COM -ptype KRB5_NT_PRINCIPAL -crypto ALL -mapuser 'OMZGLOBAL\pg.ekb.ru' -pass $Pass -out c:\temp\pg.keytab
+Set-ADUser pg.ekb.ru -Enabled $true
+Get-ADUser pg.ekb.ru -Properties servicePrincipalName,userPrincipalName,msDS-KeyVersionNumber
+```
+ Attribure            |  Value
+----------------------|------------------------------------------------------------------------------------------
+DistinguishedName     | CN=pg.ekb.ru,OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com
+Enabled               | True
+GivenName             |
+msDS-KeyVersionNumber | 2
+Name                  | pg.ekb.ru
+ObjectClass           | user
+ObjectGUID            | 6a3b8c07-23a6-4882-814c-38960e22df26
+SamAccountName        | pg.ekb.ru
+servicePrincipalName  | {postgres/pg.ekb.ru}
+SID                   | S-1-5-21-429210517-1838642026-1537874043-149619
+Surname               |
+UserPrincipalName     | postgres/pg.ekb.ru@OMZGLOBAL.COM
 
 ## See also
 
