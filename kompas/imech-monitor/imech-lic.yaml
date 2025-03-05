@@ -98,3 +98,44 @@ zabbix_export:
       tags:
         - tag: Application
           value: Intermech
+      dashboards:
+        - uuid: c5ee3b500e654c819546c423ebb37b35
+          name: 'Intermech licensing'
+          pages:
+            - widgets:
+                - type: graph
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Intermech licensing'
+                        name: 'Licenses used'
+                - type: graph
+                  'y': '5'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'Intermech licensing'
+                        name: 'Days left'
+  graphs:
+    - uuid: ea53ecd93a4347f7a34cb079c9a0d247
+      name: 'Days left'
+      graph_items:
+        - color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: 'Intermech licensing'
+            key: intermech.license.days
+    - uuid: b22d0102f99140d69661c563592c59b1
+      name: 'Licenses used'
+      graph_items:
+        - color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: 'Intermech licensing'
+            key: intermech.license.count
