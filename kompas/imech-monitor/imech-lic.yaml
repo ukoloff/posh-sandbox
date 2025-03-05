@@ -59,14 +59,23 @@ zabbix_export:
               expression: 'last(/Intermech licensing/intermech.license.days)<=30'
               name: 'Intermech license expires in a month'
               priority: WARNING
+              tags:
+                - tag: Application
+                  value: Intermech
             - uuid: 3b2b70418c2d493494545d9fa3372745
               expression: 'last(/Intermech licensing/intermech.license.days)<=7'
               name: 'Intermech license expires in a week'
               priority: AVERAGE
+              tags:
+                - tag: Application
+                  value: Intermech
             - uuid: b7f46c6abdde4b20a6723aef3bd8eac7
               expression: 'last(/Intermech licensing/intermech.license.days)<=1'
               name: 'Intermech license expires tonight'
               priority: HIGH
+              tags:
+                - tag: Application
+                  value: Intermech
         - uuid: 2477f2319c99424fb35337b468728e4a
           name: 'Expiration date'
           type: DEPENDENT
