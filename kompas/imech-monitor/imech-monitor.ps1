@@ -3,7 +3,7 @@
 #
 $URL = 'http://imech:8995/'
 
-$q = Invoke-WebRequest $URL -UseBasicParsing
+$q = Invoke-WebRequest $URL
 
 $dom = New-Object -ComObject "HTMLFile"
 $dom.IHTMLDocument2_write([System.Text.Encoding]::Default.GetString($q.Content))
