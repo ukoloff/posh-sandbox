@@ -3,7 +3,7 @@
 #
 $URL = 'http://imech:8995/'
 
-$q = Invoke-WebRequest $URL
+$q = Invoke-WebRequest $URL -UseBasicParsing
 
 # Add IHTMLDocument2_* methods
 # https://stackoverflow.com/a/46309411/6127481
