@@ -24,12 +24,18 @@ zabbix_export:
                 - 1h
           master_item:
             key: intermech.license.data
+          tags:
+            - tag: Application
+              value: Intermech
         - uuid: e07a55d065884692b1b05a7aac0c20f3
           name: 'Intermech Licensing data'
           key: intermech.license.data
           history: '0'
           trends: '0'
           value_type: TEXT
+          tags:
+            - tag: Application
+              value: Intermech
         - uuid: 18b37e648f904639929c8ac3ae2b5641
           name: 'Days left'
           type: DEPENDENT
@@ -45,6 +51,22 @@ zabbix_export:
                 - 12h
           master_item:
             key: intermech.license.data
+          tags:
+            - tag: Application
+              value: Intermech
+          triggers:
+            - uuid: 202a1b3b91644413b9a9fbd1e1d8fb61
+              expression: 'last(/Intermech licensing/intermech.license.days)<=30'
+              name: 'Intermech license expires in a month'
+              priority: WARNING
+            - uuid: 3b2b70418c2d493494545d9fa3372745
+              expression: 'last(/Intermech licensing/intermech.license.days)<=7'
+              name: 'Intermech license expires in a week'
+              priority: AVERAGE
+            - uuid: b7f46c6abdde4b20a6723aef3bd8eac7
+              expression: 'last(/Intermech licensing/intermech.license.days)<=1'
+              name: 'Intermech license expires tonight'
+              priority: HIGH
         - uuid: 2477f2319c99424fb35337b468728e4a
           name: 'Expiration date'
           type: DEPENDENT
@@ -61,6 +83,9 @@ zabbix_export:
                 - 12h
           master_item:
             key: intermech.license.data
+          tags:
+            - tag: Application
+              value: Intermech
       tags:
         - tag: Application
           value: Intermech
