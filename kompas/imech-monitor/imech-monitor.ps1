@@ -32,4 +32,5 @@ $dom.all.tags('h2') |
   }
 }
 
-$out | ConvertTo-Json
+$out | ConvertTo-Json -Compress
+
