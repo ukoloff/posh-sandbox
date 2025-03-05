@@ -1,0 +1,66 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 828d237175e84be591576d016ee89eba
+      name: uxm
+  templates:
+    - uuid: d5b5d88e749045d08e3ba23c1837a5cb
+      template: 'Intermech licensing'
+      name: 'Intermech licensing'
+      groups:
+        - name: uxm
+      items:
+        - uuid: 5ea1c36cc9c94648a25651a96b8a4773
+          name: 'Licenses used'
+          type: DEPENDENT
+          key: intermech.license.count
+          delay: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.count
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1h
+          master_item:
+            key: intermech.license.data
+        - uuid: e07a55d065884692b1b05a7aac0c20f3
+          name: 'Intermech Licensing data'
+          key: intermech.license.data
+          history: '0'
+          trends: '0'
+          value_type: TEXT
+        - uuid: 18b37e648f904639929c8ac3ae2b5641
+          name: 'Days left'
+          type: DEPENDENT
+          key: intermech.license.days
+          delay: '0'
+          value_type: FLOAT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.days
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          master_item:
+            key: intermech.license.data
+        - uuid: 2477f2319c99424fb35337b468728e4a
+          name: 'Expiration date'
+          type: DEPENDENT
+          key: intermech.license.expire
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.date
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 12h
+          master_item:
+            key: intermech.license.data
+      tags:
+        - tag: Application
+          value: Intermech
