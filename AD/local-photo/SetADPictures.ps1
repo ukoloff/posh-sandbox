@@ -4,7 +4,7 @@ Function ResizeImage {
     [ValidateNotNull()]
     $imageSource,
     [Parameter(Mandatory = $true, HelpMessage = "Параметр размер должен быть от 16 до 1000")]
-    [ValidateRange(16, 1000)]
+    [ValidateRange(16, 2000)]
     $canvasSize,
     [Parameter(Mandatory = $true, HelpMessage = "Параметр качества должен быть от 1 до 100")]
     [ValidateRange(1, 100)]
@@ -49,7 +49,7 @@ Function ResizeImage {
 $ADUserInfo = ([ADSISearcher]"(&(objectCategory=User)(SAMAccountName=$env:username))").FindOne().Properties
 $ADUserInfo_sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
 If ($ADUserInfo.thumbnailphoto) {
-  $img_sizes = @(32, 40, 48, 96, 192, 200, 240, 448)
+  $img_sizes = @(32, 40, 48, 64, 96, 192, 208, 240, 424, 448, 1080)
   $img_base = "C:\Users\Public\AccountPictures"
   $reg_key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AccountPicture\Users\$ADUserInfo_sid"
   If ((Test-Path -Path $reg_key) -eq $false) { New-Item -Path $reg_key } { write-verbose "Reg key exist [$reg_key]" }
