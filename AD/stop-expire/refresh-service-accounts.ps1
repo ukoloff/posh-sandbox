@@ -7,6 +7,7 @@ param( # Для самостоятельной установки запуска
 )
 
 $OU = 'OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+$Group = 'WAC'
 
 #
 # Самостоятельная установка / удаление в Планировщик заданий
