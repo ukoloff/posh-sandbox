@@ -7,6 +7,7 @@ param( # Для самостоятельной установки запуска
 )
 
 $OU = 'OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+$Group = 'WAC'
 
 #
 # Самостоятельная установка / удаление в Планировщик заданий
@@ -27,7 +28,14 @@ if ($remove) {
   exit
 }
 
-Get-ADUser -SearchBase $OU -Filter * |
+function getUsers {
+  Get-ADUser -SearchBase $OU -Filter *
+
+  Get-ADGroup $Group |
+  Get-ADGroupMember -Recursive
+}
+
+getUsers |
 Set-ADUser -Replace @{pwdLastSet = 0 } -PassThru |
 Set-ADUser -Replace @{pwdLastSet = -1 } -PassThru |
 Get-ADUser -Properties pwdLastSet, PasswordLastSet
