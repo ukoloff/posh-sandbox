@@ -40,10 +40,6 @@ function getUsers {
 
 $OUs |
 ForEach-Object { Get-ADUser -SearchBase $_ -Filter 'Enabled -eq $true'} |
-Out-GridView
-
-exit
-getUsers |
 Set-ADUser -Replace @{pwdLastSet = 0 } -PassThru |
 Set-ADUser -Replace @{pwdLastSet = -1 } -PassThru |
 Get-ADUser -Properties pwdLastSet, PasswordLastSet
