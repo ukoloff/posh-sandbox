@@ -39,7 +39,7 @@ function getUsers {
 }
 
 $OUs |
-ForEach-Object { Get-ADUser -SearchBase $_ -Filter *} |
+ForEach-Object { Get-ADUser -SearchBase $_ -Filter 'Enabled -eq $true'} |
 Out-GridView
 
 exit
