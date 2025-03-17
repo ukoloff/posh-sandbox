@@ -1,4 +1,4 @@
-#
+﻿#
 # Stop Expire! for service accounts
 #
 param( # Для самостоятельной установки запуска по расписанию
@@ -6,8 +6,11 @@ param( # Для самостоятельной установки запуска
   [switch]$remove
 )
 
-$OU = 'OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
-$Group = 'WAC'
+$OUs = @(
+  'OU=ekb.ru,OU=Service,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+  'OU=СТО,OU=ОИТ,OU=Дирекция ИТ,OU=Дирекция,OU=Users,OU=EKBH,OU=uxm,OU=MS,DC=omzglobal,DC=com'
+)
+$Group = 'WAC'  # Not used
 
 #
 # Самостоятельная установка / удаление в Планировщик заданий
@@ -35,7 +38,8 @@ function getUsers {
   Get-ADGroupMember -Recursive
 }
 
-getUsers |
+$OUs |
+ForEach-Object { Get-ADUser -SearchBase $_ -Filter 'Enabled -eq $true'} |
 Set-ADUser -Replace @{pwdLastSet = 0 } -PassThru |
 Set-ADUser -Replace @{pwdLastSet = -1 } -PassThru |
 Get-ADUser -Properties pwdLastSet, PasswordLastSet
