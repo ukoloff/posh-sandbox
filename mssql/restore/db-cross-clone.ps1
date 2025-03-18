@@ -20,15 +20,15 @@ $DBs = @{
   }
   OP_WORK    = @{
     # skip = $true
-    dst  = 'OP_TEST2'
+    dst = 'OP_TEST2'
   }
   ERP_WORK   = @{
     # skip = $true
-    dst  = 'ERP_WORK_TEST'
+    dst = 'ERP_WORK_TEST'
   }
   ZUP_20     = @{
     # skip = $true
-    dst  = 'ZUP_20_TEST'
+    dst = 'ZUP_20_TEST'
   }
 }
 
@@ -139,11 +139,11 @@ function buildReloc($path, $files) {
 }
 
 function offDB($db) {
-  $id = Invoke-SqlScalar "Select IsNull(DB_ID(@DB), 0)" -Parameters @{DB = $db }
+  $id = Invoke-SqlScalar "Select IsNull(DB_ID(@DB), 0)" -Parameters @{ DB = $db } -ConnectionName dst
   if (!$id) {
     return
   }
-  "[$(timeStamp)] Taking [$db] offline" | Out-File @Log
+  "[$(timeStamp)] ...taking [$db] offline" | Out-File @Log
   $null = Invoke-SqlUpdate @"
     Alter Database $db
       SET Offline
@@ -194,7 +194,10 @@ function restoreDB($db) {
 }
 
 Open-SQLConnection -Server $src -Database msdb
+Open-SQLConnection -ConnectionName dst -Server $dst -Database msdb
+
 foreach ($db in $DBs.Keys) {
   restoreDB($db)
 }
 Close-SqlConnection
+Close-SqlConnection -ConnectionName dst
