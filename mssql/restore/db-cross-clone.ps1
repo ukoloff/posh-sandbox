@@ -8,7 +8,7 @@ param(
 
 $src = "SRVSQL-1C"
 $dst = "SRVSQL-1Ctests"
-$dstFolder = "E:\"
+$dstFolder = "D:\"
 
 $DBs = @{
   stas       = @{
@@ -19,15 +19,15 @@ $DBs = @{
     # skip = $true
   }
   OP_WORK    = @{
-    skip = $true
+    # skip = $true
     dst  = 'OP_TEST2'
   }
   ERP_WORK   = @{
-    skip = $true
+    # skip = $true
     dst  = 'ERP_WORK_TEST'
   }
   ZUP_20     = @{
-    skip = $true
+    # skip = $true
     dst  = 'ZUP_20_TEST'
   }
 }
