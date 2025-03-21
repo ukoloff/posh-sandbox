@@ -6,8 +6,25 @@ $src = "SRVSQL-1C"
 $dst = "SRVSQL-1Ctests"
 $dstFolder = "D:\"
 
+function mssqlConnect($server) {
+  $b = New-Object System.Data.OleDb.OleDbConnectionStringBuilder
+  $b.Provider = 'sqloledb'
+  $b.Add('Integrated Security', 'SSPI')
+  $b.Add('Data Source', $server)
+  $b.Add('Initial Catalog', 'msdb')
+  # $c = New-Object System.Data.OleDb.OleDbConnection $b.ConnectionString
+  $c = New-Object -ComObject ADODB.Connection
+  $c.Open($b.ConnectionString)
+  $c
+}
+
+$dbSrc = mssqlConnect($src)
+$dbDst = mssqlConnect($dst)
+
 function listBackups {
-  Invoke-SqlQuery @"
+  $c = New-Object -ComObject ADODB.Command
+  $c.ActiveConnection = $dbSrc
+  $c.CommandText = @"
     SELECT
       ROW_NUMBER() over(order by database_name) as [№],
       database_name as [БД],
@@ -18,7 +35,17 @@ function listBackups {
       backupset
     group by
       database_name
-"@ -ConnectionName src
+"@
+  $r = $c.Execute()
+  $rows = while(!$r.EOF) {
+    $row = [ordered]@{}
+    foreach ($f in $r.Fields) {
+      $row[$f.Name] = $f.Value
+    }
+    $r.MoveNext()
+    $row
+  }
+  $rows
 }
 
 function selectBD {
@@ -45,13 +72,8 @@ function selectBD {
 }
 
 function Run {
-  selectBD
+  $bd1 = selectBD
+  "Выбрана резервная копия mssql://$src/$bd1"
 }
 
-Open-SQLConnection -ConnectionName src -Server $src -Database msdb
-Open-SQLConnection -ConnectionName dst -Server $dst -Database msdb
-
 Run
-
-Close-SqlConnection -ConnectionName src
-Close-SqlConnection -ConnectionName dst
