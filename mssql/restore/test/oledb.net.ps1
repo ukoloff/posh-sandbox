@@ -22,11 +22,13 @@ $cmd.CommandText = @"
 # $cmd.Parameters.AddWithValue('@db', 'ERP_WORK')
 # $cmd.Parameters.Add('@db', [Data.SQLDBType]::varchar).Value = 'ERP_WORK'
 $r = $cmd.ExecuteReader()
-while ($r.Read()) {
-  $row = [ordered]@{}
-  foreach ($i in 1..$r.FieldCount) {
-    $row[$r.GetName($i - 1)] = $r.GetValue($i - 1)
-  }
-  [PSCustomObject]$row
-}
+& {
+  while ($r.Read()) {
+    $row = [ordered]@{}
+    foreach ($i in 1..$r.FieldCount) {
+      $row[$r.GetName($i - 1)] = $r.GetValue($i - 1)
+    }
+    [PSCustomObject]$row
+  } } |
+Out-GridView
 
