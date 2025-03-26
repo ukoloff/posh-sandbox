@@ -52,21 +52,82 @@ function selectBD {
       exit
     }
     if ($n -notmatch '^\d+$') {
-        Write-Warning "Требуется число!"
-        continue
+      Write-Warning "Требуется число!"
+      continue
     }
     $n = [int]$n
     if ($n -lt 1 -or $n -gt $backups.count) {
       Write-Warning "Введите число от 1 до $($backups.count)"
       continue
     }
-    return $backups[$n-1].БД
+    return $backups[$n - 1].БД
+  }
+}
+
+# Find latest backup file(s)
+function findFiles($db) {
+  $cmd = $dbSrc.CreateCommand()
+  $cmd.CommandText = @"
+    with latest as(
+        select
+            top 1 *
+        from
+            backupset
+        where
+            database_name = @db
+        order by
+            backup_start_date Desc
+    ),
+    chain as(
+        select
+            1 as generation,
+            *
+        from
+            latest
+        union all
+        select
+            1 + Parent.generation,
+            Child.*
+        from
+            chain as Parent
+            join backupset as Child on Parent.differential_base_guid = Child.backup_set_uuid
+    ),
+    files as(
+        select
+            chain.*,
+            Files.physical_device_name,
+            Files.media_count
+        from
+            chain
+            join backupmediafamily as Files on chain.media_set_id = Files.media_set_id
+    )
+    select
+        backup_set_id,
+        backup_start_date,
+        physical_device_name,
+        media_count
+    from
+        files
+    Order By
+        generation Desc
+"@
+  $cmd.Parameters.Add('@db', [System.Data.SqlDbType]::Variant).Value = $db
+  $r = $cmd.ExecuteReader()
+  $t = New-Object System.Data.DataTable
+  $t.Load($r)
+  $r.Close()
+  $t |
+  Select-Object @{Name = 'Дата';
+    Expression         = "backup_start_date"
+  }, @{Name    = "Файл резервной копии";
+    Expression = "physical_device_name"
   }
 }
 
 function Run {
-  $bd1 = selectBD
-  "Выбрана резервная копия mssql://$src/$bd1"
+  $dbA = selectBD
+  "Выбрана резервная копия mssql://$src/$dbA"
+  findFiles $dbA
 }
 
 Run
