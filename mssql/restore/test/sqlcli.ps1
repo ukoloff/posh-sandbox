@@ -4,9 +4,9 @@
 # https://stackoverflow.com/a/58139999/6127481
 #
 $b = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
-$b['Integrated Security'] = $true
 $b.Server = "SRVSQL-1C"
 $b.Database = 'msdb'
+$b['Integrated Security'] = $true
 
 $conn = New-Object System.Data.SqlClient.SqlConnection $b.ConnectionString
 $conn.Open()
