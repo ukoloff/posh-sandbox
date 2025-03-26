@@ -119,18 +119,28 @@ function findFiles($db) {
   $t
 }
 
-function selectBDtoo () {
+function commonPrefix($a, $b) {
+  $l = (@($a.Length, $b.Length) | Measure-Object -Minimum).Minimum
+  foreach ($i in 1..$l) {
+    $ac = $a[$i - 1]
+    if ($null -eq $ac) {
+      return $i - 1
+    }
+    $bc = $b[$i - 1]
+    if ($null -eq $bc) {
+      return $i - 1
+    }
+    if ($ac -ne $bc) {
+      return $i - 1
+    }
+  }
+  return $i
+}
+
+function selectBDtoo ($dbA) {
   $cmd = $dbDst.CreateCommand()
   $cmd.CommandText = @"
     Select
-        0 as no,
-        'Создать новую БД' as name
-    Union All
-    Select
-        ROW_NUMBER() over(
-            order by
-                name
-        ) as no,
         name
     From
         sys.databases
@@ -141,7 +151,15 @@ function selectBDtoo () {
   $t = New-Object System.Data.DataTable
   $t.Load($r)
   $r.Close()
-  $t | Format-Table | Out-String | Write-Host
+  $t.Columns.Add('prefix')
+  foreach ($r in $t.Rows) {
+    $r.prefix = commonPrefix $r.name $dbA
+  }
+
+  $rows = $t.Rows |
+  Sort-Object -Property @{Expression = "prefix"; Descending = $true }, @{Expression = "name" }
+
+  $rows | Format-Table | Out-String | Write-Host
   while ($true) {
     $n = Read-Host "Выберите в какую БД восстановить резервную копию"
     $n = $n.Trim()
@@ -175,7 +193,7 @@ function Run {
     Expression = "physical_device_name"
   } | Out-String | Write-Host
 
-  $dbZ = selectBDtoo
+  $dbZ = selectBDtoo $dbA
 
   "БД mssql://$src/$dbA будет восстановлена в mssql://$dst/$dbZ"
 }
