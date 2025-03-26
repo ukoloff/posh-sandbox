@@ -22,7 +22,8 @@ $cmd.CommandText = @"
 # $cmd.Parameters.AddWithValue('@db', 'ERP_WORK')
 # $cmd.Parameters.Add('@db', [Data.SQLDBType]::varchar).Value = 'ERP_WORK'
 $cmd.Parameters.Add('@db', 12).Value = 'ERP_WORK'
-# 12 = Variant
+# ^^^ 12 = Variant
+# https://learn.microsoft.com/ru-ru/dotnet/api/system.data.oledb.oledbtype?view=net-8.0
 $r = $cmd.ExecuteReader()
 & {
   while ($r.Read()) {
