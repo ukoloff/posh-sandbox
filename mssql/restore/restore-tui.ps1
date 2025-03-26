@@ -7,24 +7,22 @@ $dst = "SRVSQL-1Ctests"
 $dstFolder = "D:\"
 
 function mssqlConnect($server) {
-  $b = New-Object System.Data.OleDb.OleDbConnectionStringBuilder
-  $b.Provider = 'sqloledb'
-  $b.Add('Integrated Security', 'SSPI')
-  $b.Add('Data Source', $server)
-  $b.Add('Initial Catalog', 'msdb')
-  # $c = New-Object System.Data.OleDb.OleDbConnection $b.ConnectionString
-  $c = New-Object -ComObject ADODB.Connection
-  $c.Open($b.ConnectionString)
-  $c
+  $b = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
+  $b.Server = $server
+  $b.Database = 'msdb'
+  $b['Integrated Security'] = $true
+
+  $conn = New-Object System.Data.SqlClient.SqlConnection $b.ConnectionString
+  $conn.Open()
+  $conn
 }
 
 $dbSrc = mssqlConnect($src)
 $dbDst = mssqlConnect($dst)
 
 function listBackups {
-  $c = New-Object -ComObject ADODB.Command
-  $c.ActiveConnection = $dbSrc
-  $c.CommandText = @"
+  $cmd = $dbSrc.CreateCommand()
+  $cmd.CommandText = @"
     SELECT
       ROW_NUMBER() over(order by database_name) as [№],
       database_name as [БД],
@@ -36,16 +34,11 @@ function listBackups {
     group by
       database_name
 "@
-  $r = $c.Execute()
-  $rows = while(!$r.EOF) {
-    $row = [ordered]@{}
-    foreach ($f in $r.Fields) {
-      $row[$f.Name] = $f.Value
-    }
-    $r.MoveNext()
-    $row
-  }
-  $rows
+  $r = $cmd.ExecuteReader()
+  $t = New-Object System.Data.DataTable
+  $t.Load($r)
+  $r.Close()
+  $t
 }
 
 function selectBD {
