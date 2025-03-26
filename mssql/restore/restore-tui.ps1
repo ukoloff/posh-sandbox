@@ -42,9 +42,9 @@ function listBackups {
 }
 
 function selectBD {
-  "Имеющиеся резервные копии на сервере: $src"
+  Write-Host "Имеющиеся резервные копии на сервере: $src"
   $backups = listBackups
-  $backups | ft
+  $backups | Format-Table | Out-String | Write-Host
   while ($true) {
     $n = Read-Host "Выберите номер БД для восстановления"
     $n = $n.Trim()
