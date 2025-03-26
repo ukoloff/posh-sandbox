@@ -13,7 +13,7 @@ $conn.Open()
 
 $cmd = $conn.CreateCommand()
 $cmd.CommandText = @"
-  Select
+  Select Top 3
     *
   From
     backupset
