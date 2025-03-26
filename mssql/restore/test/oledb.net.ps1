@@ -16,11 +16,13 @@ $cmd.CommandText = @"
     *
   From
     backupset
-  -- Where
-  --  database_name = @db
+  Where
+    database_name = ?
 "@
 # $cmd.Parameters.AddWithValue('@db', 'ERP_WORK')
 # $cmd.Parameters.Add('@db', [Data.SQLDBType]::varchar).Value = 'ERP_WORK'
+$cmd.Parameters.Add('@db', 12).Value = 'ERP_WORK'
+# 12 = Variant
 $r = $cmd.ExecuteReader()
 & {
   while ($r.Read()) {
