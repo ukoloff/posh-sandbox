@@ -151,15 +151,24 @@ function selectBDtoo ($dbA) {
   $t = New-Object System.Data.DataTable
   $t.Load($r)
   $r.Close()
-  $t.Columns.Add('prefix')
+  $null = $t.Columns.Add('prefix')
+  $null = $t.Columns.Add('no')
   foreach ($r in $t.Rows) {
     $r.prefix = commonPrefix $r.name $dbA
   }
 
   $rows = $t.Rows |
   Sort-Object -Property @{Expression = "prefix"; Descending = $true }, @{Expression = "name" }
-
-  $rows | Format-Table | Out-String | Write-Host
+  $NN = 0
+  foreach ($row in $rows) {
+    $row.no = ++$NN
+  }
+  $rows += [PSCustomObject]@{
+    no   = 0
+    name = 'Создать новую БД'
+  }
+  $rows | Format-Table -Property @{Name = "№"; Expression = "no" }, @{Name = "БД"; Expression = "name" } |
+  Out-String | Write-Host
   while ($true) {
     $n = Read-Host "Выберите в какую БД восстановить резервную копию"
     $n = $n.Trim()
@@ -171,12 +180,12 @@ function selectBDtoo ($dbA) {
       continue
     }
     $n = [int]$n
-    if ($n -gt $t.Rows.Count) {
-      Write-Warning "Введите число от 0 до $($t.Rows.Count)"
+    if ($n -ge $rows.Count) {
+      Write-Warning "Введите число от 0 до $($rows.Count - 1)"
       continue
     }
     if ($n) {
-      return $t.Rows[$n].name
+      return $rows[$n-1].name
     }
     return "XXXXXX"
   }
