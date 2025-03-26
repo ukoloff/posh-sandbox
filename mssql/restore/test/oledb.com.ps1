@@ -1,5 +1,5 @@
 #
-# Test New-Object System.Data.OleDb
+# Test ActiveX ADODB.Connection
 #
 $b = New-Object System.Data.OleDb.OleDbConnectionStringBuilder
 $b.Provider = 'sqloledb'
