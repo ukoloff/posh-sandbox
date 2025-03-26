@@ -31,3 +31,11 @@ $r = $cmd.ExecuteReader()
     [PSCustomObject]$row
   } } |
 Out-GridView
+$r.Close()
+
+# Table
+
+$r = $cmd.ExecuteReader()
+$t = New-Object System.Data.DataTable
+$t.Load($r)
+$t | Out-GridView
