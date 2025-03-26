@@ -169,11 +169,11 @@ function Run {
   "Выбрана резервная копия mssql://$src/$dbA"
 
   $files = findFiles $dbA
-  $files | Select-Object @{Name = 'Дата';
-    Expression                  = "backup_start_date"
+  $files | Format-Table @{Name = 'Дата';
+    Expression                 = "backup_start_date"
   }, @{Name    = "Файл резервной копии";
     Expression = "physical_device_name"
-  } | Format-Table | Out-String | Write-Host
+  } | Out-String | Write-Host
 
   $dbZ = selectBDtoo
 
