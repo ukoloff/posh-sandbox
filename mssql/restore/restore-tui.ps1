@@ -116,18 +116,68 @@ function findFiles($db) {
   $t = New-Object System.Data.DataTable
   $t.Load($r)
   $r.Close()
-  $t |
-  Select-Object @{Name = 'Дата';
-    Expression         = "backup_start_date"
-  }, @{Name    = "Файл резервной копии";
-    Expression = "physical_device_name"
+  $t
+}
+
+function selectBDtoo () {
+  $cmd = $dbDst.CreateCommand()
+  $cmd.CommandText = @"
+    Select
+        0 as no,
+        'Создать новую БД' as name
+    Union All
+    Select
+        ROW_NUMBER() over(
+            order by
+                name
+        ) as no,
+        name
+    From
+        sys.databases
+    Where
+        len(owner_sid) > 1
+"@
+  $r = $cmd.ExecuteReader()
+  $t = New-Object System.Data.DataTable
+  $t.Load($r)
+  $r.Close()
+  $t | Format-Table | Out-String | Write-Host
+  while ($true) {
+    $n = Read-Host "Выберите в какую БД восстановить резервную копию"
+    $n = $n.Trim()
+    if ($n -eq '') {
+      exit
+    }
+    if ($n -notmatch '^\d+$') {
+      Write-Warning "Требуется число!"
+      continue
+    }
+    $n = [int]$n
+    if ($n -gt $t.Rows.Count) {
+      Write-Warning "Введите число от 0 до $($t.Rows.Count)"
+      continue
+    }
+    if ($n) {
+      return $t.Rows[$n].name
+    }
+    return "XXXXXX"
   }
 }
 
 function Run {
   $dbA = selectBD
   "Выбрана резервная копия mssql://$src/$dbA"
-  findFiles $dbA
+
+  $files = findFiles $dbA
+  $files | Select-Object @{Name = 'Дата';
+    Expression                  = "backup_start_date"
+  }, @{Name    = "Файл резервной копии";
+    Expression = "physical_device_name"
+  } | Format-Table | Out-String | Write-Host
+
+  $dbZ = selectBDtoo
+
+  "БД mssql://$src/$dbA будет восстановлена в mssql://$dst/$dbZ"
 }
 
 Run
