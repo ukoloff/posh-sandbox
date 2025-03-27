@@ -105,6 +105,7 @@ function findFiles($db) {
         backup_set_id,
         backup_start_date,
         physical_device_name,
+        type,
         media_count
     from
         files
@@ -116,7 +117,25 @@ function findFiles($db) {
   $t = New-Object System.Data.DataTable
   $t.Load($r)
   $r.Close()
-  $t
+  , $t
+}
+
+function validateFiles($files) {
+  if ($files.Rows.Count -lt 1) {
+    return 'Файлов резервных копий не найдено'
+  }
+  if ($files.Rows[0].type -ne 'D') {
+    return 'Не найдено полной резервной копии'
+  }
+  $null = $files.Columns.Add('path')
+  foreach ($row in $files.Rows) {
+    $path = $row.physical_device_name -replace '^e:', "\\$src\Backup$"
+    if (!(Test-Path $path -PathType Leaf)) {
+      return "Файл не найден: $path"
+    }
+    $row.path = $path
+  }
+  return
 }
 
 function commonPrefix($a, $b) {
@@ -223,6 +242,12 @@ function Run {
   }, @{Name    = "Файл резервной копии";
     Expression = "physical_device_name"
   } | Out-String | Write-Host
+
+  $err = validateFiles $files
+  if ($err) {
+    Write-Warning $err
+    exit
+  }
 
   $dbZ = selectBDtoo $dbA
 
