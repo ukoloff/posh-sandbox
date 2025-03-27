@@ -137,6 +137,13 @@ function commonPrefix($a, $b) {
   return $i
 }
 
+function dbExists($db) {
+  $cmd = $dbDst.CreateCommand()
+  $cmd.CommandText = "Select DB_ID(@db)"
+  $cmd.Parameters.Add('@db', [System.Data.SqlDbType]::NVarChar).Value = $db
+  $cmd.ExecuteScalar() -isnot [System.DBNull]
+}
+
 function selectBDtoo ($dbA) {
   $cmd = $dbDst.CreateCommand()
   $cmd.CommandText = @"
@@ -185,7 +192,7 @@ function selectBDtoo ($dbA) {
       continue
     }
     if ($n) {
-      return $rows[$n-1].name
+      return $rows[$n - 1].name
     }
     return "XXXXXX"
   }
