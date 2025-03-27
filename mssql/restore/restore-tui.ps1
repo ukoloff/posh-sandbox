@@ -144,6 +144,18 @@ function dbExists($db) {
   $cmd.ExecuteScalar() -isnot [System.DBNull]
 }
 
+function newDB() {
+  while ($true) {
+    $n = Read-Host "Введите имя для новой базы данных"
+    $n = $n.Trim()
+    if ($n -ne '' -and (dbExists $n)) {
+      Write-Warning "Такая БД уже существует"
+      continue
+    }
+    return $n
+  }
+}
+
 function selectBDtoo ($dbA) {
   $cmd = $dbDst.CreateCommand()
   $cmd.CommandText = @"
@@ -194,7 +206,10 @@ function selectBDtoo ($dbA) {
     if ($n) {
       return $rows[$n - 1].name
     }
-    return "XXXXXX"
+    $n = newDB
+    if ($n -ne '') {
+      return $n
+    }
   }
 }
 
