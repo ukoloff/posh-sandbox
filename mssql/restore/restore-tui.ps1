@@ -393,6 +393,11 @@ function Run {
 
   takeOff $dbZ
   doRestore $files $dbZ
+  "$(timeStamp)Вот и всё, ребята!"
+  "$(timeStamp)That's all folks!" | Out-File @Log
+
+  "Нажмите любую клавищу для завершения..."
+  [Console]::ReadKey(1) | Out-Null
 }
 
 Run
