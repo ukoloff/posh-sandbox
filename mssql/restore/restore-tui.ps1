@@ -272,14 +272,32 @@ function startLog($db) {
     LiteralPath = "$folder/restore.log"
     Append      = $true
   }
+  Set-Variable -Scope Global -Name Log -Value $Log
+
   "$(timeStamp)Starting $(Split-Path $PSCommandPath -Leaf)" | Out-File @Log
   "$(timeStamp)Host:`t$($env:COMPUTERNAME)" | Out-File @Log
   "$(timeStamp)User:`t$([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" | Out-File @Log
   $IPs = (Get-NetIPAddress -AddressFamily IPv4).IPAddress |
-  Where-Object { $_ -match "^10[.]|^192[.]168[.]"} |
+  Where-Object { $_ -match "^10[.]|^192[.]168[.]" } |
   Sort-Object
   "$(timeStamp)IP:`t$($IPs -join ' ')" | Out-File @Log
 }
+
+function offDB($db) {
+  $cmd = $dbDst.CreateCommand()
+  $cmd.CommandText = "Alter Database [$db] SET Offline"
+  $null = $cmd.ExecuteNonQuery()
+}
+
+function takeOff($db) {
+  if (!(dbExists $db)) {
+    return
+  }
+  "$(timeStamp)Перевожу $db в Offline..."
+  "$(timeStamp)Taking offline:`t$db" | Out-File @Log
+  offDB $db
+}
+
 
 function Run {
   $dbA = selectBD
@@ -303,7 +321,11 @@ function Run {
   "БД mssql://$src/$dbA будет восстановлена в mssql://$dst/$dbZ"
   finalConfirm
 
-  $Log = startLog $dbZ
+  "$(timeStamp)Открываю журнал..."
+  startLog $dbZ
+  "$(timeStamp)mssql://$src/$dbA`t->`tmssql://$dst/$dbZ" |Out-File @Log
+
+  takeOff $dbZ
 }
 
 Run
