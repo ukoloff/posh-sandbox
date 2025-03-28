@@ -261,6 +261,20 @@ function finalConfirm {
   }
 }
 
+function timeStamp() {
+  "[$(Get-Date -UFormat '%Y-%m-%d %T%Z')]`t"
+}
+
+function startLog($db) {
+  $folder = localizeDstPath "$dstFolder$db"
+  $null = New-Item $folder -Force -ItemType Directory
+  $Log = @{
+    LiteralPath = "$folder/restore.log"
+    Append      = $true
+  }
+  "$(timeStamp)Starting $(Split-Path $PSCommandPath -Leaf)" | Out-File @Log
+}
+
 function Run {
   $dbA = selectBD
   "Выбрана резервная копия mssql://$src/$dbA"
@@ -282,6 +296,8 @@ function Run {
 
   "БД mssql://$src/$dbA будет восстановлена в mssql://$dst/$dbZ"
   finalConfirm
+
+  $Log = startLog $dbZ
 }
 
 Run
