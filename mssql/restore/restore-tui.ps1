@@ -7,16 +7,20 @@ $dst = "SRVSQL-1Ctests"
 $dstFolder = "D:\"
 
 function localizeSrcPath($path) {
+  $hst = [regex]::Escape("\\$src\")
+  $path = $path -replace "^$hst(\w):\\", '$1\'
   if ($env:COMPUTERNAME.ToLower() -ne $src.ToLower()) {
-    $path = "\\$src\" + ($path -replace '^e:', 'Backup$')
+    $path = $path -replace '^e:', "\\$src\Backup$"
   }
   $path
 }
 
 function localizeDstPath($path) {
+  $hst = [regex]::Escape("\\$dst\")
+  $path = $path -replace "$hst(\w):\\", '$1\'
   if ($env:COMPUTERNAME.ToLower() -ne $dst.ToLower()) {
     $drive = [regex]::Escape($dstFolder[0])
-    $path = "\\$dst\" + ($path -replace "^$($drive):", 'DB$')
+    $path = ($path -replace "^$($drive):", "\\$dst\DB$")
   }
   $path
 }
@@ -396,7 +400,7 @@ function Run {
   "$(timeStamp)Вот и всё, ребята!"
   "$(timeStamp)That's all folks!" | Out-File @Log
 
-  "Нажмите любую клавищу для завершения..."
+  "Нажмите любую клавишу для завершения..."
   [Console]::ReadKey(1) | Out-Null
 }
 
