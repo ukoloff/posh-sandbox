@@ -6,6 +6,21 @@ $src = "SRVSQL-1C"
 $dst = "SRVSQL-1Ctests"
 $dstFolder = "D:\"
 
+function localizeSrcPath($path) {
+  if ($env:COMPUTERNAME.ToLower() -ne $src.ToLower()) {
+    $path = "\\$src\" + ($path -replace '^e:', 'Backup$')
+  }
+  $path
+}
+
+function localizeDstPath($path) {
+  if ($env:COMPUTERNAME.ToLower() -ne $dst.ToLower()) {
+    $drive = [regex]::Escape($dstFolder[0])
+    $path = "\\$dst\" + ($path -replace "^$($drive):", 'DB$')
+  }
+  $path
+}
+
 function mssqlConnect($server) {
   $b = New-Object System.Data.SqlClient.SqlConnectionStringBuilder
   $b.Server = $server
@@ -129,7 +144,7 @@ function validateFiles($files) {
   }
   $null = $files.Columns.Add('path')
   foreach ($row in $files.Rows) {
-    $path = $row.physical_device_name -replace '^e:', "\\$src\Backup$"
+    $path = localizeSrcPath $row.physical_device_name
     if (!(Test-Path $path -PathType Leaf)) {
       return "Файл не найден: $path"
     }
