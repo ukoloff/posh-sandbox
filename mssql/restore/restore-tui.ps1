@@ -319,6 +319,25 @@ function buildReloc($folder, $files) {
   $t.Load($r)
   $r.Close()
 
+  $counts = @{}
+  foreach ($file in $t) {
+    $result = $folder
+    $t = $file.file_type
+    if (!$exts[$t]) { $t = 'X' }
+    if ($counts[$t]) {
+      $result += "." + $counts[$t]
+    }
+    else {
+      $counts[$t] = 0
+    }
+    $counts[$t]++
+    $result += '.' + $exts[$t]
+    # New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($_.LogicalName, $result)
+    [PSCustomObject]@{
+      LogicalFileName  = $file.logical_name
+      PhysicalFileName = $result
+    }
+  }
 }
 
 function doRestore($files, $db) {
@@ -335,7 +354,7 @@ function doRestore($files, $db) {
 
     if ($N -eq 1) {
       $params['ReplaceDatabase'] = $true
-      $params['RelocateFile'] = buildReloc "$($dstFolder)$db" $files
+      $params['RelocateFile'] = buildReloc "$($dstFolder)$db\$db" $files
     }
 
     if ($N -lt $files.Rows.Count) {
@@ -370,7 +389,7 @@ function Run {
 
   "$(timeStamp)Открываю журнал..."
   startLog $dbZ
-  "$(timeStamp)mssql://$src/$dbA`t->`tmssql://$dst/$dbZ" |Out-File @Log
+  "$(timeStamp)mssql://$src/$dbA`t->`tmssql://$dst/$dbZ" | Out-File @Log
 
   takeOff $dbZ
   doRestore $files $dbZ
