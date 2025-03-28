@@ -298,6 +298,14 @@ function takeOff($db) {
   offDB $db
 }
 
+function doRestore($files, $db) {
+  $N = 0
+  foreach ($backup in $files) {
+    $N++
+    "$(timeStamp)$N. Восстанавливаю из файла <$($backup.backup_start_date)>`t$($backup.physical_device_name)"
+    "$(timeStamp)$N. Restoring <$($backup.backup_start_date)>`t$($backup.physical_device_name)" | Out-File @Log
+  }
+}
 
 function Run {
   $dbA = selectBD
@@ -326,6 +334,7 @@ function Run {
   "$(timeStamp)mssql://$src/$dbA`t->`tmssql://$dst/$dbZ" |Out-File @Log
 
   takeOff $dbZ
+  doRestore $files $dbZ
 }
 
 Run
