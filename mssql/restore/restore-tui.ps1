@@ -298,12 +298,51 @@ function takeOff($db) {
   offDB $db
 }
 
+function buildReloc($folder, $files) {
+  $exts = @{
+    D = 'mdf'
+    L = 'ldf'
+    X = 'xdf'
+  }
+  $cmd = $dbDst.CreateCommand()
+  $cmd.CommandText = @"
+    Select
+      *
+    From
+      backupfile
+    Where
+      backup_set_id =  @id
+"@
+  $cmd.Parameters.Add('@id', [System.Data.SqlDbType]::Variant).Value = $files.Rows[0].backup_set_id
+  $r = $cmd.ExecuteReader()
+  $t = New-Object System.Data.DataTable
+  $t.Load($r)
+  $r.Close()
+
+}
+
 function doRestore($files, $db) {
   $N = 0
   foreach ($backup in $files) {
     $N++
     "$(timeStamp)$N. Восстанавливаю из файла <$($backup.backup_start_date)>`t$($backup.physical_device_name)"
     "$(timeStamp)$N. Restoring <$($backup.backup_start_date)>`t$($backup.physical_device_name)" | Out-File @Log
+    $params = @{
+      ServerInstance = $dst
+      Database       = $db
+      BackupFile     = $backup.path
+    }
+
+    if ($N -eq 1) {
+      $params['ReplaceDatabase'] = $true
+      $params['RelocateFile'] = buildReloc "$($dstFolder)$db" $files
+    }
+
+    if ($N -lt $files.Rows.Count) {
+      $params['NoRecovery'] = $true
+    }
+
+    Restore-SqlDatabase @params
   }
 }
 
