@@ -247,6 +247,20 @@ function selectBDtoo ($dbA) {
   }
 }
 
+function finalConfirm {
+  while ($true) {
+    $r = Get-Random -Minimum 1 -Maximum 9
+    $n = Read-Host "Введите $r для начала восстановления из резервной копии"
+    $n = $n.Trim()
+    if ($n -eq '') {
+      exit
+    }
+    if ($n -eq [string]$r) {
+      return
+    }
+  }
+}
+
 function Run {
   $dbA = selectBD
   "Выбрана резервная копия mssql://$src/$dbA"
@@ -267,6 +281,7 @@ function Run {
   $dbZ = selectBDtoo $dbA
 
   "БД mssql://$src/$dbA будет восстановлена в mssql://$dst/$dbZ"
+  finalConfirm
 }
 
 Run
