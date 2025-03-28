@@ -273,6 +273,12 @@ function startLog($db) {
     Append      = $true
   }
   "$(timeStamp)Starting $(Split-Path $PSCommandPath -Leaf)" | Out-File @Log
+  "$(timeStamp)Host:`t$($env:COMPUTERNAME)" | Out-File @Log
+  "$(timeStamp)User:`t$([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" | Out-File @Log
+  $IPs = (Get-NetIPAddress -AddressFamily IPv4).IPAddress |
+  Where-Object { $_ -match "^10[.]|^192[.]168[.]"} |
+  Sort-Object
+  "$(timeStamp)IP:`t$($IPs -join ' ')" | Out-File @Log
 }
 
 function Run {
