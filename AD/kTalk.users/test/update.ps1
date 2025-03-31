@@ -18,8 +18,9 @@ $Headers = @{
 
 $update = @(@{
   userKey = 'bef471d4-fe11-4c14-9fa3-5fbaf68246c7'
-  post = 'Ведущий системный администратор'
-  department = 'Группа поддержки ИТ-инфракструктуры'
+  firstname = 'None'
+  post = 'Oops'
+  department = '-'
 })
 $q = $null
 $q = Invoke-WebRequest -Uri $URI @Headers -Method POST -Body (ConvertTo-Json -Compress $update)
