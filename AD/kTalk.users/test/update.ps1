@@ -20,8 +20,10 @@ $update = @(@{
   userKey = 'bef471d4-fe11-4c14-9fa3-5fbaf68246c7'
   firstname = 'None'
   post = 'Oops'
-  department = '-'
+  department = 'Группа поддержки ИТ-инфракструктуры'
 })
+$body = ConvertTo-Json -Compress $update
+$body = [System.Text.Encoding]::UTF8.GetBytes($body)
 $q = $null
-$q = Invoke-WebRequest -Uri $URI @Headers -Method POST -Body (ConvertTo-Json -Compress $update)
+$q = Invoke-WebRequest -Uri $URI @Headers -Method POST -Body $body
 $q
