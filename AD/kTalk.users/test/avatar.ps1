@@ -9,7 +9,9 @@ $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($cred.Passw
 $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
 $URI = "https://$($cred.UserName).ktalk.ru/api/Users"
-$Headers = @{
+$HTTP = @{
+  Uri = "$URI/bef471d4-fe11-4c14-9fa3-5fbaf68246c7/avatar"
+  Method = 'POST'
   Headers = @{
    'X-Auth-Token' = $PlainPassword
   }
@@ -29,10 +31,9 @@ $FileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue
 
 $MultipartContent = [System.Net.Http.MultipartFormDataContent]::new()
 $MultipartContent.Add($FileContent)
-$body = $MultipartContent.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+$HTTP['Headers']['Content-Type'] = $MultipartContent.Headers.ContentType.ToString() -replace '"', ''
+$HTTP['body'] = $MultipartContent.ReadAsByteArrayAsync().GetAwaiter().GetResult()
 $FileStream.Close()
-$Headers['Headers']['Content-Type'] = $MultipartContent.Headers.ContentType.ToString() -replace '"', ''
 
-$q = $null
-$q = Invoke-WebRequest -Uri "$URI/bef471d4-fe11-4c14-9fa3-5fbaf68246c7/avatar" @Headers -Method POST -Body $body
+$q = Invoke-WebRequest @HTTP
 $q
