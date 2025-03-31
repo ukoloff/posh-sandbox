@@ -8,10 +8,12 @@ $cred = Get-StoredCredential -Target ktalk:uzxm
 $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($cred.Password)
 $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
-$URI = "https://$($cred.UserName).ktalk.ru/Users"
+$URI = "https://$($cred.UserName).ktalk.ru/api/Users"
 $Headers = @{
   Headers = @{
    'X-Auth-Token' = $PlainPassword
   }
 }
-Invoke-WebRequest -Uri "$URI/scan" @Headers
+$q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @Headers
+$u = (ConvertFrom-Json $q.Content).users
+$u | Out-GridView
