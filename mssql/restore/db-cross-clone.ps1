@@ -17,6 +17,7 @@ $DBs = @{
   }
   UPRIT_WORK = @{
     # skip = $true
+    dst = "UPRIT_WORK_CLONE"
   }
   OP_WORK    = @{
     # skip = $true
