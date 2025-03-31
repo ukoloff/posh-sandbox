@@ -8,7 +8,7 @@ $dstFolder = "D:\"
 
 function localizeSrcPath($path) {
   $hst = [regex]::Escape("\\$src\")
-  $path = $path -replace "^$hst(\w):\\", '$1\'
+  $path = $path -replace "^$hst(\w)[$]\\", '$1:\'
   if ($env:COMPUTERNAME.ToLower() -ne $src.ToLower()) {
     $path = $path -replace '^e:', "\\$src\Backup$"
   }
@@ -17,7 +17,7 @@ function localizeSrcPath($path) {
 
 function localizeDstPath($path) {
   $hst = [regex]::Escape("\\$dst\")
-  $path = $path -replace "$hst(\w):\\", '$1\'
+  $path = $path -replace "$hst(\w)[$]\\", '$1:\'
   if ($env:COMPUTERNAME.ToLower() -ne $dst.ToLower()) {
     $drive = [regex]::Escape($dstFolder[0])
     $path = ($path -replace "^$($drive):", "\\$dst\DB$")
