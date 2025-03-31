@@ -18,9 +18,12 @@ $Headers = @{
 
 $update = @(@{
   userKey = 'bef471d4-fe11-4c14-9fa3-5fbaf68246c7'
-  firstname = 'None'
-  post = 'Oops'
+  firstname = 'Станислав'
+  surname = 'Уколов'
+  patronymic = 'Сергеевич'
+  post = 'Ведущий системный администратор'
   department = 'Группа поддержки ИТ-инфракструктуры'
+  innerPhone = '7876'
 })
 $body = ConvertTo-Json -Compress $update
 $body = [System.Text.Encoding]::UTF8.GetBytes($body)
