@@ -1,6 +1,32 @@
 #
 # User sync omzgloal.com -> uzxm.ktalk.ru
 #
+param( # Для самостоятельной установки запуска по расписанию
+  [switch]$install,
+  [switch]$remove
+)
+
+#
+# Самостоятельная установка / удаление в Планировщик заданий
+#
+if ($install) {
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -At 07:30 -Daily -RandomDelay 00:07:00
+  $tRep = New-ScheduledTaskTrigger -Once -At 07:30 -RepetitionDuration 12:00:00 -RepetitionInterval 00:42:00 -RandomDelay 00:07:00
+  $Trigger.Repetition = $tRep.Repetition
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
+}
+
+if ($remove) {
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
+}
+
 
 $cred = Get-StoredCredential -Target ktalk:uzxm
 
