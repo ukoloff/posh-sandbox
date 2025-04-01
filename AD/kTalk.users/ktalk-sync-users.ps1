@@ -24,16 +24,42 @@ function quoteLDAP ($s) {
   $s
 }
 
+$fields = @{
+  firstname  = 'givenname'
+  surname    = 'sn'
+  patronymic = 'middlename'
+  post       = 'title'
+  department = 'department'
+  innerPhone = 'othertelephone'
+}
+
 $avatars = @{}
 
-foreach ($user in $users) {
-  if (!$user.email) { continue }
+$updates = foreach ($user in $users) {
+  if (!$user.email -or $user.mobilePhone) { continue }
   $ad = ([ADSISearcher]"(&(objectCategory=User)(mail=$(quoteLDAP $user.email)))").FindAll()
   if ($ad.Count -ne 1) { continue }
   $ad = $ad[0].Properties
   if (!$user.avatarUrl -and $ad.jpegphoto) {
     $avatars[$user.key] = $ad.jpegphoto[0]
   }
+  $update = @{}
+  $diff = 0
+  foreach ($it in $fields.GetEnumerator()) {
+    $a = $user.($it.Name)
+    $b = $null
+    if ($ad) {
+      $b = $ad.($it.Value)
+      if ($b) {
+        $b = $b[0]
+      }
+    }
+    if ($a -ne $b) { $diff++ }
+    $update[$it.Name] = $b
+  }
+  if (!$diff) { continue }
+  $update['userKey'] = $user.key
+  $update
 }
 
-$avatars
+$updates | ConvertTo-Json -Compress
