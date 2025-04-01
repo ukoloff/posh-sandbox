@@ -9,11 +9,13 @@ $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($cred.Passw
 $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
 $URI = "https://$($cred.UserName).ktalk.ru/api/Users"
-$Headers = @{
+$HTTP = @{
   Headers = @{
    'X-Auth-Token' = $PlainPassword
   }
 }
-$q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @Headers
-$u = (ConvertFrom-Json $q.Content).users
-$u | Out-GridView
+$q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @HTTP
+$users = (ConvertFrom-Json $q.Content).users
+foreach ($user in $users) {
+
+}
