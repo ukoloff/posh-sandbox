@@ -41,8 +41,13 @@ $updates = foreach ($user in $users) {
   $ad = ([ADSISearcher]"(&(objectCategory=User)(mail=$(quoteLDAP $user.email)))").FindAll()
   if ($ad.Count -ne 1) { continue }
   $ad = $ad[0].Properties
-  if (!$user.avatarUrl -and $ad.jpegphoto) {
-    $avatars[$user.key] = $ad.jpegphoto[0]
+  if (!$user.avatarUrl) {
+    if ($ad.jpegphoto) {
+      $avatars[$user.key] = $ad.jpegphoto[0]
+    }
+    elseif ($ad.thumbnailphoto) {
+      $avatars[$user.key] = $ad.thumbnailphoto[0]
+    }
   }
   $update = @{}
   $diff = 0
@@ -71,11 +76,10 @@ if ($updates.Count) {
 
 if ($avatars.Count) {
   $HTTP['Method'] = 'POST'
-  $NN = 0
   foreach ($it in $avatars.GetEnumerator()) {
     $fh = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new('form-data')
-    $fh.Name = [string]++$NN
-    $fh.FileName = [string]$NN
+    $fh.Name = 'avatar'
+    $fh.FileName = 'photo.jpg'
     $mm = New-Object IO.MemoryStream($it.Value, 0, $it.Value.Length)
     $fc = [System.Net.Http.StreamContent]::new($mm)
     $fc.Headers.ContentDisposition = $fh
@@ -85,8 +89,6 @@ if ($avatars.Count) {
     $HTTP['Headers']['Content-Type'] = $mc.Headers.ContentType.ToString() -replace '"', ''
     $body = $mc.ReadAsByteArrayAsync().GetAwaiter().GetResult()
     $mm.Close()
-    $HTTP['body'] = $body
-    $HTTP['Uri'] = "$URI/$($it.Name)/avatar"
-    Invoke-WebRequest @HTTP
+    Invoke-WebRequest -Uri "$URI/$($it.Name)/avatar" -Body $body @HTTP
   }
 }
