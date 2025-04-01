@@ -12,6 +12,7 @@ $URI = "https://$($cred.UserName).ktalk.ru/api/Users"
 $HTTP = @{
   Headers = @{
     'X-Auth-Token' = $PlainPassword
+    'Content-Type' = 'application/json'
   }
 }
 $q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @HTTP
@@ -62,4 +63,6 @@ $updates = foreach ($user in $users) {
   $update
 }
 
-$updates | ConvertTo-Json -Compress
+$body = $updates | ConvertTo-Json -Compress
+$body = [System.Text.Encoding]::UTF8.GetBytes($body)
+Invoke-WebRequest -Uri $URI @HTTP -Method POST -Body $body
