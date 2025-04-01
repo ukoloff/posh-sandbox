@@ -68,3 +68,25 @@ if ($updates.Count) {
   $body = [System.Text.Encoding]::UTF8.GetBytes($body)
   Invoke-WebRequest -Uri $URI @HTTP -Method POST -Body $body
 }
+
+if ($avatars.Count) {
+  $HTTP['Method'] = 'POST'
+  $NN = 0
+  foreach ($it in $avatars.GetEnumerator()) {
+    $fh = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new('form-data')
+    $fh.Name = [string]++$NN
+    $fh.FileName = [string]$NN
+    $mm = New-Object IO.MemoryStream($it.Value, 0, $it.Value.Length)
+    $fc = [System.Net.Http.StreamContent]::new($mm)
+    $fc.Headers.ContentDisposition = $fh
+    $fc.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse('image/jpeg')
+    $mc = [System.Net.Http.MultipartFormDataContent]::new()
+    $mc.Add($fc)
+    $HTTP['Headers']['Content-Type'] = $mc.Headers.ContentType.ToString() -replace '"', ''
+    $body = $mc.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+    $mm.Close()
+    $HTTP['body'] = $body
+    $HTTP['Uri'] = "$URI/$($it.Name)/avatar"
+    Invoke-WebRequest @HTTP
+  }
+}
