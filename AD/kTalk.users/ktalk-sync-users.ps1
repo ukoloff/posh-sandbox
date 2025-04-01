@@ -63,6 +63,8 @@ $updates = foreach ($user in $users) {
   $update
 }
 
-$body = $updates | ConvertTo-Json -Compress
-$body = [System.Text.Encoding]::UTF8.GetBytes($body)
-Invoke-WebRequest -Uri $URI @HTTP -Method POST -Body $body
+if ($updates.Count) {
+  $body = $updates | ConvertTo-Json -Compress
+  $body = [System.Text.Encoding]::UTF8.GetBytes($body)
+  Invoke-WebRequest -Uri $URI @HTTP -Method POST -Body $body
+}
