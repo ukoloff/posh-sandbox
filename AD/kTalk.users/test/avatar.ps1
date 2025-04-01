@@ -24,8 +24,12 @@ $FileHeader = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new('form
 $FileHeader.Name = 'avatar'
 $FileHeader.FileName = Split-Path -Leaf $jpg
 
-$FileStream = [System.IO.FileStream]::new($jpg, [System.IO.FileMode]::Open)
-$FileContent = [System.Net.Http.StreamContent]::new($FileStream)
+$me = [ADSISearcher]"(&(objectCategory=User)(SAMAccountName=$env:USERNAME))"
+$me = $me.FindOne().Properties
+$adStream = New-Object IO.MemoryStream($me.jpegphoto[0], 0, $me.jpegphoto[0].Length)
+
+# $FileStream = [System.IO.FileStream]::new($jpg, [System.IO.FileMode]::Open)
+$FileContent = [System.Net.Http.StreamContent]::new($adStream)
 $FileContent.Headers.ContentDisposition = $FileHeader
 $FileContent.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse('image/jpeg')
 
@@ -33,7 +37,7 @@ $MultipartContent = [System.Net.Http.MultipartFormDataContent]::new()
 $MultipartContent.Add($FileContent)
 $HTTP['Headers']['Content-Type'] = $MultipartContent.Headers.ContentType.ToString() -replace '"', ''
 $HTTP['body'] = $MultipartContent.ReadAsByteArrayAsync().GetAwaiter().GetResult()
-$FileStream.Close()
+# $FileStream.Close()
+$adStream.Close()
 
-$q = Invoke-WebRequest @HTTP
-$q
+Invoke-WebRequest @HTTP
