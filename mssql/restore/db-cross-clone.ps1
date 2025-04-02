@@ -8,7 +8,7 @@ param(
 
 $src = "SRVSQL-1C"
 $dst = "SRVSQL-1Ctests"
-$dstFolder = "E:\"
+$dstFolder = "D:\"
 
 $DBs = @{
   stas       = @{
@@ -17,18 +17,19 @@ $DBs = @{
   }
   UPRIT_WORK = @{
     # skip = $true
+    dst = "UPRIT_WORK_CLONE"
   }
   OP_WORK    = @{
-    skip = $true
-    dst  = 'OP_TEST2'
+    # skip = $true
+    dst = 'OP_TEST2'
   }
   ERP_WORK   = @{
-    skip = $true
-    dst  = 'ERP_WORK_TEST'
+    # skip = $true
+    dst = 'ERP_WORK_TEST'
   }
   ZUP_20     = @{
-    skip = $true
-    dst  = 'ZUP_20_TEST'
+    # skip = $true
+    dst = 'ZUP_20_TEST'
   }
 }
 
@@ -138,6 +139,18 @@ function buildReloc($path, $files) {
     })
 }
 
+function offDB($db) {
+  $id = Invoke-SqlScalar "Select IsNull(DB_ID(@DB), 0)" -Parameters @{ DB = $db } -ConnectionName dst
+  if (!$id) {
+    return
+  }
+  "[$(timeStamp)] ...taking [$db] offline" | Out-File @Log
+  $null = Invoke-SqlUpdate @"
+    Alter Database $db
+      SET Offline
+"@
+}
+
 function restoreDB($db) {
   $params = $DBs[$db]
   if (!$params -or $params.skip) { return }
@@ -167,6 +180,7 @@ function restoreDB($db) {
     }
 
     if ($N -eq 1) {
+      offDB $db2
       $params['RelocateFile'] = buildReloc "$folder/$db" $bak.Files
       $params['ReplaceDatabase'] = $True
       if ($N -lt $baks.count) {
@@ -181,7 +195,10 @@ function restoreDB($db) {
 }
 
 Open-SQLConnection -Server $src -Database msdb
+Open-SQLConnection -ConnectionName dst -Server $dst -Database msdb
+
 foreach ($db in $DBs.Keys) {
   restoreDB($db)
 }
 Close-SqlConnection
+Close-SqlConnection -ConnectionName dst

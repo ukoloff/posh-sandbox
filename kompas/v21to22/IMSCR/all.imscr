@@ -1,0 +1,55 @@
+[INTERMECH]
+SERIAL_NO=12673M28cad
+TYPESETUP=Client
+// Если ADD_ICO_AUTOSETUP=No запуск Автообновление программ Интермех будет прописан в реестр
+ADD_ICO_AUTOSETUP=Yes
+// Если COMMON_DESKTOP_ALL=No ярлыки будут созданы для пользователя под которым проводилась установка, Yes – для всех пользователей.
+COMMON_DESKTOP_ALL=Yes
+// Если CREATE_PROFILES_CAD2D=Yes на клиенте будет создан ярлык/прописан запуск в реестр для программы автоматического создания профилей для Autocad & Bricscad
+// Если CREATE_PROFILES_CAD2D=No либо отсутствует программа создания профилей для Autocad & Bricscad не будет прописываться в автозагрузку/реестр
+// Если INSTALL_DIR=C:\IM - для установки по умолчанию будет предлогаться указанную папку
+// Если значение пусту, будет читаться HKLM\SOFTWARE\InterMech параметр IM_DIR
+INSTALL_DIR=C:\IM
+RESTART=No
+CLIENT_SETUP=B
+GROUP=Intermech
+// Папка, в которой будут созданы ярлыки для программ
+SYBD=С
+// Используемая СУБВ. A – FireBird (Interbase); B – Oracle; C - MSSql
+
+
+A - Cadmech AutoCAD
+B - Cadmech-T
+C - Rotation
+D - Spring
+E - IMForging
+F - Cadmech BricsCAD
+G - Cadmech nanoCAD
+H - Cadmech Компас-2D
+COMPONENTS_2D=h
+
+A - Cadmech Inventor
+B - Cadmech ProE
+C - Cadmech Solid Edge
+D - Cadmech SolidWorks
+E - Cadmech Unigraphics
+F - IMShape
+G - IMViewer
+H - Cadmech Компас-3D
+I - Расчет трудоемкости
+J - IMCadConverter Inv
+K - IMCadConverter SW
+L - IMCadConverter NX
+COMPONENTS_3D=fgH
+
+CADM_KOMPAS_VER=3
+PDMBROWSER_VER=7.8.7 24.0.12.12
+ADD_ICO_ADMIN=Yes
+COMPONENTS_PDM=abcdefgh
+COMPONENTS_T=abcdefghiо
+
+UG_VER=1
+CONVERTER_VER=1
+[MANAGER]
+SERVERNAME=imech
+TCPIP=1
