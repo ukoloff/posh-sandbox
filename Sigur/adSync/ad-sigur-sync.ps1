@@ -4,6 +4,16 @@
 #
 $Server = 'srvskud-ekbh1-d'
 
+function extractDomain($DN) {
+  $dc = [regex]::Match($DN, '(,dc=\w+)*$', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Value -replace ',dc=', '.'
+  $dc = $dc -replace '^[.]+', ''
+  $dc
+}
+
+function guessDomain($uid) {
+
+}
+
 function listOperators {
   $q = Invoke-SqlQuery @"
     select
@@ -19,7 +29,12 @@ function listOperators {
 "@
   foreach ($z in $q) {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
-    $ad.Path
+    if ($ad) {
+      $domain = extractDomain($ad.Path)
+    } else {
+      $domain = guessDomain($z.id)
+    }
+    $domain
   }
 }
 
