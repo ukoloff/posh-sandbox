@@ -15,4 +15,10 @@ New-StoredCredential -Target ktalk:uzxm -Credentials $cred -Persist LocalMachine
 psexec -si powershell New-StoredCredential -Target ktalk:uzxm -Credentials (Get-Credential) -Persist LocalMachine
 ```
 
+## Credential Manager vs Powershell 7
+```powershell
+Import-Module -Name CredentialManager -UseWindowsPowerShell
+Import-Module -Name CredentialManager -SkipEditionCheck
+```
+
 [Talk API]: https://developer.kontur.ru/doc/talk.public.api
