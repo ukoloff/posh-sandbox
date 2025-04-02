@@ -42,7 +42,8 @@ $HTTP = @{
   }
 }
 $q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @HTTP
-$users = (ConvertFrom-Json $q.Content).users
+[array]$users = (ConvertFrom-Json $q.Content).users
+"Found Talk users:`t$($users.Count)"
 
 function quoteLDAP ($s) {
   foreach ($q in [char[]]"\()*`0") {
@@ -62,7 +63,7 @@ $fields = @{
 
 $avatars = @{}
 
-$updates = foreach ($user in $users) {
+[array]$updates = foreach ($user in $users) {
   if (!$user.email -or $user.mobilePhone) { continue }
   $ad = ([ADSISearcher]"(&(objectCategory=User)(mail=$(quoteLDAP $user.email)))").FindAll()
   if ($ad.Count -ne 1) { continue }
@@ -94,14 +95,19 @@ $updates = foreach ($user in $users) {
   $update
 }
 
+$HTTP['Method'] = 'POST'
+
 if ($updates.Count) {
-  $body = $updates | ConvertTo-Json -Compress
+  "Updating Talk users:`t$($updates.Count)"
+
+  $body = ConvertTo-Json -Compress -InputObject $updates
   $body = [System.Text.Encoding]::UTF8.GetBytes($body)
-  Invoke-WebRequest -Uri $URI @HTTP -Method POST -Body $body
+  Invoke-WebRequest -Uri $URI @HTTP -Body $body
 }
 
 if ($avatars.Count) {
-  $HTTP['Method'] = 'POST'
+  "Adding avatars:`t$($avatars.Count)"
+
   foreach ($it in $avatars.GetEnumerator()) {
     $fh = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new('form-data')
     $fh.Name = 'avatar'
@@ -118,3 +124,7 @@ if ($avatars.Count) {
     Invoke-WebRequest -Uri "$URI/$($it.Name)/avatar" -Body $body @HTTP
   }
 }
+
+"Found Talk users:`t$($users.Count)"
+"Updated Talk users:`t$($updates.Count)"
+"Added avatars:`t$($avatars.Count)"
