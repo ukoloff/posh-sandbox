@@ -57,6 +57,14 @@ $count = Invoke-SqlUpdate -ConnectionName xz @"
   Update
     backupmediafamily
   Set
+    physical_device_name = STUFF(physical_device_name, 1, 14, '\\srvSQL-1C\Backup$')
+  Where
+    physical_device_name LIKE '\\srvSQL-1C\e$\%'
+"@
+$count += Invoke-SqlUpdate -ConnectionName xz @"
+  Update
+    backupmediafamily
+  Set
     physical_device_name = STUFF(physical_device_name, 1, 2, '\\srvSQL-1C\Backup$')
   Where
     physical_device_name LIKE 'e:\%'
