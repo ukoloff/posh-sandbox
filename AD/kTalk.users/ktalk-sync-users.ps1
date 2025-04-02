@@ -36,10 +36,11 @@ $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR
 
 $URI = "https://$($cred.UserName).ktalk.ru/api/Users"
 $HTTP = @{
-  Headers = @{
+  Headers         = @{
     'X-Auth-Token' = $PlainPassword
     'Content-Type' = 'application/json'
   }
+  UseBasicParsing = $true
 }
 $q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @HTTP
 [array]$users = (ConvertFrom-Json $q.Content).users
