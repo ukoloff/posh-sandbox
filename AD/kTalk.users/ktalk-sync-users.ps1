@@ -68,7 +68,7 @@ $avatars = @{}
   $ad = ([ADSISearcher]"(&(objectCategory=User)(mail=$(quoteLDAP $user.email)))").FindAll()
   if ($ad.Count -ne 1) { continue }
   $ad = $ad[0].Properties
-  if (!$user.avatarUrl) {
+  if (!$user.avatarUrl -and !$user.disabled) {
     if ($ad.jpegphoto) {
       $avatars[$user.key] = $ad.jpegphoto[0]
     }
