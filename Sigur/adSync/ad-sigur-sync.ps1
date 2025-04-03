@@ -157,6 +157,7 @@ function listOperators {
     where
       EXTID is not null
       and type = 'EMP'
+    order by NAME
 "@
   foreach ($z in $q) {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
