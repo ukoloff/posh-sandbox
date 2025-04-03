@@ -1,10 +1,10 @@
-drop table if exists ` personal `;
+drop table if exists `personal`;
 
-create table ` personal ` like ` personal.clone `;
+create table `personal` like `personal.clone`;
 
 insert into
-  ` personal `
+  `personal`
 select
   *
 from
-  ` personal.clone `;
+  `personal.clone`;
