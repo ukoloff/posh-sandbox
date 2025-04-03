@@ -141,6 +141,7 @@ function listOperators {
     select
       ID as id,
       PARENT_ID as pid,
+      NAME as name,
       EXTID as guid,
       USER_ENABLED and USER_T_SSPILOGIN as enabled
     from
@@ -168,8 +169,16 @@ function listOperators {
     }
     if ($subfolder) {
       $folder = findSubFolder $domain $subfolder
-
-
+      if ($z.pid -eq $folder) { continue }
+      "$subfolder`t$($z.name)"
+      $null = Invoke-SqlUpdate @"
+        Update
+          personal
+        Set
+          PARENT_ID = @pid
+        Where
+          ID = @id
+"@  -Parameters @{id = $z.id; pid = $folder}
       continue
     }
     $folder = findFolder $domain
@@ -178,8 +187,10 @@ function listOperators {
 
 $cred = Get-StoredCredential -Target 'mysql:SKUD'
 Open-MySqlConnection -Server $Server -Port 3305 -Database  tc-db-main -Credential $cred
+Start-SqlTransaction
 
 listOperators
 
+Complete-SqlTransaction
 Close-SqlConnection
 
