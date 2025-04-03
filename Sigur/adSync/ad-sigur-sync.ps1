@@ -182,7 +182,17 @@ function listOperators {
       continue
     }
     $folder = findFolder $domain
-  }
+    if ($z.pid -eq $folder) { continue }
+    "+`t$($z.name)"
+    $null = Invoke-SqlUpdate @"
+      Update
+        personal
+      Set
+        PARENT_ID = @pid
+      Where
+        ID = @id
+"@  -Parameters @{id = $z.id; pid = $folder}
+}
 }
 
 $cred = Get-StoredCredential -Target 'mysql:SKUD'
