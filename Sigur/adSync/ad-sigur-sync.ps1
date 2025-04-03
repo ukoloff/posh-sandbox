@@ -11,8 +11,24 @@ function extractDomain($DN) {
   $dc
 }
 
-function guessDomain($uid) {
+function dbNull($value) {
+  if ($value -is [System.DBNull]) {
+    return $null
+  }
+  return $value
+}
 
+function guessDomain($uid) {
+  $q = Invoke-SqlScalar @"
+    select
+      DOMAIN_NAME
+    from
+      personal p
+      join addomains d on p.AD_DOMAIN_ID = d.ID
+    where
+      p.id = @id
+"@ -Parameters @{id = $uid}
+  dbNull $q
 }
 
 function listOperators {
@@ -31,10 +47,10 @@ function listOperators {
   foreach ($z in $q) {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
     if ($ad) {
-      $domain = extractDomain($ad.Path)
+      $domain = extractDomain $ad.Path
     }
     else {
-      $domain = guessDomain($z.id)
+      $domain = guessDomain $z.id
     }
     $domain
   }
