@@ -4,6 +4,14 @@
 
 Для целей авторизации (SSO)
 
+## Очистка
+
+После  запуска
+[ad-sigur-sync.ps1](ad-sigur-sync.ps1)
+можно __однократно__ запустить
++ [drop-users.sql](drop-users.sql)
+для удаления ненужных пользователей
+
 ## Setup
 
 ```powershell

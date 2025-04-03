@@ -9,6 +9,7 @@ where
     from
       personal as p
       join personal as folder on p.PARENT_ID = folder.ID
+      and p.EXTID is not null
       and folder.`TYPE` = 'DEP'
       and folder.STATUS = 'AVAILABLE'
       and folder.NAME in('-', '#', '!')
