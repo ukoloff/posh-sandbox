@@ -4,11 +4,13 @@
 #
 $Server = 'srvskud-ekbh1-d'
 
-function extractDomain($DN) {
-  $dc = [regex]::Match($DN, '(,dc=\w+)*$',
-    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Value -replace ',dc=', '.'
-  $dc = $dc -replace '^[.]+', ''
-  $dc
+function splitDN($DN) {
+  $m = [regex]::Match($DN, '(,dc=\w+)*$',
+    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+  @(
+    $DN.Substring(0, $m.Index)
+    $m.Value -replace ',dc=', '.' -replace '^[.]+', ''
+  )
 }
 
 function dbNull($value) {
@@ -113,9 +115,9 @@ function findSubFolder($name, $sub) {
   # Create new
   $desq = switch ($sub) {
     '-' { "Пользователи Sigur,`nне найденные в домене $domain" }
-    '#' { "Пользователи домена $domain,`nзаблокированные в Sigur"}
+    '#' { "Пользователи домена $domain,`nзаблокированные в Sigur" }
     '!' { "Пользователи Sigur,`nзаблокированные в домене $domain" }
-    Default { "Какие-то пользователи из домена $domain"}
+    Default { "Какие-то пользователи из домена $domain" }
   }
   $q = Invoke-SqlScalar @"
     insert into
@@ -126,7 +128,7 @@ function findSubFolder($name, $sub) {
       LAST_INSERT_ID()
 "@ -Parameters @{
     name = $sub
-    pid = $parent
+    pid  = $parent
     type = 'DEP'
     desq = $desq
   }
@@ -153,7 +155,7 @@ function listOperators {
   foreach ($z in $q) {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
     if ($ad) {
-      $domain = extractDomain $ad.Path
+      $DN, $domain = splitDN $ad.Path
       $ad = $ad.Properties
       $subfolder = $null
       if (!$z.enabled) {
@@ -178,7 +180,7 @@ function listOperators {
           PARENT_ID = @pid
         Where
           ID = @id
-"@  -Parameters @{id = $z.id; pid = $folder}
+"@  -Parameters @{id = $z.id; pid = $folder }
       continue
     }
     $folder = findFolder $domain
@@ -191,8 +193,8 @@ function listOperators {
         PARENT_ID = @pid
       Where
         ID = @id
-"@  -Parameters @{id = $z.id; pid = $folder}
-}
+"@  -Parameters @{id = $z.id; pid = $folder }
+  }
 }
 
 $cred = Get-StoredCredential -Target 'mysql:SKUD'
