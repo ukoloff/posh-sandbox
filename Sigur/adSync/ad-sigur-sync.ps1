@@ -155,8 +155,8 @@ function listOperators {
   foreach ($z in $q) {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
     if ($ad) {
-      $DN, $domain = splitDN $ad.Path
       $ad = $ad.Properties
+      $DN, $domain = splitDN $ad.distinguishedname[0]
       $subfolder = $null
       if (!$z.enabled) {
         $subfolder = '#'
@@ -189,6 +189,35 @@ function listOperators {
 "@  -Parameters @{id = $z.id; pid = $folder }
     }
     if ($subfolder) { continue }
+    $null = Invoke-SqlUpdate @"
+      Update personal
+      Set
+        NAME = @name,
+        DESCRIPTION = @desq,
+        POS = NULL,
+        TABID = @tabNo,
+        -- AD_DOMAIN_ID
+        AD_USER_DN = @dn,
+        USER_LOGIN = @login,
+        USER_PASSWORD = '-'
+      Where
+        ID = @id
+"@ -Parameters @{
+      id    = $z.id
+      name  = $ad.samaccountname[0]
+      tabNo = $ad.employeeid[0]
+      dn    = $DN
+      login = $ad.cn[0]
+      desq  = @"
+Пользователь AD
+---------------
+domain:`t$domain
+user:`t$($ad.samaccountname[0])
+cn:`t$($ad.cn[0])
+name:`t$($ad.displayname[0])
+title:`t$($ad.title[0])
+"@
+    }
   }
 }
 
