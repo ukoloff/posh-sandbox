@@ -84,13 +84,65 @@ function findFolder($name) {
   return $q
 }
 
+function findSubFolder($name, $sub) {
+  $nm = "$(base64 $name)/$(base64 $sub)"
+  if ($folderCache[$nm]) {
+    return $folderCache[$nm]
+  }
+  $parent = findFolder $name
+  $q = Invoke-SqlScalar @"
+    select
+      ID
+    from
+      personal p
+    where
+      name = @name
+      and PARENT_ID = @pid
+      and `TYPE` = 'DEP'
+      and STATUS = 'AVAILABLE'
+    order by
+      CREATEDTIME
+    limit 1
+"@ -Parameters @{name = $sub; pid = $parent }
+  $q = dbNull $q
+  if ($q) {
+    # Found
+    $folderCache[$nm] = $q
+    return $q
+  }
+  # Create new
+  $desq = switch ($sub) {
+    '-' { "Пользователи Sigur,`nне найденные в домене $domain" }
+    '#' { "Пользователи домена $domain,`nзаблокированные в Sigur"}
+    '!' { "Пользователи Sigur,`nзаблокированные в домене $domain" }
+    Default { "Какие-то пользователи из домена $domain"}
+  }
+  $q = Invoke-SqlScalar @"
+    insert into
+          personal(NAME, PARENT_ID, TYPE, DESCRIPTION)
+          values (@name, @pid, @type, @desq);
+    -- returning id
+    select
+      LAST_INSERT_ID()
+"@ -Parameters @{
+    name = $sub
+    pid = $parent
+    type = 'DEP'
+    desq = $desq
+  }
+  $q = dbNull $q
+  $folderCache[$nm] = $q
+  return $q
+
+}
+
 function listOperators {
   $q = Invoke-SqlQuery @"
     select
       ID as id,
+      PARENT_ID as pid,
       EXTID as guid,
-      USER_ENABLED as oper,
-      USER_T_SSPILOGIN as ad
+      USER_ENABLED and USER_T_SSPILOGIN as enabled
     from
       personal
     where
@@ -101,9 +153,24 @@ function listOperators {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
     if ($ad) {
       $domain = extractDomain $ad.Path
+      $ad = $ad.Properties
+      $subfolder = $null
+      if (!$z.enabled) {
+        $subfolder = '#'
+      }
+      elseif ($ad.useraccountcontrol[0] -band 2) {
+        $subfolder = '!'
+      }
     }
     else {
       $domain = guessDomain $z.id
+      $subfolder = '-'
+    }
+    if ($subfolder) {
+      $folder = findSubFolder $domain $subfolder
+
+
+      continue
     }
     $folder = findFolder $domain
   }
