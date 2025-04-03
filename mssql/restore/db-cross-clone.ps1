@@ -54,15 +54,20 @@ function timeStamp() {
 }
 
 function localizeSrcPath($path) {
+  $hst = [regex]::Escape("\\$src\")
+  $path = $path -replace "^$hst(\w)[$]\\", '$1:\'
   if ($env:COMPUTERNAME.ToLower() -ne $src.ToLower()) {
-    $path = "\\$src\" + ($path -replace '^e:', 'Backup$')
+    $path = $path -replace '^e:', "\\$src\Backup$"
   }
   $path
 }
 
 function localizeDstPath($path) {
+  $hst = [regex]::Escape("\\$dst\")
+  $path = $path -replace "$hst(\w)[$]\\", '$1:\'
   if ($env:COMPUTERNAME.ToLower() -ne $dst.ToLower()) {
-    $path = "\\$dst\" + ($path -replace ':', '$')
+    $drive = [regex]::Escape($dstFolder[0])
+    $path = ($path -replace "^$($drive):", "\\$dst\DB$")
   }
   $path
 }
