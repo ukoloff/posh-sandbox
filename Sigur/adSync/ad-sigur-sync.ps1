@@ -5,7 +5,8 @@
 $Server = 'srvskud-ekbh1-d'
 
 function extractDomain($DN) {
-  $dc = [regex]::Match($DN, '(,dc=\w+)*$', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Value -replace ',dc=', '.'
+  $dc = [regex]::Match($DN, '(,dc=\w+)*$',
+    [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Value -replace ',dc=', '.'
   $dc = $dc -replace '^[.]+', ''
   $dc
 }
@@ -31,7 +32,8 @@ function listOperators {
     $ad = ([ADSISearcher]"(&(objectCategory=User)(objectGUID=$($z.guid -replace "(.{2})", '\$1')))").FindOne()
     if ($ad) {
       $domain = extractDomain($ad.Path)
-    } else {
+    }
+    else {
       $domain = guessDomain($z.id)
     }
     $domain
