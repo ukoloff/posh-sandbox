@@ -31,14 +31,20 @@ function guessDomain($uid) {
   dbNull $q
 }
 
+function base64($s) {
+  # https://gist.github.com/iAnatoly/254220f98f2627c484ab32b76c813756
+  [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($s))
+}
+
 $folderCache = @{}
 
 function findFolder($name) {
   if (!$name) {
     $name = '!domain.ad'
   }
-  if ($folderCache[$name]) {
-    return $folderCache[$name]
+  $nm = base64 $name
+  if ($folderCache[$nm]) {
+    return $folderCache[$nm]
   }
   $q = Invoke-SqlScalar @"
     select
@@ -57,7 +63,7 @@ function findFolder($name) {
   $q = dbNull $q
   if ($q) {
     # Found
-    $folderCache[$name] = $q
+    $folderCache[$nm] = $q
     return $q
   }
   # Create new
@@ -74,7 +80,7 @@ function findFolder($name) {
     desq = "Автоматически созданное подразделение для пользователей,`nавторизующихся в домене $name"
   }
   $q = dbNull $q
-  $folderCache[$name] = $q
+  $folderCache[$nm] = $q
   return $q
 }
 
