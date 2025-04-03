@@ -171,22 +171,15 @@ function listOperators {
     }
     if ($subfolder) {
       $folder = findSubFolder $domain $subfolder
-      if ($z.pid -eq $folder) { continue }
-      "$subfolder`t$($z.name)"
-      $null = Invoke-SqlUpdate @"
-        Update
-          personal
-        Set
-          PARENT_ID = @pid
-        Where
-          ID = @id
-"@  -Parameters @{id = $z.id; pid = $folder }
-      continue
     }
-    $folder = findFolder $domain
-    if ($z.pid -eq $folder) { continue }
-    "+`t$($z.name)"
-    $null = Invoke-SqlUpdate @"
+    else {
+      $folder = findFolder $domain
+    }
+    if ($z.pid -ne $folder) {
+      # Move to (sub)folder
+      "$subfolder`t$($z.name)"
+
+      $null = Invoke-SqlUpdate @"
       Update
         personal
       Set
@@ -194,6 +187,8 @@ function listOperators {
       Where
         ID = @id
 "@  -Parameters @{id = $z.id; pid = $folder }
+    }
+    if ($subfolder) { continue }
   }
 }
 
