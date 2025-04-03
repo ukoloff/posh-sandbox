@@ -144,10 +144,11 @@ function offDB($db) {
   if (!$id) {
     return
   }
-  "[$(timeStamp)] ...taking [$db] offline" | Out-File @Log
+  "[$(timeStamp)] ...dropping [$db]" | Out-File @Log
   $null = Invoke-SqlUpdate @"
-    Alter Database $db
-      SET Offline
+    Alter Database [$db]
+      SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    Drop Database If Exists [$db]
 "@
 }
 
