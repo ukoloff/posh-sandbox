@@ -166,7 +166,10 @@ function restoreDB($db) {
     LiteralPath = "$folder/restore.log"
     Append      = $true
   }
-  "[$(timeStamp)] Restoring \\$src\[$db] to [$db2]" | Out-File @Log
+  "[$(timeStamp)] Starting $(Split-Path $PSCommandPath -Leaf)" | Out-File @Log
+  "[$(timeStamp)] Host:`t$($env:COMPUTERNAME)" | Out-File @Log
+  "[$(timeStamp)] User:`t$([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" | Out-File @Log
+  "[$(timeStamp)] Restoring \\$src\[$db] -> [$db2]" | Out-File @Log
 
   [array]$baks = getBackups($db)
   $N = 0
