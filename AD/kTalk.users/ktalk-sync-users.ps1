@@ -42,7 +42,7 @@ $HTTP = @{
   }
   UseBasicParsing = $true
 }
-$q = Invoke-WebRequest -Uri "$URI/scan?includeDisabled=true" @HTTP
+$q = Invoke-WebRequest -Uri "$URI/scan" @HTTP
 [array]$users = (ConvertFrom-Json $q.Content).users
 "Found Talk users:`t$($users.Count)"
 
@@ -69,7 +69,7 @@ $avatars = @{}
   $ad = ([ADSISearcher]"(&(objectCategory=User)(mail=$(quoteLDAP $user.email)))").FindAll()
   if ($ad.Count -ne 1) { continue }
   $ad = $ad[0].Properties
-  if (!$user.avatarUrl -and !$user.disabled) {
+  if (!$user.avatarUrl) {
     if ($ad.jpegphoto) {
       $avatars[$user.key] = $ad.jpegphoto[0]
     }
