@@ -135,7 +135,13 @@ function findSubFolder($name, $sub) {
   $q = dbNull $q
   $folderCache[$nm] = $q
   return $q
+}
 
+function get($attr) {
+  if ($attr -ne $null) {
+    return $attr[0]
+  }
+  $null
 }
 
 function listOperators {
@@ -205,7 +211,7 @@ function listOperators {
 "@ -Parameters @{
       id    = $z.id
       name  = $ad.samaccountname[0]
-      tabNo = $ad.employeeid[0]
+      tabNo = get($ad.employeeid)
       dn    = $DN
       login = $ad.cn[0]
       desq  = @"
@@ -215,7 +221,7 @@ domain:`t$domain
 user:`t$($ad.samaccountname[0])
 cn:`t$($ad.cn[0])
 name:`t$($ad.displayname[0])
-title:`t$($ad.title[0])
+title:`t$(get($ad.title))
 "@
     }
   }
