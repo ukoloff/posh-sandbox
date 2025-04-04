@@ -79,7 +79,7 @@ $kill = @{}
     }
   }
   if ($ad.useraccountcontrol[0] -band 2) {
-    $kill[$user.key] = 1
+    $kill[$user.key] = $ad.cn[0]
   }
   $update = @{}
   $diff = 0
@@ -100,6 +100,15 @@ $kill = @{}
   $update
 }
 
+if ($kill.Count) {
+  "Blocking Talk users:`t$($kill.Count)"
+  $body = ConvertTo-Json -InputObject @{disabled = $true } -Compress
+  foreach ($it in $kill.GetEnumerator()) {
+    $q = Invoke-WebRequest -Uri "$URI/$($it.Key)/permissions" -Method PUT @HTTP -Body $body
+  }
+}
+
+
 $HTTP['Method'] = 'POST'
 
 if ($updates.Count) {
@@ -107,7 +116,7 @@ if ($updates.Count) {
 
   $body = ConvertTo-Json -Compress -InputObject $updates
   $body = [System.Text.Encoding]::UTF8.GetBytes($body)
-  Invoke-WebRequest -Uri $URI @HTTP -Body $body
+  $q = Invoke-WebRequest -Uri $URI @HTTP -Body $body
 }
 
 if ($avatars.Count) {
@@ -126,10 +135,11 @@ if ($avatars.Count) {
     $HTTP['Headers']['Content-Type'] = $mc.Headers.ContentType.ToString() -replace '"', ''
     $body = $mc.ReadAsByteArrayAsync().GetAwaiter().GetResult()
     $mm.Close()
-    Invoke-WebRequest -Uri "$URI/$($it.Name)/avatar" -Body $body @HTTP
+    $q = Invoke-WebRequest -Uri "$URI/$($it.Name)/avatar" -Body $body @HTTP
   }
 }
 
 "Found Talk users:`t$($users.Count)"
+"Blocked Talk users:`t$($kill.Count)"
 "Updated Talk users:`t$($updates.Count)"
 "Added avatars:`t$($avatars.Count)"
