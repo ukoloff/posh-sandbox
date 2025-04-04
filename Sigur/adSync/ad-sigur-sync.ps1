@@ -235,12 +235,12 @@ function addOperators {
     Write-Warning "Группа не найдена: $g"
     exit
   }
-  [array]$u = Get-ADGroupMember -Recursive $g
-  foreach ($user in $u) {
-    if ($user.objectClass -ne 'user') {continue}
-    $user = $user | Get-ADUser
-    if (!$user.Enabled) {continue}
-    $user.SamAccountName
+  Get-ADGroupMember -Recursive $g |
+  ForEach-Object {
+    if ($_.objectClass -ne 'user') { continue }
+    $user = $_ | Get-ADUser
+    if (!$user.Enabled) { continue }
+    "$(-join $_.ObjectGUID.ToByteArray().foreach({$_.toString('x2')})) $($user.SamAccountName)"
   }
   exit
 }
@@ -254,4 +254,3 @@ listOperators
 
 Complete-SqlTransaction
 Close-SqlConnection
-
