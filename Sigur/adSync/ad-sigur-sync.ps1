@@ -3,6 +3,7 @@
 # Для целей авторизации (SSO)
 #
 $Server = 'srvskud-ekbh1-d'
+$group = "operators@$Server"  # Автоматическое назначение операторами
 
 function splitDN($DN) {
   $m = [regex]::Match($DN, '(,dc=\w+)*$',
@@ -228,10 +229,27 @@ title:`t$(get($ad.title))
   }
 }
 
+function addOperators {
+  $g = Get-ADGroup $group
+  if (!$g) {
+    Write-Warning "Группа не найдена: $g"
+    exit
+  }
+  [array]$u = Get-ADGroupMember -Recursive $g
+  foreach ($user in $u) {
+    if ($user.objectClass -ne 'user') {continue}
+    $user = $user | Get-ADUser
+    if (!$user.Enabled) {continue}
+    $user.SamAccountName
+  }
+  exit
+}
+
 $cred = Get-StoredCredential -Target 'mysql:SKUD'
 Open-MySqlConnection -Server $Server -Port 3305 -Database  tc-db-main -Credential $cred
 Start-SqlTransaction
 
+addOperators
 listOperators
 
 Complete-SqlTransaction
