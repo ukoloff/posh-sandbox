@@ -63,6 +63,7 @@ $fields = @{
 }
 
 $avatars = @{}
+$kill = @{}
 
 [array]$updates = foreach ($user in $users) {
   if (!$user.email -or $user.mobilePhone) { continue }
@@ -76,6 +77,9 @@ $avatars = @{}
     elseif ($ad.thumbnailphoto) {
       $avatars[$user.key] = $ad.thumbnailphoto[0]
     }
+  }
+  if ($ad.useraccountcontrol[0] -band 2) {
+    $kill[$user.key] = 1
   }
   $update = @{}
   $diff = 0
