@@ -53,7 +53,7 @@ people(id) as (
   from
     personal
   where
-    TYPE = 'EMP'
+    TYPE != 'DEP'
 ),
 folders(id) as (
   select
