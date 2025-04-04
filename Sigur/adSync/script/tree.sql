@@ -20,8 +20,34 @@ tree(u, d, h) as(
   from
     tree as L
     join layer as R on L.d = R.u
+),
+roots(id) as (
+  select
+    ID
+  from
+    personal
+  where
+    ID not in(
+      select
+        distinct d
+      from
+        layer
+    )
+),
+leaves(id) as (
+  select
+    ID
+  from
+    personal
+  where
+    ID not in(
+      select
+        distinct u
+      from
+        layer
+    )
 )
 select
   *
 from
-  tree
+  roots
