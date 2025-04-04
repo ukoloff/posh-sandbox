@@ -104,10 +104,10 @@ if ($kill.Count) {
   "Blocking Talk users:`t$($kill.Count)"
   $body = ConvertTo-Json -InputObject @{disabled = $true } -Compress
   foreach ($it in $kill.GetEnumerator()) {
+    # Old API: https://kontur.renote.team/doc/gmVrwgTNW
     $q = Invoke-WebRequest -Uri "$URI/$($it.Key)/permissions" -Method PUT @HTTP -Body $body
   }
 }
-
 
 $HTTP['Method'] = 'POST'
 
