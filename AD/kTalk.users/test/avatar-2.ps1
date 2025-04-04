@@ -22,7 +22,7 @@ $jpg = Join-Path (Split-Path $PSCommandPath -Parent) avatar.jpg
 $boundary = [guid]::NewGuid().Guid
 $HTTP['Headers']['Content-Type'] = "multipart/form-data; boundary=$boundary"
 
-$body = @(
+[byte[]]$body = @(
   "--$boundary"
   "Content-Disposition: form-data; name=avatar; filename=$(Split-Path -Leaf $jpg)"
   "Content-Type: image/jpeg"
