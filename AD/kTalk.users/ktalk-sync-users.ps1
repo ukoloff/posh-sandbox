@@ -123,18 +123,23 @@ if ($avatars.Count) {
   "Adding avatars:`t$($avatars.Count)"
 
   foreach ($it in $avatars.GetEnumerator()) {
-    $fh = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new('form-data')
-    $fh.Name = 'avatar'
-    $fh.FileName = 'photo.jpg'
-    $mm = New-Object IO.MemoryStream($it.Value, 0, $it.Value.Length)
-    $fc = [System.Net.Http.StreamContent]::new($mm)
-    $fc.Headers.ContentDisposition = $fh
-    $fc.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::Parse('image/jpeg')
-    $mc = [System.Net.Http.MultipartFormDataContent]::new()
-    $mc.Add($fc)
-    $HTTP['Headers']['Content-Type'] = $mc.Headers.ContentType.ToString() -replace '"', ''
-    $body = $mc.ReadAsByteArrayAsync().GetAwaiter().GetResult()
-    $mm.Close()
+    $boundary = [guid]::NewGuid().Guid
+    $HTTP['Headers']['Content-Type'] = "multipart/form-data; boundary=$boundary"
+
+    [byte[]]$body = @(
+      "--$boundary"
+      "Content-Disposition: form-data; name=avatar; filename=photo.jpg"
+      "Content-Type: image/jpeg"
+      ""
+      $it.Value
+      ""
+      "--$boundary--"
+    ) | ForEach-Object {
+      if ($_ -is [string]) {
+        [System.Text.Encoding]::UTF8.GetBytes("$_`r`n")
+      }
+      else { $_ }
+    }
     $q = Invoke-WebRequest -Uri "$URI/$($it.Name)/avatar" -Body $body @HTTP
   }
 }
