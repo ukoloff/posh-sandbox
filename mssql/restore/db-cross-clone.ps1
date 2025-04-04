@@ -54,15 +54,20 @@ function timeStamp() {
 }
 
 function localizeSrcPath($path) {
+  $hst = [regex]::Escape("\\$src\")
+  $path = $path -replace "^$hst(\w)[$]\\", '$1:\'
   if ($env:COMPUTERNAME.ToLower() -ne $src.ToLower()) {
-    $path = "\\$src\" + ($path -replace '^e:', 'Backup$')
+    $path = $path -replace '^e:', "\\$src\Backup$"
   }
   $path
 }
 
 function localizeDstPath($path) {
+  $hst = [regex]::Escape("\\$dst\")
+  $path = $path -replace "$hst(\w)[$]\\", '$1:\'
   if ($env:COMPUTERNAME.ToLower() -ne $dst.ToLower()) {
-    $path = "\\$dst\" + ($path -replace ':', '$')
+    $drive = [regex]::Escape($dstFolder[0])
+    $path = ($path -replace "^$($drive):", "\\$dst\DB$")
   }
   $path
 }
@@ -144,10 +149,11 @@ function offDB($db) {
   if (!$id) {
     return
   }
-  "[$(timeStamp)] ...taking [$db] offline" | Out-File @Log
+  "[$(timeStamp)] ...dropping [$db]" | Out-File @Log
   $null = Invoke-SqlUpdate @"
-    Alter Database $db
-      SET Offline
+    Alter Database [$db]
+      SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    Drop Database If Exists [$db]
 "@
 }
 
@@ -165,7 +171,10 @@ function restoreDB($db) {
     LiteralPath = "$folder/restore.log"
     Append      = $true
   }
-  "[$(timeStamp)] Restoring \\$src\[$db] to [$db2]" | Out-File @Log
+  "[$(timeStamp)] Starting $(Split-Path $PSCommandPath -Leaf)" | Out-File @Log
+  "[$(timeStamp)] Host:`t$($env:COMPUTERNAME)" | Out-File @Log
+  "[$(timeStamp)] User:`t$([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" | Out-File @Log
+  "[$(timeStamp)] Restoring \\$src\[$db] -> [$db2]" | Out-File @Log
 
   [array]$baks = getBackups($db)
   $N = 0

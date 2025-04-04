@@ -289,7 +289,12 @@ function startLog($db) {
 
 function offDB($db) {
   $cmd = $dbDst.CreateCommand()
-  $cmd.CommandText = "Alter Database [$db] SET Offline"
+  # $cmd.CommandText = "Alter Database [$db] SET Offline"
+  $cmd.CommandText = @"
+    Alter Database [$db]
+      SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    Drop Database If Exists [$db]
+"@
   $null = $cmd.ExecuteNonQuery()
 }
 
@@ -297,8 +302,8 @@ function takeOff($db) {
   if (!(dbExists $db)) {
     return
   }
-  "$(timeStamp)Перевожу $db в Offline..."
-  "$(timeStamp)Taking offline:`t$db" | Out-File @Log
+  "$(timeStamp)Удаляю [$db]..."
+  "$(timeStamp)Drop DB:`t$db" | Out-File @Log
   offDB $db
 }
 
