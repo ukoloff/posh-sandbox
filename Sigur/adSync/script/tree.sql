@@ -62,8 +62,50 @@ folders(id) as (
     personal
   where
     TYPE = 'DEP'
+),
+fcounts(id, ownp, allp, ownf, allf) as (
+  select
+    F.id,
+    (
+      select
+        count(*)
+      from
+        layer
+        join people on layer.d = people.id
+      where
+        layer.u = F.id
+    ),
+    (
+      select
+        count(*)
+      from
+        tree
+        join people on tree.d = people.id
+      where
+        tree.u = F.id
+    ),
+    (
+      select
+        count(*)
+      from
+        layer
+        join folders on layer.d = folders.id
+      where
+        layer.u = F.id
+    ),
+    (
+      select
+        count(*)
+      from
+        tree
+        join folders on tree.d = folders.id
+      where
+        tree.u = F.id
+    )
+  from
+    folders F
 )
 select
   *
 from
-  folders
+  fcounts
