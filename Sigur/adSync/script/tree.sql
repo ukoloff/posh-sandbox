@@ -46,8 +46,24 @@ leaves(id) as (
       from
         layer
     )
+),
+people(id) as (
+  select
+    ID
+  from
+    personal
+  where
+    TYPE = 'EMP'
+),
+folders(id) as (
+  select
+    ID
+  from
+    personal
+  where
+    TYPE = 'DEP'
 )
 select
   *
 from
-  roots
+  folders
