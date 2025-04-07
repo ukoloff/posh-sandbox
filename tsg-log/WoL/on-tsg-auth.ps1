@@ -33,3 +33,6 @@ if ($remove) {
   exit
 }
 
+$log = "$PSCommandPath.log"
+"$(Get-Date) [$args]" >> $log
+
