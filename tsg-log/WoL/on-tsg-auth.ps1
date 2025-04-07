@@ -23,13 +23,13 @@ if ($install) {
 "@
   $trigger.Enabled = $True
   $Task = New-ScheduledTask -Action $Action -Trigger $trigger
-  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  Register-ScheduledTask -TaskName $me -TaskPath uxm\tsg -InputObject $Task -User "System" -Force
   exit
 }
 
 if ($remove) {
   $me = Split-Path $PSCommandPath -Leaf
-  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\tsg\' -Confirm:$false
   exit
 }
 
