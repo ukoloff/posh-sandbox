@@ -6,6 +6,12 @@ param(
   [switch]$remove
 )
 
+$Filter = @{
+  LogName = 'Microsoft-Windows-TerminalServices-Gateway/Operational';
+  ID      = 300;
+}
+
+
 if ($install) {
   $me = Split-Path $PSCommandPath -Leaf
   $dir = Split-Path $PSCommandPath -Parent
@@ -16,8 +22,8 @@ if ($install) {
   $trigger = New-CimInstance -CimClass $CIMTriggerClass -ClientOnly
   $trigger.Subscription = @"
     <QueryList>
-      <Query Id="0" Path="Microsoft-Windows-TerminalServices-Gateway/Operational">
-        <Select Path="Microsoft-Windows-TerminalServices-Gateway/Operational">*[System[(EventID=300)]]</Select>
+      <Query Id="0" Path="$($Filter['LogName'])">
+        <Select Path="$($Filter['LogName'])">*[System[(EventID=$($Filter['ID']))]]</Select>
       </Query>
     </QueryList>
 "@
@@ -34,5 +40,9 @@ if ($remove) {
 }
 
 $log = "$PSCommandPath.log"
-"$(Get-Date) [$args]" >> $log
+
+$ev = Get-WinEvent -FilterHashTable $Filter -MaxEvents 1
+if (!$ev) { exit }
+
+"$(Get-Date) [$args]`t$($ev.ToXml())" >> $log
 
