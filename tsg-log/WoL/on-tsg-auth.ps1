@@ -44,5 +44,11 @@ $log = "$PSCommandPath.log"
 $ev = Get-WinEvent -FilterHashTable $Filter -MaxEvents 1
 if (!$ev) { exit }
 
-"$(Get-Date) [$args]`t$($ev.ToXml())" >> $log
+$x = ([xml]$ev.ToXml()).Event.UserData.EventInfo
+$x = @{
+  ip   = $x.IpAddress
+  user = $x.Username
+  host = $x.Resource
+}
 
+"$(Get-Date) [$args]`t$(ConvertTo-Json $x)" >> $log
