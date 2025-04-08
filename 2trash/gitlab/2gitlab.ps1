@@ -5,4 +5,11 @@ Set-Location (Split-Path $PSCommandPath -Parent)
 $root = git rev-parse --show-toplevel
 $repos = Split-Path $root -Parent
 $repos = Get-ChildItem -Path $repos -Directory
-$repos
+
+foreach ($repo in $repos) {
+  Set-Location $repo.FullName
+  if ('gitlab' -notin (git remote)) {
+    continue
+  }
+  git push --mirror gitlab
+}
