@@ -9,7 +9,7 @@ param(
 if ($install) {
   $me = Split-Path $PSCommandPath -Leaf
   $dir = Split-Path $PSCommandPath -Parent
-  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument "-WindowStyle Hidden -File .\$me" -WorkingDirectory $dir
 
   # https://gist.github.com/NickolajA/9f670e80bb3791b87389e3093909d1dc
   $StateChangeTrigger = Get-CimClass -Namespace "root\Microsoft\Windows\TaskScheduler" -ClassName "MSFT_TaskSessionStateChangeTrigger"
