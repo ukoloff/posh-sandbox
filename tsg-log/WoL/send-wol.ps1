@@ -1,10 +1,12 @@
 #
 # Send Wake-on-LAN magic packet
 #
-$mac = '74-56-3C-87-B0-06'
+# aka: wakeonlan -p 7 -i 10.164.201.255  74:56:3C:87:B0:06
+#
+$mac = '74:56:3C:87:B0:06'
 $ip = '10.164.201.255'
 
-# https://github.com/krzydoug/Tools/blob/master/Send-WakeOnLan.ps1
+# https://github.com/krzydoug/Tools/blob/master/Send:WakeOnLan.ps1
 
 $macs = $MAC -split "[:-]" | ForEach-Object { [Byte] "0x$_" }
 [Byte[]] $MagicPacket = (, 0xFF * 6) + ($macs * 16)
