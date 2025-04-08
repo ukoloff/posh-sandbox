@@ -135,6 +135,14 @@ operators(id) as(
     and EXTID is not null
 )
 select
-  *
+  p.ID,
+  p.NAME,
+  path,
+  p.POS
 from
-  paths
+  operators
+  join paths on operators.id = paths.id
+  join personal p on operators.id = p.ID
+order by
+  path,
+  NAME
