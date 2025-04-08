@@ -7,9 +7,11 @@ $repos = Split-Path $root -Parent
 $repos = Get-ChildItem -Path $repos -Directory
 
 foreach ($repo in $repos) {
+  "[$($repo)]"
+
   Set-Location $repo.FullName
   if ('gitlab' -notin (git remote)) {
     continue
   }
-  git push --mirror gitlab
+  git push --all gitlab
 }
