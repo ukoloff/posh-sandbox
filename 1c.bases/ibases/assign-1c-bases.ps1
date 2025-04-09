@@ -99,7 +99,15 @@ function getManualConfig {
 }
 
 [array]$groups1C = groups1C
-[array]$bases = myBases
-getManualConfig
 
-# $bases | Out-File $ini -Append -Encoding utf8
+if (($groups1C.Count -eq 0) -and !(iniPresent)) {
+  "Настройка баз 1С не требуется"
+  exit
+}
+
+backupBases
+[array]$bases = myBases
+(getManualConfig) + $bases |
+Out-File $ini -Encoding utf8 -Force
+
+"That's all folks!"
