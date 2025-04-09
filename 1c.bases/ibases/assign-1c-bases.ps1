@@ -59,6 +59,29 @@ function myBases {
   }
 }
 
+
+function iniPresent {
+  Test-Path $ini -PathType Leaf
+}
+function backupBases {
+  if (!(iniPresent)) { return }
+  $dir = Join-Path (Split-Path $ini -Parent) backup
+  $hash = Get-FileHash $ini -Algorithm SHA512
+  $null = New-Item $dir -Force -ItemType Directory
+  foreach ($f in (Get-ChildItem $dir -File)) {
+    $h2 = Get-FileHash ($f.FullName) -Algorithm SHA512
+    if ($h2.Hash -eq $hash.Hash) {
+      return
+    }
+  }
+  $bak = Join-Path $dir "$(Split-Path $ini -Leaf).$(Get-Date -UFormat '%Y-%m-%d_%H-%M-%S').bak"
+  Copy-Item $ini $bak -Force
+}
+
 [array]$groups1C = groups1C
 [array]$bases = myBases
-$bases
+# $bases
+
+backupBases
+
+
