@@ -14,13 +14,19 @@ function groups1C {
   $null = $s.PropertiesToLoad.Add('info')
   $null = $s.PropertiesToLoad.Add('sAMAccountName')
 
-  $result = @{}
   foreach ($g in $s.FindAll()) {
     $g = $g.Properties
     $info = $g.info
-    if ($info) { continue }
+    if (!$info) { continue }
+    $info = $info[0] -split "\r?\n|\r"
+    $m = [regex]::Match($info[0], '^\s*\[(.*)\]\s*$')
+    if (!$m.Success) { continue }
+    [PSCustomObject]@{
+      g     = $g.samaccountname[0]
+      title = $m.Groups[1].Value.Trim()
+      info  = $info | Select-Object -Skip 1
+    }
   }
-  $result
 }
 
 # Получаем список всех групп текущего пользователя
@@ -33,4 +39,26 @@ function myGroups {
   $s.FindAll()
 }
 
-groups1C
+function myBases {
+  $idx = @{}
+  foreach ($g in $groups1C) {
+    $idx[$g.g] = $g
+  }
+  myGroups |
+  ForEach-Object {
+    $g = $_.Properties.samaccountname[0]
+    $g = $idx[$g]
+    if ($g) { $g }
+  } |
+  Sort-Object title |
+  ForEach-Object {
+    @(
+      ""
+      "[$($_.title)]"
+    ) + $_.info
+  }
+}
+
+[array]$groups1C = groups1C
+[array]$bases = myBases
+$bases
