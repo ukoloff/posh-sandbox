@@ -65,6 +65,7 @@ function iniPresent {
 }
 
 function backupBases {
+  $null = New-Item (Split-Path $ini -Parent) -Force -ItemType Directory
   if (!(iniPresent)) { return }
   $dir = Join-Path (Split-Path $ini -Parent) backup
   $hash = Get-FileHash $ini -Algorithm SHA512
