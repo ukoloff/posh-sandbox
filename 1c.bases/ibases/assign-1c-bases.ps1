@@ -39,6 +39,7 @@ function myGroups {
   $s.FindAll()
 }
 
+# Список баз 1С, которые нужно подключить текущему пользователю
 function myBases {
   $idx = @{}
   foreach ($g in $groups1C) {
@@ -107,7 +108,11 @@ if (($groups1C.Count -eq 0) -and !(iniPresent)) {
 
 backupBases
 [array]$bases = myBases
-(getManualConfig) + $bases |
+[array]$old = getManualConfig
+while ($old.Count -and $old[-1].Trim() -eq '') {
+  $old = $old | Select-Object -SkipLast 1
+}
+$old + $space + $bases |
 Out-File $ini -Encoding utf8 -Force
 
 "That's all folks!"
