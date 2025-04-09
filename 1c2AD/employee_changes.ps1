@@ -28,7 +28,10 @@ Foreach ($User in $Users) {
 	$Manager = $User.manager.ToString()
 	$title=$User.title.ToString()
 	$departmentNumber=$User.departmentNumber.ToString()
-	$department=$User.department.ToString() -replace '/.*', ''
+	$department=$User.department.ToString()
+	$department = $department -replace '\s*/.*', ''
+	$department = $department -replace '\s*\([^()]*\)\s*$', ''
+	$department = $department.Substring(0, [System.Math]::Min(64, $department.Length))
 	$extensionAttribute1=$User.extensionAttribute1.ToString()
 	$extensionAttribute2=$User.extensionAttribute2.ToString()
 
@@ -63,7 +66,7 @@ Else
 	#Ведем журнал успешных изменений
         $Text = "{0} : [УСПЕХ!] Внесены изменения в карточку Acrive Directory для {1} {2}" -f (Get-Date).ToString(), $User.employeeID,$User.displayName
         $Log.AppendLine($Text) | Out-Null
- }    
+ }
 }
 #Сохраняем в журнал и выводим на консоль последние 50 строк
 If($Log.ToString()) {

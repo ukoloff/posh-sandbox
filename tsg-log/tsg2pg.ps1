@@ -2,24 +2,24 @@
 # Import Remote Desktop Gateway logs into PostgreSQL
 #
 param(
-    [switch]$install,
-    [switch]$remove
+  [switch]$install,
+  [switch]$remove
 )
 
 if ($install) {
-    $me = Split-Path $PSCommandPath -Leaf
-    $dir = Split-Path $PSCommandPath -Parent
-    $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
-    $Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours 1) -RandomDelay 00:05:00
-    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
-    Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
-    exit
+  $me = Split-Path $PSCommandPath -Leaf
+  $dir = Split-Path $PSCommandPath -Parent
+  $Action = New-ScheduledTaskAction -Execute "powershell" -Argument ".\$me" -WorkingDirectory $dir
+  $Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours 1) -RandomDelay 00:05:00
+  $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+  Register-ScheduledTask -TaskName $me -TaskPath uxm -InputObject $Task -User "System" -Force
+  exit
 }
 
 if ($remove) {
-    $me = Split-Path $PSCommandPath -Leaf
-    Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
-    exit
+  $me = Split-Path $PSCommandPath -Leaf
+  Unregister-ScheduledTask -TaskName $me -TaskPath '\uxm\' -Confirm:$false
+  exit
 }
 
 $startAt = Get-Date
@@ -38,7 +38,7 @@ $logID = Invoke-SqlScalar @"
   Insert Into tsg_log("domain", "user", "host")
   Values(@domain, @user, @host)
   Returning id
-"@ -Parameters @{domain=$env:USERDOMAIN; user=$env:USERNAME; host=$env:COMPUTERNAME}
+"@ -Parameters @{domain = $env:USERDOMAIN; user = $env:USERNAME; host = $env:COMPUTERNAME }
 
 $Filter = @{
   LogName = $log;
@@ -55,7 +55,7 @@ $Total = 0
 $Already = 0
 $Found = 0
 $txTime = Get-Date
-$lastPing  = ''
+$lastPing = ''
 
 Get-WinEvent -FilterHashTable $Filter -Oldest |
 ForEach-Object {
@@ -88,7 +88,7 @@ ForEach-Object {
   $n = Invoke-SqlScalar $sqlFound -Parameters $row
   if ($n -eq 0) {
     $row['log_id'] = $logID
-    $row['start'] = $row['end'].AddSeconds($row['duration'])
+    $row['start'] = $row['end'].AddSeconds(-$row['duration'])
     if (!$sqlAdd) {
       $sqlAdd = @"
         Insert Into tsg($($row.Keys.ForEach({"`"$_`""}) -join ", "))
