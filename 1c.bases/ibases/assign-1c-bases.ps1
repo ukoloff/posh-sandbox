@@ -59,10 +59,10 @@ function myBases {
   }
 }
 
-
 function iniPresent {
   Test-Path $ini -PathType Leaf
 }
+
 function backupBases {
   if (!(iniPresent)) { return }
   $dir = Join-Path (Split-Path $ini -Parent) backup
@@ -78,10 +78,28 @@ function backupBases {
   Copy-Item $ini $bak -Force
 }
 
+# Получить список баз, прописанных вручную
+function getManualConfig {
+  if (!(iniPresent)) {
+    return @()
+  }
+  $auto = @{}
+  $groups1C | ForEach-Object {
+    $auto[$_.title] = 1
+  }
+  $out = $true
+  [System.IO.File]::ReadAllLines($ini) |
+  Where-Object {
+    $m = [regex]::Match($_, '^\s*\[(.*)\]\s*$')
+    if ($m.Success) {
+      $out = !$auto[$m.Groups[1].Value]
+    }
+    $out
+  }
+}
+
 [array]$groups1C = groups1C
 [array]$bases = myBases
-# $bases
+getManualConfig
 
-backupBases
-
-
+# $bases | Out-File $ini -Append -Encoding utf8
