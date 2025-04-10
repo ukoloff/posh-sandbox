@@ -154,14 +154,16 @@ treeD(up, dn, h) as(
     treeD as L
     join layerD as R on L.dn = R.up
 ),
-pathD(id, level) as(
+pathD(id, level, path) as(
   select
     id,
-    (
-      select
-        count(*)
+    (select count(*) from treeD as T where T.dn = D.id),
+    (select
+        string_agg(X.name, ' >> ') 
+        within group(order by T.h Desc)
       from
         treeD as T
+        join dept as X on T.up = X.id
       where
         T.dn = D.id
     )
