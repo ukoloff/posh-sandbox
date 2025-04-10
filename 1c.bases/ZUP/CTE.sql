@@ -129,4 +129,34 @@ select
   _Fld40083_RRRef As dept_id, -- _Reference347X1
   _Fld45826 As dept_kod
 from _Reference480
+),
+layerD(up, dn) as(
+  select
+    U.id,
+    D.id
+  from
+    dept U
+    join dept D on U.id = D.up_id
+),
+treeD(up, dn, h) as(
+  select
+    up,
+    dn,
+    1
+  from
+    layerD
+  union all
+  select
+    L.up,
+    R.dn,
+    L.h + 1
+  from
+    treeD as L
+    join layerD as R on L.dn = R.up
 )
+select
+  *
+from
+  treeD
+order by
+  h
