@@ -153,10 +153,25 @@ treeD(up, dn, h) as(
   from
     treeD as L
     join layerD as R on L.dn = R.up
+),
+pathD(id, level) as(
+  select
+    id,
+    (
+      select
+        count(*)
+      from
+        treeD as T
+      where
+        T.dn = D.id
+    )
+  from
+    dept as D
 )
+--
 select
   *
 from
-  treeD
+  pathD
 order by
-  h
+  level
