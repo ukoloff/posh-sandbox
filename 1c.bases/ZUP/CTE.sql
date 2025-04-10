@@ -178,12 +178,12 @@ fullpathD(id, level, path) as(
         string_agg(X.name, ' >> ')
         within group(order by X.h Desc)
       from (
-          select 
+          select
             D.name, 0 as h
           union all
-          select 
+          select
             X.name, T.h
-          from   
+          from
           treeD as T
           join dept as X on T.up = X.id
           where
@@ -216,9 +216,50 @@ treeO(up, dn, h) as(
   from
     treeO as L
     join layerO as R on L.dn = R.up
+),
+pathO(id, level, path) as(
+  select
+    id,
+    (select count(*) from treeO as T where T.dn = D.id),
+    (select
+        string_agg(X.name, ' >> ')
+        within group(order by T.h Desc)
+      from
+        treeO as T
+        join otdel as X on T.up = X.id
+      where
+        T.dn = D.id
+    )
+  from
+    otdel as D
+),
+fullpathO(id, level, path) as(
+  select
+    id,
+    (select count(*) from treeO as T where T.dn = D.id),
+    (select
+        string_agg(X.name, ' >> ')
+        within group(order by X.h Desc)
+      from (
+          select
+            D.name, 0 as h
+          union all
+          select
+            X.name, T.h
+          from
+          treeO as T
+          join otdel as X on T.up = X.id
+          where
+            T.dn = D.id
+        ) as X
+    )
+  from
+    otdel as D
 )
 --
 select
   *
 from
-  treeO
+  fullpathO
+order by 
+  path
