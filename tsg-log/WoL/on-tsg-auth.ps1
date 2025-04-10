@@ -56,7 +56,7 @@ function readARP {
   Open-PostGreConnection -Server pg.ekb.ru -Database uxm -Credential $cred
   Start-SqlTransaction
 
-  $j = Invoke-WebRequest https://nc.ekb.ru/omz/service/arp |
+  $j = Invoke-WebRequest https://nc.ekb.ru/omz/service/arp -UseBasicParsing |
   Select-Object -ExpandProperty Content |
   ConvertFrom-Json
   $j | ForEach-Object {
