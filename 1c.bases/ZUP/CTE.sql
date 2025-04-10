@@ -192,11 +192,33 @@ fullpathD(id, level, path) as(
     )
   from
     dept as D
+),
+layerO(up, dn) as(
+  select
+    U.id,
+    D.id
+  from
+    otdel U
+    join otdel D on U.id = D.up_id
+),
+treeO(up, dn, h) as(
+  select
+    up,
+    dn,
+    1
+  from
+    layerO
+  union all
+  select
+    L.up,
+    R.dn,
+    L.h + 1
+  from
+    treeO as L
+    join layerO as R on L.dn = R.up
 )
 --
 select
   *
 from
-  fullpathD
-order by
-  path
+  treeO
