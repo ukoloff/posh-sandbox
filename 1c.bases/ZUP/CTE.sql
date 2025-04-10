@@ -258,8 +258,19 @@ fullpathO(id, level, path) as(
 )
 --
 select
-  *
+  dept.name,
+  dept.Kod,
+  fullpathD.path,
+  fullpathD.level,
+  fullpathO.level,
+  otdel.name,
+  otdel.kod,
+  fullpathO.path
 from
-  fullpathO
-order by 
-  path
+  dept
+  full join otdel on dept.id = otdel.dept_id
+  left join fullpathD on dept.id = fullpathD.id
+  left join fullpathO on otdel.id = fullpathO.id
+order by
+  fullpathD.path,
+  fullpathO.path
