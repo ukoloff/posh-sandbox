@@ -35,8 +35,8 @@ Select
   _Fld34752	As longname,
   _Fld34753	As shortname
 From _Reference265
-)
-with dept as(
+),
+dept as(
 -- Справочник.ПодразделенияОрганизаций	_Reference347
 Select
   _IDRRef As id,
