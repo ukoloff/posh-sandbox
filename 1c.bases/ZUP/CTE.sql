@@ -159,7 +159,7 @@ pathD(id, level, path) as(
     id,
     (select count(*) from treeD as T where T.dn = D.id),
     (select
-        string_agg(X.name, ' >> ') 
+        string_agg(X.name, ' >> ')
         within group(order by T.h Desc)
       from
         treeD as T
@@ -169,11 +169,34 @@ pathD(id, level, path) as(
     )
   from
     dept as D
+),
+fullpathD(id, level, path) as(
+  select
+    id,
+    (select count(*) from treeD as T where T.dn = D.id),
+    (select
+        string_agg(X.name, ' >> ')
+        within group(order by X.h Desc)
+      from (
+          select 
+            D.name, 0 as h
+          union all
+          select 
+            X.name, T.h
+          from   
+          treeD as T
+          join dept as X on T.up = X.id
+          where
+            T.dn = D.id
+        ) as X
+    )
+  from
+    dept as D
 )
 --
 select
   *
 from
-  pathD
+  fullpathD
 order by
-  level
+  path
