@@ -8,6 +8,7 @@ CREATE TABLE arp (
 );
 
 CREATE UNIQUE INDEX arp_ip_idx ON arp USING btree (ip);
+CREATE INDEX arp_mac_idx ON arp USING btree (mac);
 
 GRANT SELECT ON TABLE arp TO "uxmR";
 GRANT UPDATE, DELETE, INSERT ON TABLE arp TO "uxmW";
