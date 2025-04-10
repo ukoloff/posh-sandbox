@@ -118,4 +118,15 @@ Select
 From _InfoRg20909
 Where
     _Fld20917 != ''
+),
+otdel as(
+-- Справочник.СтруктураПредприятия	_Reference480
+select
+  _IDRRef As id,
+  _Code As Kod,
+  _Description As name,
+  _ParentIDRRef As up_id,	-- self: _Reference480
+  _Fld40083_RRRef As dept_id, -- _Reference347X1
+  _Fld45826 As dept_kod
+from _Reference480
 )
